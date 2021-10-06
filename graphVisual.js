@@ -1,4 +1,5 @@
- //for zoom in and out without scrolling page
+
+//for zoom in and out without scrolling page
  document.getElementById('graph').onwheel = function(){ return false; }
 
  //Fps monitorining system 
@@ -69,7 +70,7 @@ let app2 = new Application({
 
 
 //inizialization viewport for pan and zoom 
-const viewport = new Viewport.Viewport({
+const viewport = new pixi_viewport.Viewport({
     screenWidth: wid,
     screenHeight: high,
     worldWidth: wid,
