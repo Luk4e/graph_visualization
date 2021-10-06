@@ -1,0 +1,111 @@
+class graphClass {
+
+    constructor(id) {
+        this.id = id;
+        this.pixiNodes = {};
+        this.pixiEdges = {};
+    }
+
+    getId() {
+        return this.id;
+    }
+
+    insertNodes(node) {
+        if(!this.pixiNodes[node.id]){
+            this.pixiNodes[node.id]=node;
+        }else{
+            console.log('This node already exist');
+        }
+    }
+    removeNode(node) {
+        delete this.pixiNodes[node.id];
+    }
+
+    getNodeById(idx) {
+        return this.pixiNodes[idx];
+    }
+
+    insertEdge(edge) {
+        if(!this.pixiEdges[edge.id]){
+            this.pixiEdges[edge.id]=edge;
+        }else{
+            console.log('This edge already exist');
+        }
+    }
+    removeEdge(edge) {
+        delete this.pixiEdges[edge.id];
+    }
+
+    numberOfNodes() {
+        return this.pixiNodes.length;
+    }
+
+    numberOfEdges() {
+        return this.pixiEdges.length;
+    }
+
+    getPixiNodes() {
+        return this.pixiNodes;
+    }
+
+}
+
+class edgeClass {
+
+    constructor(line, sourceNode, targetNode) {
+        this.id = ""+sourceNode.id+targetNode.id;
+        this.pixiEdge = line;
+        this.source = sourceNode;
+        this.target = targetNode;
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getSource() {
+        return this.source;
+    }
+
+    getTarget() {
+        return this.target;
+    }
+
+    changeSource(newSource) {
+        this.source = newSource;
+    }
+
+    changeTarget(newTarget) {
+        this.target = newTarget;
+    }
+}
+
+class NodeClass{
+    
+    constructor(id,node,x,y,peso=1,archlist=[]) {
+        this.id = id;
+        this.pixiNode=node ;
+        this.x = x;
+        this.y = y;
+        this.peso = peso;
+        this.xCluster;
+        this.yCluster;
+    }
+
+    setXY(x,y){
+        this.x = x;
+        this.y = y;
+    }
+
+
+    setPixel(x,y){
+        this.xCluster = x;
+        this.yCluster = y;
+    }
+
+    setPeso(peso){
+        this.peso = peso;
+    }
+
+
+}

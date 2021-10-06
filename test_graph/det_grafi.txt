@@ -1,0 +1,13 @@
+dettagli grafi
+
+
+1	1005 nodi	25571 archi
+2	12008 nodi	118521 archi
+3	26518 nodi	65369 archi
+4	36692 nodi	367622 archi
+5	58228 nodi 	214078 archi
+6	62586 nodi	147892 archi
+7	77360 nodi 	905468 archi
+8	82168 nodi 	948464 archi
+9	82144 nodi	549202 archi
+10	131828 nodi	841372 archi 

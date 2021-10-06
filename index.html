@@ -1,0 +1,187 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
+
+    <script src="fpsMeterStats/stats.min.js"></script>
+    <script src="pixi_build/pixinew/pixi.min.js"></script>
+
+    
+    <meta charset="utf-8">      
+
+    <title>Graph</title>
+
+    <link rel="stylesheet" href="style/style.css">
+
+</head>
+
+
+<body>
+    
+   
+    <div class="mainBody">
+        
+        <header>
+            <h2>
+                Graph Visualization
+            </h2>
+
+            <h6>
+               Analyse and interact with your graph.</br>
+            </h6>
+          
+            
+        </header>
+
+
+        <div class="row up">
+            <table class="menuModValue">
+                <tr>
+                    <td> <p> sigma: </p> </td>
+                    <td> <p id="sigmaDisplay" class="valoriMod"> </p> </td>
+                    <td> <input class="sliderBarr" type="range" min="1" max="400" value="50" id="sigmaSlider"> </td>
+                    <td class="spaceBetweenPref"></td>
+    
+                    <td> <p> thresholdAlpha : </p> </td>
+                    <td> <p id="thresholdAlphaDisplay" class="valoriMod"></p> </td>
+                    <td> <input class="sliderBarr" type="range" min="1" max="100" value="20" id="thresholdAlphaSlider"> </td>
+                    <td class="spaceBetweenPref"></td>
+    
+                    <td> <p> rangeField : </p> </td>
+                    <td> <p id="rangeFieldDisplay" class="valoriMod"></p> </td>
+                    <td> <input class="sliderBarr" type="range" min="10" max="100" value="10" id="rangeFieldSlider"> </td>
+                    <td class="spaceBetweenPref"></td>
+    
+                    <td> <p> maxEdgeThickness : </p> </td>
+                    <td> <p id="maxEdgeThicknessDisplay" class="valoriMod"></p> </td>
+                    <td> <input class="sliderBarr" type="range" min="10" max="150" value="50" id="maxEdgeThicknessSlider"></td>
+                </tr>
+            </table>
+           
+            
+    
+        </div>
+        <div class="row mid">
+            <div class="col left">
+                <div id="fpsmeterstat"></div>
+                <table id="tableSpec">
+                
+                    <tr>
+                       
+                        <td class="inputFileBSpace">
+                            <input type="file" name="file" id="file" class="inputfile">
+                            <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><p class="specTab" >File: </p></td>
+                        <td><p clas="resTab" id="fileNameSpace"></p></td>
+                    </tr>
+                    <tr>
+                        <td><p class="specTab" >Nodes: </p></td>
+                        <td><p clas="resTab" id="nodePrintSpace"></p></td>
+                    </tr>
+                    <tr>
+                        <td><p class="specTab">Edges: </p></td>
+                        <td><p clas="resTab" id="edgesPrintSpace"></p></td>
+                    </tr>
+                    <tr >
+                        <td><p class="specTab">PageRank: </p></td>
+                        <td><p clas="resTab" id="pageRankYesOrNo"></p></td>
+                    </tr>
+                    <tr>
+                        <td><p class="specTab">Layout time [ms]: </p></td>
+                        <td><p clas="resTab" id="layoutTimePrintSpace"></p></td>
+                    </tr>
+                    
+                    <tr >
+                        <td><p class="specTab">Total time [ms]: </p></td>
+                        <td><p clas="resTab" id="totalTimePrintSpace"></p></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td> 
+                            <a class="button" id="greadButton" onclick="startWorkerGreadability()"><span>Greadability</span></a>
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td> 
+                            <p class="specTab" id="infoGreadZone"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="specTab" id="ARDDesc"> 
+                        </td>
+                        <td clas="resTab" >
+                            <p id="ARDRis"></p>
+                        </td>
+                    </tr>
+                    <tr>     
+                        <td class="specTab" id="ARMDesc"> 
+                        </td>
+                        <td clas="resTab">
+                            <p id="ARMRis"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="specTab" id="CDesc"> 
+                        </td>
+                        <td clas="resTab" >
+                            <p id="CRis"></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="specTab" id="CADesc"> 
+                        </td>
+                        <td clas="resTab" >
+                            <p id="CARis"></p>
+                        </td>
+                    </tr>
+                </table>
+    
+            </div>
+            <div class="col middle" id="graph"></div>
+            <div class="col right">
+                
+                
+                <table class="zoomZone">
+                    <tr>
+                        <td> <button type="button"  id="zoomOnPointButton" onclick="changestatuszoom()">Zoom</button> </td>
+                        <td class="spaceBetweenPref"></td>
+    
+                        <td> <p> zoom : </p> </td>
+                        <td> <p id="zoomIntensityDisplay" class="valoriMod"></p> </td>
+                        <td> <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider"> </td>           
+                    </tr>
+                    <tr>
+                        <div id="magnifying"></div>
+                    </tr>
+                </table>
+                  
+            </div>
+        </div>   
+        <div class="row down">
+        </div>
+
+    </div>
+     
+    <script src="https://github.com/davidfig/pixi-viewport/releases/download/4.5.0/viewport.js"></script>
+    <script type="text/javascript" src="myLibrary/thesisFunction.js"></script>
+    <script type="text/javascript" src="myLibrary/graph_classes.js"></script>
+    
+    <script type="text/javascript" src="graphVisual.js">
+       
+    </script>
+
+</body>
+
+</html>
