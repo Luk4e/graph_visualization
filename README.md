@@ -1,4 +1,4 @@
 # graph_visualization
-Visualization system for big network browser-based. Implemented by Javascript and Emscripten technology.
+In-browser-based big network visualization system. Implemented by Javascript and Emscripten technology.
 
 
