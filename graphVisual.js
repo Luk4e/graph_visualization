@@ -91,6 +91,7 @@ var rangeFiledComp = 1;
 var edgeThickness = 5;
 var zoomIntens = 4;
 var execPageRank = true;
+let layoutComputCheck = true;
 
 
 
@@ -253,7 +254,7 @@ document.getElementById('graph').appendChild(app.view);
 document.getElementById('file').onchange = function () {
     
     execPageRank = window.confirm("Do you want to use PageRank?");
-    let vartest = window.confirm("Do you want to compute network's layout?");
+    layoutComputCheck = window.confirm("Do you want to compute network's layout?");
 
     let loadingDataStart = performance.now()
 
@@ -290,7 +291,18 @@ document.getElementById('file').onchange = function () {
                     tempSet.add(sourceNode);
                     nodeTemp[sourceNode] = sou;
                     graph.nodes.push(nodeTemp[sourceNode]);
+
                 }
+                if(!layoutComputCheck){
+                    let circle = new Graphics();
+                    circle.x = xSourceNode;
+                    circle.y = ySourceNode;
+                    viewport.addChild(circle);
+                    let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1);
+                    nodeIns.setPixel(xSourceNode,ySourceNode,0);
+                    pixiGraph.insertNodes(nodeIns);
+                }
+                   
 
                 for (let i in listNode) {
                     let target = parseInt(listNode[i]);
@@ -368,12 +380,23 @@ function drawGraph(graph,pixiGraph,viewport,document) {
 
     //to modify the if else adding a variable to check if the user want to compute or not the network's layout
 
-    if(execPageRank){
+    if(execPageRank && layoutComputCheck){
         startWorkerLayoutAndPageRank(firstLayoutCompute,graph,viewport,pixiGraph,t0);
         document.getElementById('pageRankYesOrNo').innerHTML = "on"
 
-    }else{
+    }else if(execPageRank  && !layoutComputCheck){
+        startWorkerPageRank(firstLayoutCompute,graph,pixiGraph,t0);
+        document.getElementById('pageRankYesOrNo').innerHTML = "on"
+
+    }else if(!execPageRank && layoutComputCheck){
         startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0);
+        document.getElementById('pageRankYesOrNo').innerHTML = "off"
+
+    }else if(!execPageRank && !layoutComputCheck){
+        let t1fmmm = performance.now();
+        let t0fmmm = performance.now();
+
+        firstLayoutCompute(t0fmmm,t1fmmm,t0)
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }
@@ -560,6 +583,41 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
 
                     }
                 }    
+                w.terminate();
+                resolve("layout was calculeted")
+            }
+        } else {
+            reject("Worker is undefined")
+        }
+    })
+
+    let result = await promise;
+    let t1fmmm = performance.now();
+
+    callback(t0fmmm,t1fmmm,t0)
+
+}
+
+async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
+    let t0fmmm = performance.now();
+
+    let promise =  new Promise(function(resolve,reject){
+        console.log("start worker")
+        if (typeof (Worker) !== "undefined") {
+            w = new Worker("workers/pagerankComputing.js");
+            w.postMessage(graphWork);
+            w.onmessage = function (e) {
+                let nodes = e.data.nodes.length;
+            
+            
+                for (let i = 0; i < nodes; ++i) {
+                    
+                    //arrotondo i pesi cosi da avere solo 10 differenti pesi 
+                    let temp = parseFloat(e.data.nodes[i]['peso']);
+                    pixiGraph.pixiNodes[graph.nodes[i]['id']].setPeso(temp);
+
+                }
+            
                 w.terminate();
                 resolve("layout was calculeted")
             }

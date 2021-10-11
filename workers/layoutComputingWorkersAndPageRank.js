@@ -1,4 +1,3 @@
-importScripts('greadability/greadability.js');
 importScripts('ogdf/ogdfwithFMMMPAGEMEMGROW.js');
 
 

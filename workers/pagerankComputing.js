@@ -1,4 +1,3 @@
-
 importScripts('ogdf/ogdfwithFMMMPAGEMEMGROW.js');
 
 
@@ -28,26 +27,14 @@ onmessage = function(e) {
             Module.HEAP32[target / 4 + i] = dic[e.data.edges[i].target.id];
         }
 
-        //let tt = Module._PAGERANK(nodes, links, source, target);
-        //for (let i = 0; i < nodes; ++i) {
-        //    e.data.nodes[i]['peso'] = Module.HEAPF32[(tt >>> 2) + i].toFixed(6);
-        //}
- 
-        let result = Module._FM3(nodes, links, source, target);
-        //console.log("dopo FMMM")
-        //console.log("pima di creare graphics circle")
-        // get nodes position from result
+        let tt = Module._PAGERANK(nodes, links, source, target);
         for (let i = 0; i < nodes; ++i) {
-            e.data.nodes[i]['x'] = Module.HEAPF32[(result >>> 2) + i * 2];
-            e.data.nodes[i]['y'] = Module.HEAPF32[(result >>> 2) + i * 2 + 1];
+            e.data.nodes[i]['peso'] = Module.HEAPF32[(tt >>> 2) + i].toFixed(6);
         }
-
-        e.data.maxX = Module.HEAPF32[(result >>> 2) + nodes * 2];
-        e.data.maxY = Module.HEAPF32[(result >>> 2) + nodes * 2 + 1];
-
+ 
+    
         Module._free(source);
         Module._free(target);
-        Module._free_buf(result);
 
 
         //console.log("dopo aver aggiunto tutti gli archi")
