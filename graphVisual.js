@@ -253,6 +253,8 @@ document.getElementById('graph').appendChild(app.view);
 document.getElementById('file').onchange = function () {
     
     execPageRank = window.confirm("Do you want to use PageRank?");
+    let vartest = window.confirm("Do you want to compute network's layout?");
+
     let loadingDataStart = performance.now()
 
     if (graph.nodes.length != 0) {
@@ -362,6 +364,9 @@ function drawGraph(graph,pixiGraph,viewport,document) {
     document.getElementById('nodePrintSpace').innerHTML = graph.nodes.length;
     document.getElementById('edgesPrintSpace').innerHTML = graph.edges.length;          
     let t0 = performance.now()            
+
+
+    //to modify the if else adding a variable to check if the user want to compute or not the network's layout
 
     if(execPageRank){
         startWorkerLayoutAndPageRank(firstLayoutCompute,graph,viewport,pixiGraph,t0);
