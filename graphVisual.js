@@ -283,6 +283,7 @@ document.getElementById('file').onchange = function () {
                 let xSourceNode = firstPart[1];
                 let ySourceNode = firstPart[2];
                 let listNode = firstSplit[1].split(",");
+
                 let sou = {
                     "id": sourceNode,
                 }
@@ -291,8 +292,8 @@ document.getElementById('file').onchange = function () {
                     tempSet.add(sourceNode);
                     nodeTemp[sourceNode] = sou;
                     graph.nodes.push(nodeTemp[sourceNode]);
-
                 }
+
                 if(!layoutComputCheck){
                     let circle = new Graphics();
                     circle.x = xSourceNode;
@@ -301,8 +302,7 @@ document.getElementById('file').onchange = function () {
                     let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1);
                     nodeIns.setPixel(xSourceNode,ySourceNode,0);
                     pixiGraph.insertNodes(nodeIns);
-                }
-                   
+                }                 
 
                 for (let i in listNode) {
                     let target = parseInt(listNode[i]);
@@ -320,6 +320,8 @@ document.getElementById('file').onchange = function () {
             }
         } else {
 
+            layoutComputCheck = true;
+
             for (var line = 0; line < linesLength; line++) {
                 let tab;
                 if(lines[line].includes(' ')){
@@ -333,7 +335,8 @@ document.getElementById('file').onchange = function () {
                 }
 
                 let source = parseInt(tab[0]);
-                let target = parseInt(tab[1]);
+                let target = parseInt(tab[1]);     
+
                 let sou = {
                     "id": source
                 }
@@ -359,7 +362,6 @@ document.getElementById('file').onchange = function () {
         tab = null;
         let loadingDataEnd = performance.now()
         console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
-
         console.log("dati letti ");
 
         drawGraph(graph,pixiGraph,viewport,document);
@@ -393,10 +395,7 @@ function drawGraph(graph,pixiGraph,viewport,document) {
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }else if(!execPageRank && !layoutComputCheck){
-        let t1fmmm = performance.now();
-        let t0fmmm = performance.now();
-
-        firstLayoutCompute(t0fmmm,t1fmmm,t0)
+        firstLayoutCompute(t0,t0,t0)
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }
@@ -597,7 +596,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
     callback(t0fmmm,t1fmmm,t0)
 
 }
-
+//pagerank worker 
 async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
     let t0fmmm = performance.now();
 
