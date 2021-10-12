@@ -476,7 +476,13 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                 if(e.data.maxX>wid || e.data.maxY>high){
                     
                     for (let i = 0; i < nodes; ++i) {
-                        let circle = new Graphics();
+                        //let circle = new Graphics();
+                        const styleFont = new PIXI.TextStyle({
+                            fontFamily: 'Arial',
+                            fontSize: 6,
+                        });
+                        let circleText = new PIXI.Text(e.data.nodes[i]['id'],styleFont)
+
 
                         let xxx = Math.round((e.data.nodes[i]['x']/e.data.maxX)*(wid));
                         let yyy = Math.round((e.data.nodes[i]['y']/e.data.maxY)*(high));
@@ -485,30 +491,45 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         graph.nodes[i]['y'] = yyy;
 
 
-                        circle.x = xxx;
-                        circle.y = yyy;
-                        viewport.addChild(circle);
-                        
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
+                        //circle.x = xxx;
+                        //circle.y = yyy;
+                        circleText.x = xxx;
+                        circleText.y = yyy;
+
+                        circleText.visibility = false;
+                        //viewport.addChild(circle);
+                        viewport.addChild(circleText);
+
+
+                        //let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1);
+
                         nodeIns.setPixel(xxx,yyy,0);
                         pixiGraph.insertNodes(nodeIns);
                 
                     }
                 }else{       
                     for (let i = 0; i < nodes; ++i) {
-                        let circle = new Graphics();
+                        //let circle = new Graphics();
+                        let circleText = new PIXI.Text(e.data.nodes[i]['id'])
 
 
                         graph.nodes[i]['x'] = e.data.nodes[i]['x'];
                         graph.nodes[i]['y'] = e.data.nodes[i]['y'];
                   
-                        circle.x = e.data.nodes[i]['x'];
-                        circle.y = e.data.nodes[i]['y'];
+                        //circle.x = e.data.nodes[i]['x'];
+                        //circle.y = e.data.nodes[i]['y'];
+                       
+                        circleText.x = e.data.nodes[i]['x'];
+                        circleText.y = e.data.nodes[i]['y'];
+                        circleText.visibility = false;
+                        //viewport.addChild(circle);
+                        viewport.addChild(circleText);
                         
-                        viewport.addChild(circle);
+                        //let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
                         
-                        
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1);
+
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
                         pixiGraph.insertNodes(nodeIns);
 
