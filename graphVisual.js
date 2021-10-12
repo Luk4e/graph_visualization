@@ -484,6 +484,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         graph.nodes[i]['x'] = xxx;
                         graph.nodes[i]['y'] = yyy;
 
+
                         circle.x = xxx;
                         circle.y = yyy;
                         viewport.addChild(circle);
@@ -497,12 +498,15 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                     for (let i = 0; i < nodes; ++i) {
                         let circle = new Graphics();
 
+
                         graph.nodes[i]['x'] = e.data.nodes[i]['x'];
                         graph.nodes[i]['y'] = e.data.nodes[i]['y'];
-
+                  
                         circle.x = e.data.nodes[i]['x'];
                         circle.y = e.data.nodes[i]['y'];
+                        
                         viewport.addChild(circle);
+                        
                         
                         let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
