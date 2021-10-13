@@ -82,7 +82,7 @@ class edgeClass {
 
 class NodeClass{
     
-    constructor(id,node,x,y,weight=1,degree,archlist=[]) {
+    constructor(id,node,x,y,weight=1,degree=0,archlist=[]) {
         this.id = id;
         this.pixiNode=node ;
         this.x = x;
@@ -90,6 +90,7 @@ class NodeClass{
         this.weight = weight;
         this.xCluster;
         this.yCluster;
+        this.degree = degree;
     }
 
     setXY(x,y){
@@ -105,6 +106,10 @@ class NodeClass{
 
     setWeight(weight){
         this.weight = weight;
+    }
+
+    setDegree(degree){
+        this.degree = degree;
     }
 
 

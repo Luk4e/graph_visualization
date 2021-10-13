@@ -302,7 +302,7 @@ document.getElementById('file').onchange = function () {
                     circle.x = xSourceNode;
                     circle.y = ySourceNode;
                     viewport.addChild(circle);
-                    let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1);
+                    let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1,listNode.length);
                     nodeIns.setPixel(xSourceNode,ySourceNode,0);
                     pixiGraph.insertNodes(nodeIns);
                 }                 
@@ -346,16 +346,27 @@ document.getElementById('file').onchange = function () {
                 let tar = {
                     "id"  : target
                 }
+
                 if (!tempSet.has(source)) {
+                    nodesDegree.set(source,1);
+
                     nodeTemp[source] = sou;
                     tempSet.add(source);
                     graph.nodes.push(nodeTemp[source]);
+                }else{
+                    nodesDegree.set(source,(nodesDegree.get(source)+1));
+
                 }
                 if (!tempSet.has(target)) {
+                    nodesDegree.set(target,1);
+
                     nodeTemp[target] = tar;
                     tempSet.add(target);
                     graph.nodes.push(nodeTemp[target]);
+                }else{
+                    nodesDegree.set(target,(nodesDegree.get(target)+1));
                 }
+
                 graph.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
             }
         }
@@ -505,7 +516,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
 
 
                         //let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1);
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1,nodesDegree.get(e.data.nodes[i]['id']));
 
                         nodeIns.setPixel(xxx,yyy,0);
                         pixiGraph.insertNodes(nodeIns);
@@ -531,7 +542,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         
                         //let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
                         
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1);
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1,nodesDegree.get(e.data.nodes[i]['id']));
 
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
                         pixiGraph.insertNodes(nodeIns);
@@ -583,7 +594,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         //let temp = 1;
                         
 
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp);
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,nodesDegree.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(xxx,yyy,0);
                         pixiGraph.insertNodes(nodeIns);
                 
@@ -604,7 +615,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         
                         //let temp = 1;
 
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp);
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,nodesDegree.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
                         pixiGraph.insertNodes(nodeIns);
 
@@ -641,7 +652,7 @@ async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
                     
                     //arrotondo i pesi cosi da avere solo 10 differenti pesi 
                     let temp = parseFloat(e.data.nodes[i]['weight']);
-                    pixiGraph.pixiNodes[graph.nodes[i]['id']].setPeso(temp);
+                    pixiGraph.pixiNodes[graph.nodes[i]['id']].setWeight(temp);
 
                 }
             
