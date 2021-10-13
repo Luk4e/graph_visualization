@@ -269,6 +269,11 @@ document.getElementById('file').onchange = function () {
     let nodeTemp = new Array();
     let tempSet  = new Set();
 
+    const styleFont = new PIXI.TextStyle({
+        fontFamily: 'Arial',
+        fontSize: 6,
+    });
+
     reader.onload = function (progressEvent) {
 
         var lines = this.result.split('\n');
@@ -298,11 +303,15 @@ document.getElementById('file').onchange = function () {
 
                 //if the layout was precalculated
                 if(!layoutComputCheck){
-                    let circle = new Graphics();
-                    circle.x = xSourceNode;
-                    circle.y = ySourceNode;
-                    viewport.addChild(circle);
-                    let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1,listNode.length);
+                    let circleText = new PIXI.Text(sourceNode,styleFont)
+                    circleText.x = xSourceNode;
+                    circleText.y = ySourceNode;
+
+                    circleText.visible = false;
+                    viewport.addChild(circleText);
+
+                    let nodeIns = new NodeClass(sourceNode,circleText,circleText.x,circleText.y,1,listNode.length);
+
                     nodeIns.setPixel(xSourceNode,ySourceNode,0);
                     pixiGraph.insertNodes(nodeIns);
                 }                 
@@ -323,7 +332,7 @@ document.getElementById('file').onchange = function () {
             }
         } else {
 
-            layoutComputCheck = true;
+            //layoutComputCheck = true;
 
             for (var line = 0; line < linesLength; line++) {
                 let tab;
@@ -339,6 +348,12 @@ document.getElementById('file').onchange = function () {
 
                 let source = parseInt(tab[0]);
                 let target = parseInt(tab[1]);     
+                let xSource = (isNaN(parseFloat(tab[2]))) ? 0.0 : parseFloat(tab[2]);
+                let ySource = (isNaN(parseFloat(tab[3]))) ? 0.0 : parseFloat(tab[3]);
+                let xTarget = (isNaN(parseFloat(tab[4]))) ? 0.0 : parseFloat(tab[4]);
+                let yTarget = (isNaN(parseFloat(tab[5]))) ? 0.0 : parseFloat(tab[5]);
+
+                console.log(xSource)
 
                 let sou = {
                     "id": source
@@ -353,6 +368,20 @@ document.getElementById('file').onchange = function () {
                     nodeTemp[source] = sou;
                     tempSet.add(source);
                     graph.nodes.push(nodeTemp[source]);
+                     //if the layout was precalculated
+                    if(!layoutComputCheck){
+                        let circleText = new PIXI.Text(source,styleFont)
+                        circleText.x = xSource;
+                        circleText.y = ySource;
+
+                        circleText.visible = false;
+                        viewport.addChild(circleText);
+
+                        let nodeIns = new NodeClass(source,circleText,circleText.x,circleText.y,1,nodesDegree.get(source));
+
+                        nodeIns.setPixel(xSource,ySource,0);
+                        pixiGraph.insertNodes(nodeIns);
+                    }   
                 }else{
                     nodesDegree.set(source,(nodesDegree.get(source)+1));
 
@@ -363,9 +392,26 @@ document.getElementById('file').onchange = function () {
                     nodeTemp[target] = tar;
                     tempSet.add(target);
                     graph.nodes.push(nodeTemp[target]);
+                     //if the layout was precalculated
+                    if(!layoutComputCheck){
+                        let circleText = new PIXI.Text(target,styleFont)
+                        circleText.x = xTarget;
+                        circleText.y = yTarget;
+
+                        circleText.visible = false;
+                        viewport.addChild(circleText);
+
+                        let nodeIns = new NodeClass(target,circleText,circleText.x,circleText.y,1,nodesDegree.get(source));
+
+                        nodeIns.setPixel(xTarget,yTarget,0);
+                        pixiGraph.insertNodes(nodeIns);
+                    }   
                 }else{
                     nodesDegree.set(target,(nodesDegree.get(target)+1));
                 }
+
+
+
 
                 graph.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
             }
