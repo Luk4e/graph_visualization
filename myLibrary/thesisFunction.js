@@ -2,11 +2,11 @@
 
     //pixi create edges and nodes function()
     //function that compute the gaussian 2d from a node to one point on the screen
-    function gasuKern(x,y,xi,yi,sigma,valueForScaling=10,pesoNodo=1){
+    function gasuKern(x,y,xi,yi,sigma,valueForScaling=10,weightNode=1){
 
-        let xNum     = (x - xi)/(valueForScaling*pesoNodo);
-        let yNum     = (y - yi)/(valueForScaling*pesoNodo);
-        let first    = 1/(2*Math.PI*Math.pow(sigma,2)*Math.pow((valueForScaling*pesoNodo),2));
+        let xNum     = (x - xi)/(valueForScaling*weightNode);
+        let yNum     = (y - yi)/(valueForScaling*weightNode);
+        let first    = 1/(2*Math.PI*Math.pow(sigma,2)*Math.pow((valueForScaling*weightNode),2));
         let num      = Math.pow(xNum,2)+Math.pow(yNum,2);
         let den      = Math.pow(sigma,2);
         let third    = Math.exp(-0.5*(num/den));
@@ -404,7 +404,7 @@
             xOfNode = pixiGraph.pixiNodes[vecXY[i]].x;
             yOfNode = pixiGraph.pixiNodes[vecXY[i]].y;
 
-            weightOfNode = pixiGraph.pixiNodes[vecXY[i]].peso;
+            weightOfNode = pixiGraph.pixiNodes[vecXY[i]].weight;
             //console.log(weightOfNode)
             xDa = Math.max(Math.round(xOfNode-rag),0);
             xA  = Math.min(Math.round(xOfNode+rag),(wid-1));
@@ -462,7 +462,7 @@
             xOfNode = (xOfNode*scaleZoom) - (Math.abs(origin.x))
             yOfNode = (yOfNode*scaleZoom) - (Math.abs(origin.y))
 
-            weightOfNode = pixiGraph.pixiNodes[vecXY[i]].peso;
+            weightOfNode = pixiGraph.pixiNodes[vecXY[i]].weight;
 
 
             xDa = Math.max(Math.round(xOfNode-rag),0);

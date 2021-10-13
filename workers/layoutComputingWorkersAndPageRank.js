@@ -29,7 +29,7 @@ onmessage = function(e) {
 
         let tt = Module._PAGERANK(nodes, links, source, target);
         for (let i = 0; i < nodes; ++i) {
-            e.data.nodes[i]['peso'] = Module.HEAPF32[(tt >>> 2) + i].toFixed(6);
+            e.data.nodes[i]['weight'] = Module.HEAPF32[(tt >>> 2) + i].toFixed(6);
         }
  
         let result = Module._FM3(nodes, links, source, target);
