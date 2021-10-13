@@ -315,6 +315,7 @@ document.getElementById('file').onchange = function () {
                     nodeIns.setPixel(xSourceNode,ySourceNode,0);
                     pixiGraph.insertNodes(nodeIns);
                 }                 
+
                 //mange link insertion 
                 for (let i in listNode) {
                     let target = parseInt(listNode[i]);
@@ -352,8 +353,6 @@ document.getElementById('file').onchange = function () {
                 let ySource = (isNaN(parseFloat(tab[3]))) ? 0.0 : parseFloat(tab[3]);
                 let xTarget = (isNaN(parseFloat(tab[4]))) ? 0.0 : parseFloat(tab[4]);
                 let yTarget = (isNaN(parseFloat(tab[5]))) ? 0.0 : parseFloat(tab[5]);
-
-                console.log(xSource)
 
                 let sou = {
                     "id": source
