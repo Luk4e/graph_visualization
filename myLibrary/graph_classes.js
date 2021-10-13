@@ -112,5 +112,9 @@ class NodeClass{
         this.degree = degree;
     }
 
+    addOneDegree(){
+        this.degree+=1;
+    }
+
 
 }

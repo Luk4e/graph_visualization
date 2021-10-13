@@ -377,14 +377,16 @@ document.getElementById('file').onchange = function () {
                         circleText.visible = false;
                         viewport.addChild(circleText);
 
-                        let nodeIns = new NodeClass(source,circleText,circleText.x,circleText.y,1,nodesDegree.get(source));
+                        let nodeIns = new NodeClass(source,circleText,circleText.x,circleText.y,1,1);
 
                         nodeIns.setPixel(xSource,ySource,0);
                         pixiGraph.insertNodes(nodeIns);
                     }   
                 }else{
                     nodesDegree.set(source,(nodesDegree.get(source)+1));
-
+                    if(!layoutComputCheck){
+                        pixiGraph.pixiNodes[source].addOneDegree();
+                    }
                 }
                 if (!tempSet.has(target)) {
                     nodesDegree.set(target,1);
@@ -401,13 +403,16 @@ document.getElementById('file').onchange = function () {
                         circleText.visible = false;
                         viewport.addChild(circleText);
 
-                        let nodeIns = new NodeClass(target,circleText,circleText.x,circleText.y,1,nodesDegree.get(source));
+                        let nodeIns = new NodeClass(target,circleText,circleText.x,circleText.y,1,1);
 
                         nodeIns.setPixel(xTarget,yTarget,0);
                         pixiGraph.insertNodes(nodeIns);
                     }   
                 }else{
                     nodesDegree.set(target,(nodesDegree.get(target)+1));
+                    if(!layoutComputCheck){
+                        pixiGraph.pixiNodes[target].addOneDegree();
+                    }
                 }
 
 
