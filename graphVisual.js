@@ -230,6 +230,7 @@ document.getElementById("graph").addEventListener("mousedown", function() {
         let rect = e.target.getBoundingClientRect();
         position.xstart = e.clientX-rect.left;
         position.ystart = e.clientY-rect.top; 
+        console.log(position.xstart)
         if(labelTemp != undefined){
             for(element of labelTemp){
                 pixiGraph.pixiNodes[element].pixiNode.visible = false;
@@ -581,10 +582,10 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         //let circle = new Graphics();
                         const styleFont = new PIXI.TextStyle({
                             fontFamily: 'Arial',
-                            fontSize: 6,
+                            fontSize: 12,
                         });
                         let circleText = new PIXI.Text(e.data.nodes[i]['id'],styleFont)
-
+                        
 
                         let xxx = Math.round((e.data.nodes[i]['x']/e.data.maxX)*(wid));
                         let yyy = Math.round((e.data.nodes[i]['y']/e.data.maxY)*(high));

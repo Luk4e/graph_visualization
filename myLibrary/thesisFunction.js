@@ -490,40 +490,40 @@
         
     }
 
+    function labelsView(xstart,ystart,graph,pixiGraph,maxDistance = 100,numOfLabelsToShowUp=10){   
+        
+        
+        let indici = [];
+        let nodeMap = new Map();
+        let numberOfNodes = graph.nodes.length;
+        
+        //selection of nodes inside the zoom view to render
+        for(let i = 0; i<numberOfNodes;i++){
 
-function labelsView(xstart,ystart,graph,pixiGraph,maxDistance = 50,numOfLabelsToShowUp=10){   
-    
-    
-    let indici = [];
-    let nodeMap = new Map();
-    let numberOfNodes = graph.nodes.length;
-     
-    //selection of nodes inside the zoom view to render
-    for(let i = 0; i<numberOfNodes;i++){
-
-        let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
-        let xx = Math.round(temp.x-xstart);
-        let yy = Math.round(temp.y-ystart);
-        let distaOrig = Math.sqrt(Math.pow(xx,2)+Math.pow(yy,2));
-        if(distaOrig<maxDistance){
-            nodeMap.set(graph.nodes[i]['id'],pixiGraph.pixiNodes[graph.nodes[i]['id']].degree)    
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
+            let xx = Math.round(temp.x-xstart);
+            let yy = Math.round(temp.y-ystart);
+            let distaOrig = Math.sqrt(Math.pow(xx,2)+Math.pow(yy,2));
+            if(distaOrig<maxDistance){
+                nodeMap.set(graph.nodes[i]['id'],pixiGraph.pixiNodes[graph.nodes[i]['id']].degree)    
+            }
         }
-    }
 
-    let sortedNodeMap = new Map([...nodeMap.entries()].sort((a,b)=>b[1]-a[1]));
-    let k = 0;
-    for(elem of sortedNodeMap){
-        if(k<numOfLabelsToShowUp){
-            indici[k] = elem[0]
-            pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
-            k++;
-        }else{
-            break;
+        let sortedNodeMap = new Map([...nodeMap.entries()].sort((a,b)=>b[1]-a[1]));
+        let k = 0;
+        for(elem of sortedNodeMap){
+            if(k<numOfLabelsToShowUp){
+                indici[k] = elem[0]
+               
+                pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
+                k++;
+            }else{
+                break;
+            }
         }
-    }
-    sortedNodeMap.clear();
-    nodeMap.clear();
+        sortedNodeMap.clear();
+        nodeMap.clear();
 
-    return indici;
-   
-}
+        return indici;
+    
+    }
