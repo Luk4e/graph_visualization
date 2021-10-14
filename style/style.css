@@ -217,3 +217,8 @@
         } 
 
         
+        #labelButton{
+            padding: 5px;
+            margin: 10px;
+            align-items: center;
+        }

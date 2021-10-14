@@ -1,19 +1,19 @@
 
 //for zoom in and out without scrolling page
- document.getElementById('graph').onwheel = function(){ return false; }
+document.getElementById('graph').onwheel = function(){ return false; }
 
- //Fps monitorining system 
- var stats = new Stats();
- stats.dom.style.position = 'relative';
- stats.dom.style.float = 'right';
- document.getElementById("fpsmeterstat").appendChild( stats.dom );
+//Fps monitorining system 
+var stats = new Stats();
+stats.dom.style.position = 'relative';
+stats.dom.style.float = 'right';
+document.getElementById("fpsmeterstat").appendChild( stats.dom );
 
- function animate() {
-     stats.update();
-     requestAnimationFrame( animate );
- }
+function animate() {
+    stats.update();
+    requestAnimationFrame( animate );
+}
 
- animate();
+animate();
 
 
 var inputs = document.querySelectorAll('.inputfile');
@@ -39,12 +39,12 @@ Array.prototype.forEach.call(inputs, function (input) {
  
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
-const pixiGraph = new graphClass("Primo");
+let pixiGraph = new graphClass("Primo");
 const nodesDegree = new Map();
 
 //dimension of main rendering windows 
-const wid = 1200;
-const high = 800;
+const wid = 1050;
+const high = 750;
 
 //dimension of zoom windows
 const wid2 = 385;
@@ -84,8 +84,8 @@ const viewport = new pixi_viewport.Viewport({
 const fattoreDiScala = 10;
 const raggio = 4;
 var sigma  = 0.5;
-var maxVal = {};//global maxvalue
-maxVal.value = 0;
+var maxVal = {"value":0};//global maxvalue
+let labelTemp;
 
 var thresholdComp = 0.2;
 var rangeFiledComp = 1;
@@ -163,8 +163,9 @@ sliderZoomIntensity.oninput  = function() {
 //end of sidebar part
 
 var position ={};
-var zoomOnPoint = {}
-zoomOnPoint.value = false;
+var buttonActivation = {"zoomActivation":false,"labelsActivation":false}
+//buttonActivation.zoomActivation = false;
+//buttonActivation.labelsActivation = false;
 
 
 //Pixiviewport of the main view space to manage pan and zoom in and out
@@ -178,60 +179,98 @@ viewport
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
     }) 
 
-
+//button label actions
+function searchLabel(){
+    if(!buttonActivation.labelsActivation){
+        buttonActivation.labelsActivation = true;
+        viewport.pause = true;
+        //document.body.style.cursor = "crosshair"
+    }else{
+        buttonActivation.labelsActivation = false;
+        viewport.pause = false;
+        if(labelTemp != undefined){
+            for(element of labelTemp){
+                pixiGraph.pixiNodes[element].pixiNode.visible = false;
+            }
+            labelTemp = undefined;
+        }
+        //document.body.style.cursor = "default"
+    }
+}
 
 
 
 document.getElementById("magnifying").style.visibility = 'hidden';
 
+//button zoom actions
 function changestatuszoom(){
 
-    if(!zoomOnPoint.value){
+    if(!buttonActivation.zoomActivation){
         document.getElementById("magnifying").style.visibility = 'visible';
-        zoomOnPoint.value = true;
+        buttonActivation.zoomActivation = true;
         viewport.pause = true;
         document.body.style.cursor = "crosshair"
     }else{
         document.getElementById("magnifying").style.visibility = 'hidden';
         viewport.pause = false;
-        zoomOnPoint.value = false;
+        buttonActivation.zoomActivation = false;
         document.body.style.cursor = "default"
         containerRootZoom.removeChildren();
         edgesContainerZoom.removeChildren();
         containerRootZoom.cacheAsBitmap = false;
-
-
     }
 }
 //mouse event listener for discover mouse position to compute zoom in a specific area
 var mousedowncontroll = false;
+
 document.getElementById("graph").addEventListener("mousedown", function() {
     mousedowncontroll = true;
-});
-document.getElementById("graph").addEventListener("mousemove", function(){
-    if(mousedowncontroll){
-
+    if(buttonActivation.labelsActivation && !buttonActivation.zoomActivation){
         let e = window.event;
         let rect = e.target.getBoundingClientRect();
-
         position.xstart = e.clientX-rect.left;
-        position.ystart = e.clientY-Math.ceil(rect.top); 
+        position.ystart = e.clientY-rect.top; 
+        if(labelTemp != undefined){
+            for(element of labelTemp){
+                pixiGraph.pixiNodes[element].pixiNode.visible = false;
+            }
+            labelTemp = undefined;
+            labelTemp = labelsView(position.xstart,position.ystart,graph,pixiGraph);
+        }else{
+            labelTemp = labelsView(position.xstart,position.ystart,graph,pixiGraph);
+        }
+    }
+});
 
-        position.xstart -= Math.ceil((200)/(zoomIntens));
-        position.ystart -= Math.ceil((200)/(zoomIntens));
+document.getElementById("graph").addEventListener("mousemove", function(){
+    if(mousedowncontroll){
+        if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
 
-        position.xend = position.xstart;
-        position.yend = position.ystart;
+            let e = window.event;
+            let rect = e.target.getBoundingClientRect();
 
-        if(zoomOnPoint.value){
+            position.xstart = e.clientX-rect.left;
+            position.ystart = e.clientY-rect.top; 
+
+            position.xstart -= Math.ceil((200)/(zoomIntens));
+            position.ystart -= Math.ceil((200)/(zoomIntens));
+
+            position.xend = position.xstart;
+            position.yend = position.ystart;
+
+
             computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,graph,pixiGraph,viewport.scaled,containerRootZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
         }
     }
 
 });
+
 document.getElementById("graph").addEventListener("mouseup", function() {
     mousedowncontroll = false;
 });
+
+
+
 //pixi container for node and edges
 var edgesContainer = new PIXI.Container();
 var containerRoot = new PIXI.Container();
@@ -489,7 +528,6 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     console.log("finish");
 
 }
-
 //start of worker for gradability
 function startWorkerGreadability() {
 
@@ -924,7 +962,7 @@ function resetParameters(){
 
     //reset of graph values and pixi containers
     pixiGraph = new graphClass("Primo");
-
+    nodesDegree.clear();
     graph.nodes.length = 0;
     graph.edges.length = 0;
     //viewport reset
