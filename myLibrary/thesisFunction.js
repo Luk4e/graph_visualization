@@ -490,7 +490,7 @@
         
     }
 
-    function labelsView(xstart,ystart,graph,pixiGraph,maxDistance = 100,numOfLabelsToShowUp=10){   
+    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         
         let indici = [];
@@ -514,8 +514,17 @@
         for(elem of sortedNodeMap){
             if(k<numOfLabelsToShowUp){
                 indici[k] = elem[0]
-               
+                //pixiGraph.pixiNodes[elem[0]].pixiNode.style.fontSize = 15;
                 pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
+                
+                let circleText = new PIXI.Text(elem[0]);
+                circleText.style.fontSize = 16;
+                circleText.x = pixiGraph.pixiNodes[elem[0]].x;
+                circleText.y = pixiGraph.pixiNodes[elem[0]].y;
+                containerLabels.addChild(circleText)
+                //viewport.addChild(circleText);
+                labelsList.set(elem[0],circleText);
+
                 k++;
             }else{
                 break;

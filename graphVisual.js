@@ -41,6 +41,7 @@ Array.prototype.forEach.call(inputs, function (input) {
 const graph = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("Primo");
 const nodesDegree = new Map();
+let labelsList = new Map();
 
 //dimension of main rendering windows 
 const wid = 1050;
@@ -192,6 +193,8 @@ function searchLabel(){
             for(element of labelTemp){
                 pixiGraph.pixiNodes[element].pixiNode.visible = false;
             }
+            containerLabels.removeChildren();
+            labelsList.clear();
             labelTemp = undefined;
         }
         //document.body.style.cursor = "default"
@@ -230,15 +233,17 @@ document.getElementById("graph").addEventListener("mousedown", function() {
         let rect = e.target.getBoundingClientRect();
         position.xstart = e.clientX-rect.left;
         position.ystart = e.clientY-rect.top; 
-        console.log(position.xstart)
+
         if(labelTemp != undefined){
             for(element of labelTemp){
                 pixiGraph.pixiNodes[element].pixiNode.visible = false;
             }
             labelTemp = undefined;
-            labelTemp = labelsView(position.xstart,position.ystart,graph,pixiGraph);
+            containerLabels.removeChildren();
+            labelsList.clear();
+            labelTemp = labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         }else{
-            labelTemp = labelsView(position.xstart,position.ystart,graph,pixiGraph);
+            labelTemp = labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         }
     }
 });
@@ -273,11 +278,13 @@ document.getElementById("graph").addEventListener("mouseup", function() {
 
 
 //pixi container for node and edges
-var edgesContainer = new PIXI.Container();
-var containerRoot = new PIXI.Container();
+let edgesContainer = new PIXI.Container();
+let containerRoot = new PIXI.Container();
+let containerLabels = new PIXI.Container();
+
 //zoom
-var containerRootZoom = new PIXI.Container();
-var edgesContainerZoom = new PIXI.Container();
+let containerRootZoom = new PIXI.Container();
+let edgesContainerZoom = new PIXI.Container();
 
 //FAA for view of node and edges
 const blurFilter1 = new PIXI.filters.FXAAFilter();
@@ -513,6 +520,8 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     app.stage.addChild(containerRoot);
     app.stage.addChild(viewport);
     app.stage.addChild(edgesContainer);
+    app.stage.addChild(containerLabels);
+
 
     /////////////////////////////////////////////
 
@@ -579,60 +588,50 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                 if(e.data.maxX>wid || e.data.maxY>high){
                     
                     for (let i = 0; i < nodes; ++i) {
-                        //let circle = new Graphics();
-                        const styleFont = new PIXI.TextStyle({
-                            fontFamily: 'Arial',
-                            fontSize: 12,
-                        });
-                        let circleText = new PIXI.Text(e.data.nodes[i]['id'],styleFont)
-                        
-
+                        let circle = new Graphics();
+                                               
                         let xxx = Math.round((e.data.nodes[i]['x']/e.data.maxX)*(wid));
                         let yyy = Math.round((e.data.nodes[i]['y']/e.data.maxY)*(high));
 
                         graph.nodes[i]['x'] = xxx;
                         graph.nodes[i]['y'] = yyy;
 
+                        circle.x = xxx;
+                        circle.y = yyy;
+                        
 
-                        //circle.x = xxx;
-                        //circle.y = yyy;
-                        circleText.x = xxx;
-                        circleText.y = yyy;
+                        circle.lineStyle(0)
+                        circle.beginFill(0xDE3249, 1);
+                        circle.drawCircle(1, 2, 2);
+                        circle.endFill();
+                        circle.visible = false;
 
-                        circleText.visible = false;
-                        //viewport.addChild(circle);
-                        viewport.addChild(circleText);
+                        viewport.addChild(circle);
 
-
-                        //let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1,nodesDegree.get(e.data.nodes[i]['id']));
-
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,nodesDegree.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(xxx,yyy,0);
                         pixiGraph.insertNodes(nodeIns);
                 
                     }
                 }else{       
                     for (let i = 0; i < nodes; ++i) {
-                        //let circle = new Graphics();
-                        let circleText = new PIXI.Text(e.data.nodes[i]['id'])
-
+                        let circle = new Graphics();
 
                         graph.nodes[i]['x'] = e.data.nodes[i]['x'];
                         graph.nodes[i]['y'] = e.data.nodes[i]['y'];
                   
-                        //circle.x = e.data.nodes[i]['x'];
-                        //circle.y = e.data.nodes[i]['y'];
-                       
-                        circleText.x = e.data.nodes[i]['x'];
-                        circleText.y = e.data.nodes[i]['y'];
-                        circleText.visible = false;
-                        //viewport.addChild(circle);
-                        viewport.addChild(circleText);
+                        circle.x = e.data.nodes[i]['x'];
+                        circle.y = e.data.nodes[i]['y'];
                         
-                        //let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1);
+                        circle.lineStyle(0)
+                        circle.beginFill(0xDE3249, 1);
+                        circle.drawCircle(1, 2, 2);
+                        circle.endFill();
+                        circle.visible = false;
                         
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circleText,circleText.x,circleText.y,1,nodesDegree.get(e.data.nodes[i]['id']));
-
+                        viewport.addChild(circle);
+                        
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,nodesDegree.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
                         pixiGraph.insertNodes(nodeIns);
 
@@ -677,6 +676,14 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
 
                         circle.x = xxx;
                         circle.y = yyy;
+                         
+                        circle.lineStyle(0)
+                        circle.beginFill(0xDE3249, 1);
+                        circle.drawCircle(1, 2, 2);
+                        circle.endFill();
+                        circle.visible = false;
+                        
+
                         viewport.addChild(circle);
                         //arrotondo i pesi cosi da avere solo 10 differenti pesi 
                         let temp = parseFloat(e.data.nodes[i]['weight']);
@@ -697,6 +704,15 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
 
                         circle.x = e.data.nodes[i]['x'];
                         circle.y = e.data.nodes[i]['y'];
+
+                         
+                        circle.lineStyle(0)
+                        circle.beginFill(0xDE3249, 1);
+                        circle.drawCircle(1, 2, 2);
+                        circle.endFill();
+                        circle.visible = false;
+                        
+                        
                         viewport.addChild(circle);
 
                         //arrotondo i pesi cosi da avere solo 10 differenti pesi 
@@ -736,13 +752,9 @@ async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
             w.onmessage = function (e) {
                 let nodes = e.data.nodes.length;
             
-            
-                for (let i = 0; i < nodes; ++i) {
-                    
-                    //arrotondo i pesi cosi da avere solo 10 differenti pesi 
+                for (let i = 0; i < nodes; ++i) {                    
                     let temp = parseFloat(e.data.nodes[i]['weight']);
                     pixiGraph.pixiNodes[graph.nodes[i]['id']].setWeight(temp);
-
                 }
             
                 w.terminate();
