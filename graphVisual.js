@@ -292,13 +292,27 @@ document.getElementById("graph").addEventListener("mouseup", function() {
 });
 
 
-
 //extrapolation of data from file
 document.getElementById('file').onchange = function () {
     
-    execPageRank = window.confirm("Do you want to use PageRank?");
-    layoutComputCheck = window.confirm("Do you want to compute network's layout?");
+    //execPageRank = window.confirm("Do you want to use PageRank?");
+    document.getElementById('computePageRankCheckbox').onclick= function(){
+        if(this.checked){
+            execPageRank = true;
+        }else{
+            execPageRank = false;
+        }
+    }
 
+    document.getElementById('computeLayoutCheckbox').onclick= function(){
+        console.log(this.checked)
+        if(this.checked){
+            layoutComputCheck = false;
+        }else{
+            layoutComputCheck = true;
+        }
+    }
+    
     let loadingDataStart = performance.now()
 
     if (graph.nodes.length != 0) {
@@ -535,10 +549,6 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     app.stage.addChild(viewport);
     app.stage.addChild(edgesContainer);
     app.stage.addChild(containerLabels);
-
-
-    /////////////////////////////////////////////
-
     app2.stage.addChild(containerRootZoom);
     app2.stage.addChild(edgesContainerZoom);
 
