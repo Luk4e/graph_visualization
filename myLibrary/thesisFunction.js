@@ -490,7 +490,7 @@
         
     }
 
-    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=10){   
         
         
         let indici = [];
@@ -515,15 +515,32 @@
             if(k<numOfLabelsToShowUp){
                 indici[k] = elem[0]
                 //pixiGraph.pixiNodes[elem[0]].pixiNode.style.fontSize = 15;
-                pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
-                
-                let circleText = new PIXI.Text(elem[0]);
+                //pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
+
+                let style = {
+                    font : 'bold 16px Arial',
+                    fill : '#ffffff',
+                    stroke : '#000000',
+                    strokeThickness : 2
+                }
+
+                let circle = new PIXI.Graphics();
+                circle.lineStyle(0)
+                circle.beginFill(0xDE3249, 1);
+                circle.drawCircle(1, 1, 3);
+                circle.x = pixiGraph.pixiNodes[elem[0]].x;
+                circle.y = pixiGraph.pixiNodes[elem[0]].y
+                circle.endFill();
+                containerLabels.addChild(circle)
+
+                let circleText = new PIXI.Text(elem[0],style);
                 circleText.style.fontSize = 16;
                 circleText.x = pixiGraph.pixiNodes[elem[0]].x;
                 circleText.y = pixiGraph.pixiNodes[elem[0]].y;
                 containerLabels.addChild(circleText)
                 //viewport.addChild(circleText);
                 labelsList.set(elem[0],circleText);
+                
 
                 k++;
             }else{
@@ -554,7 +571,7 @@
 
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
-
+            
             let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
             let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
             

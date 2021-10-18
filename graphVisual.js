@@ -251,9 +251,9 @@ document.getElementById("graph").addEventListener("mousedown", function() {
         position.ystart = e.clientY-rect.top; 
 
         if(labelTemp != undefined){
-            for(element of labelTemp){
-                pixiGraph.pixiNodes[element].pixiNode.visible = false;
-            }
+            //for(element of labelTemp){
+            //    pixiGraph.pixiNodes[element].pixiNode.visible = false;
+            //}
             labelTemp = undefined;
             containerLabels.removeChildren();
             labelsList.clear();
@@ -345,11 +345,11 @@ document.getElementById('file').onchange = function () {
                     circle.x = xSourceNode;
                     circle.y = ySourceNode;
                     
-                    circle.lineStyle(0)
-                    circle.beginFill(0xDE3249, 1);
-                    circle.drawCircle(1, 2, 2);
-                    circle.endFill();
-                    circle.visible = false;
+                    //circle.lineStyle(0)
+                    //circle.beginFill(0xDE3249, 1);
+                    //circle.drawCircle(1, 1, 1);
+                    //circle.endFill();
+                    //circle.visible = false;
 
                     viewport.addChild(circle);
                     let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1,listNode.length);
@@ -421,11 +421,11 @@ document.getElementById('file').onchange = function () {
                         circle.x = xSource;
                         circle.y = ySource;
                         
-                        circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 2, 2);
-                        circle.endFill();
-                        circle.visible = false;
+                        //circle.lineStyle(0)
+                        //circle.beginFill(0xDE3249, 1);
+                        //circle.drawCircle(1, 1, 1);
+                        //circle.endFill();
+                        //circle.visible = false;
 
                         viewport.addChild(circle);
                         let nodeIns = new NodeClass(source,circle,circle.x,circle.y,1,1);
@@ -454,12 +454,12 @@ document.getElementById('file').onchange = function () {
                         circle.x = xTarget;
                         circle.y = yTarget;
                         
-                        circle.lineStyle(0)
+                        /* circle.lineStyle(0)
                         circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 2, 2);
+                        circle.drawCircle(1, 1, 1);
                         circle.endFill();
                         circle.visible = false;
-
+ */
                         viewport.addChild(circle);
                         let nodeIns = new NodeClass(target,circle,circle.x,circle.y,1,1);
 
@@ -607,12 +607,12 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         circle.y = yyy;
                         
 
-                        circle.lineStyle(0)
+                        /* circle.lineStyle(0)
                         circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 2, 2);
+                        circle.drawCircle(1, 1, 1);
                         circle.endFill();
                         circle.visible = false;
-
+ */
                         viewport.addChild(circle);
 
                         let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,nodesDegree.get(e.data.nodes[i]['id']));
@@ -630,11 +630,11 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         circle.x = e.data.nodes[i]['x'];
                         circle.y = e.data.nodes[i]['y'];
                         
-                        circle.lineStyle(0)
+                        /* circle.lineStyle(0)
                         circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 2, 2);
+                        circle.drawCircle(1, 1, 1);
                         circle.endFill();
-                        circle.visible = false;
+                        circle.visible = false; */
                         
                         viewport.addChild(circle);
                         
@@ -684,11 +684,11 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         circle.x = xxx;
                         circle.y = yyy;
                          
-                        circle.lineStyle(0)
+                       /*  circle.lineStyle(0)
                         circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 2, 2);
+                        circle.drawCircle(1, 1, 1);
                         circle.endFill();
-                        circle.visible = false;
+                        circle.visible = false; */
                         
 
                         viewport.addChild(circle);
@@ -713,12 +713,12 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         circle.y = e.data.nodes[i]['y'];
 
                          
-                        circle.lineStyle(0)
+                       /*  circle.lineStyle(0)
                         circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 2, 2);
+                        circle.drawCircle(1, 1, 1);
                         circle.endFill();
                         circle.visible = false;
-                        
+                         */
                         
                         viewport.addChild(circle);
 
