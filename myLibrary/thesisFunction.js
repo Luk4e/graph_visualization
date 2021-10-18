@@ -490,7 +490,7 @@
         
     }
 
-    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=10){   
+    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         
         let indici = [];
@@ -541,7 +541,6 @@
                 //viewport.addChild(circleText);
                 labelsList.set(elem[0],circleText);
                 
-
                 k++;
             }else{
                 break;

@@ -1,15 +1,18 @@
 
 // VARIABLES INITIALIZATION
-
+const testPerformance = true;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
 var pixiGraph = new graphClass("Primo");
 const nodesDegree = new Map();
 var labelsList = new Map();
 
+if(testPerformance){
+    console.log = () => {};
+}
 //dimension of main rendering windows 
-const wid = 1050;
-const high = 750;
+const wid = 1200;
+const high = 800;
 
 //dimension of zoom windows
 const wid2 = 385;
@@ -21,7 +24,7 @@ let Application = PIXI.Application,
     Text = PIXI.Text;
 
 
-//global constant value
+    //global constant value
 const fattoreDiScala = 10;
 const raggio = 4;
 var sigma  = 0.5;
