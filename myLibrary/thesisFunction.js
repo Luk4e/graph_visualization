@@ -536,3 +536,202 @@
         return indici;
     
     }
+    //compute viewport render
+    function computeTexture(graph,pixiGraph,scalare = 1,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
+        
+        containerRoot.cacheAsBitmap = false;
+        edgesContainer.removeChildren();
+
+        let t1Draw = performance.now();
+        let links = graph.edges.length;
+        let pointZero = new PIXI.Point(0,0);
+        let sigmaMod = sigma;
+        let levelsNumber = 11;
+        let raggioScalato = fattoreDiScala*sigmaMod*raggio;
+        let area = Math.round(Math.max(high,wid)/2);
+        let indici = [];
+        nodes = graph.nodes.length;
+
+        //selection of nodes inside de view to render
+        for(let i = 0; i<nodes;i++){
+
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
+            
+            let xx = Math.round(temp.x);
+            let yy = Math.round(temp.y);
+            //setto inizialmente tutti i cluster dei vari nodi su loro stessi 
+            //per poi modificarli se sono presenti nella schermata 
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
+
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
+            //prendo in considerazione solo i nodi che sono dentro la finestra e quelli al di fuori al massimo di 100 px 
+            if(( xx>(-(area)) && xx<(high+Math.abs(high - wid)+area))){
+                if(( yy>(-(area)) && yy<(wid+Math.abs(high - wid)+area))){
+                    indici.push(graph.nodes[i]['id']);
+                    }
+            }
+            
+        } 
+
+        //pre compute of gaussian area 
+        let matrixPreCompute = [];
+        for(let i = 0; i<=(area);i++){
+            matrixPreCompute[i]= [];
+            for(let j = 0; j<=(area);j++){  
+                matrixPreCompute[i][j] = gasuKern(raggioScalato,raggioScalato,j,i,sigmaMod);
+            }
+        }
+
+        //compute of density field
+        let mat = createMatOut(pixiGraph,wid,high,indici,matrixPreCompute,raggioScalato,maxVal);
+        //compute of cluster 
+        clusterCompute(pixiGraph,wid,high,indici,rangeFiledComp,mat);
+        //compute of aggregate edges
+        edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
+
+        let t2Edge = performance.now();
+
+        console.log("Time needed to compute edges: "  + (t2Edge - t1Draw) + " milliseconds.");
+        
+
+        
+        if(maxVal.value>0){
+            let scale = generateColorScale(maxVal,levelsNumber,sigmaMod,raggio);
+            //compute of colored texture
+            let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
+            //display texture by pixi sprite
+            texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
+            sprite = PIXI.Sprite.from(texture);
+            containerRoot.addChild(sprite);
+        }else{
+            maxVal.value = 1;
+            let scale = generateColorScale(maxVal,11,sigmaMod,raggio);
+            //compute of colored texture
+            let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
+            //display texture by pixi sprite
+            texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
+            sprite = PIXI.Sprite.from(texture);
+            containerRoot.addChild(sprite);
+        }
+
+        let t2Draw = performance.now();
+        
+        console.log("Time needed to draw: "  + (t2Draw - t1Draw) + " milliseconds.");
+
+        mat = {};
+        scale = {};
+        buff =  {};
+        texture = {};
+
+        containerRoot.cacheAsBitmap = true;
+    }
+    //compute zoom render
+    function computeTextureZoom(xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRootZoom,edgesContainerZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
+        
+        containerRootZoom.cacheAsBitmap = false;
+        edgesContainerZoom.removeChildren();
+
+        let t1Draw = performance.now();
+        let links = graph.edges.length;
+        let pointZero = new PIXI.Point(0,0);
+        let sigmaMod = sigma;
+        let levelsNumber = 11;
+        let raggioScalato = fattoreDiScala*sigmaMod*raggio;
+        let area = Math.round(raggioScalato*3)
+
+        let indici = [];
+        nodes = graph.nodes.length;
+
+        let minxyzoom  = {};
+        minxyzoom.x = 350;
+        minxyzoom.y = 350;
+        minxyzoom.dist = Math.sqrt(Math.pow(350,2)+Math.pow(350,2));;
+
+        //selection of nodes inside the zoom view to render
+        for(let i = 0; i<nodes;i++){
+
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
+            let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
+
+            let xx = Math.round(temp.x-xstart);
+            let yy = Math.round(temp.y-ystart);
+
+            //setto inizialmente tutti i cluster dei vari nodi su loro stessi 
+            //per poi modificarli se sono presenti nella schermata 
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
+
+            if(( xx>(-(area)) && xx<(high+Math.abs(high - wid)+area))){
+                if(( yy>(-(area)) && yy<(wid+Math.abs(high - wid)+area))){
+                    let distaOrig = Math.sqrt(Math.pow(xx,2)+Math.pow(yy,2));
+                    
+
+                    if(distaOrig<minxyzoom.dist){
+                        minxyzoom.x = xx;
+                        minxyzoom.y = yy;
+                        minxyzoom.dist = distaOrig;
+                    }
+                    indici.push(graph.nodes[i]['id']);
+                    
+                }
+            }
+
+        } 
+        //pre compute of gaussian area 
+        let matrixPreCompute = [];
+        for(let i = 0; i<=(area);i++){
+            matrixPreCompute[i]= [];
+            for(let j = 0; j<=(area);j++){  
+                matrixPreCompute[i][j] = gasuKern(raggioScalato,raggioScalato,j,i,sigmaMod,fattoreDiScala);
+            }
+        }
+
+        //compute of density field
+        let mat = createMatOutZoom(pixiGraph,wid,high,indici,matrixPreCompute,raggioScalato,maxVal,zoomIntens,minxyzoom);         
+        //compute of cluster 
+        clusterComputeZoom(pixiGraph,wid,high,indici,rangeFiledComp,mat,zoomIntens,minxyzoom);       
+        //compute of aggregate edges
+        edgeComputeZoom(xstart,ystart,xfinish,yfinish,pixiGraph,links,graph,edgesContainerZoom,threshold,edgeThickness);
+        
+        let t2Edge = performance.now();
+        console.log("Time needed to compute edges: "  + (t2Edge - t1Draw) + " milliseconds.");
+
+        if(maxVal.value>0){
+            let scale = generateColorScale(maxVal,levelsNumber,sigmaMod,raggio);
+            //compute of colored texture
+            let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
+            //display texture by pixi sprite
+            texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
+            sprite = PIXI.Sprite.from(texture);
+            containerRootZoom.addChild(sprite);
+        }else{
+            maxVal.value = 1;
+            let scale = generateColorScale(maxVal,11,sigmaMod,raggio);
+            //compute of colored texture
+            let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
+            //display texture by pixi sprite
+            texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
+            sprite = PIXI.Sprite.from(texture);
+            containerRootZoom.addChild(sprite);
+        }
+
+        let t2Draw = performance.now();
+        
+        console.log("Time needed to draw: "  + (t2Draw - t1Draw) + " milliseconds.");
+        containerRootZoom.cacheAsBitmap = true;
+
+        for(let i = 0; i<nodes;i++){
+
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
+            let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
+
+            let xx = Math.round(temp.x+xstart);
+            let yy = Math.round(temp.y+ystart);
+
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
+        
+        } 
+
+    }

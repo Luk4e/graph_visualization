@@ -1,47 +1,11 @@
 
-//for zoom in and out without scrolling page
-document.getElementById('graph').onwheel = function(){ return false; }
+// VARIABLES INITIALIZATION
 
-//Fps monitorining system 
-var stats = new Stats();
-stats.dom.style.position = 'relative';
-stats.dom.style.float = 'right';
-document.getElementById("fpsmeterstat").appendChild( stats.dom );
-
-function animate() {
-    stats.update();
-    requestAnimationFrame( animate );
-}
-
-animate();
-
-
-var inputs = document.querySelectorAll('.inputfile');
-Array.prototype.forEach.call(inputs, function (input) {
-
-    var labelVal = document.getElementById('labelInsert').innerHTML;
-
-    input.addEventListener('change', function (e) {
-
-        var fileName = ' ';
-
-        fileName = e.target.value.split('\\')[2];
-
-        fileName = fileName.split('\.')[0];
-
-        if (fileName)
-            document.getElementById('fileNameSpace').innerHTML = fileName ;
-        else
-            document.getElementById('fileNameSpace').innerHTML = labelVal ;
-        
-    });
-});
- 
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
-let pixiGraph = new graphClass("Primo");
+var pixiGraph = new graphClass("Primo");
 const nodesDegree = new Map();
-let labelsList = new Map();
+var labelsList = new Map();
 
 //dimension of main rendering windows 
 const wid = 1050;
@@ -55,30 +19,6 @@ const high2 = 385;
 let Application = PIXI.Application,
     Graphics = PIXI.Graphics,
     Text = PIXI.Text;
-
-//app pixi for main view space 
-let app = new Application({
-    width: wid,
-    height: high,
-    backgroundColor: 0xFFFFFF
-});
-
-//app pixi for zoom space
-let app2 = new Application({
-    width: wid2,
-    height: high2,
-    backgroundColor: 0xFFFFFF
-});
-
-
-//inizialization viewport for pan and zoom 
-const viewport = new pixi_viewport.Viewport({
-    screenWidth: wid,
-    screenHeight: high,
-    worldWidth: wid,
-    worldHeight: high,
-    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
-})
 
 
 //global constant value
@@ -111,7 +51,7 @@ var nodes;
 var links;
 
 
-//slider parte 
+//slider variables 
 var sliderSigma = document.getElementById("sigmaSlider");
 var sliderThresholdAlpha = document.getElementById("thresholdAlphaSlider");
 var sliderRangeField = document.getElementById("rangeFieldSlider");
@@ -124,6 +64,92 @@ var outputSliderRangeField = document.getElementById("rangeFieldDisplay");
 var outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
 var outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
 
+
+//variable for zoom and labels button 
+var position ={};
+var buttonActivation = {"zoomActivation":false,"labelsActivation":false}
+
+
+var mousedowncontroll = false;
+
+document.getElementById("magnifying").style.visibility = 'hidden';
+
+
+//pixi container for node and edges
+let edgesContainer = new PIXI.Container();
+let containerRoot = new PIXI.Container();
+let containerLabels = new PIXI.Container();
+
+//zoom
+let containerRootZoom = new PIXI.Container();
+let edgesContainerZoom = new PIXI.Container();
+
+//FAA for view of node and edges
+const blurFilter1 = new PIXI.filters.FXAAFilter();
+containerRoot.filters = [blurFilter1];
+edgesContainer.filters = [blurFilter1];
+//zoom
+containerRootZoom.filters = [blurFilter1];
+edgesContainerZoom.filters = [blurFilter1];
+
+
+//for zoom in and out without scrolling page
+document.getElementById('graph').onwheel = () => false ;
+
+fpsInitialize();
+
+var inputs = document.querySelectorAll('.inputfile');
+Array.prototype.forEach.call(inputs, function showName(input) {
+
+    var labelVal = document.getElementById('labelInsert').innerHTML;
+
+    input.addEventListener('change', function (e) {
+
+        var fileName = ' ';
+
+        fileName = e.target.value.split('\\')[2];
+
+        fileName = fileName.split('\.')[0];
+
+        if (fileName)
+            document.getElementById('fileNameSpace').innerHTML = fileName ;
+        else
+            document.getElementById('fileNameSpace').innerHTML = labelVal ;
+        
+    });
+});
+ 
+
+//app pixi for main view space 
+let app = new Application({
+    width: wid,
+    height: high,
+    backgroundColor: 0xFFFFFF
+});
+
+//app pixi for zoom space
+let app2 = new Application({
+    width: wid2,
+    height: high2,
+    backgroundColor: 0xFFFFFF
+});
+
+
+//Bind PIXI App canvas to element on page 
+document.getElementById('magnifying').appendChild(app2.view);
+document.getElementById('graph').appendChild(app.view);
+
+//inizialization viewport for pan and zoom 
+const viewport = new pixi_viewport.Viewport({
+    screenWidth: wid,
+    screenHeight: high,
+    worldWidth: wid,
+    worldHeight: high,
+    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
+})
+
+
+//slider
 //write on screen slider value
 outputSigma.innerHTML = sliderSigma.value/100;
 outputThresholdAlpha.innerHTML = sliderThresholdAlpha.value/100;
@@ -136,24 +162,24 @@ outputSliderZoomIntensity.innerHTML = sliderZoomIntensity.value;
 sliderSigma.oninput = function() {
     outputSigma.innerHTML = this.value/100;
     sigma = this.value/100;
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
 }
 sliderThresholdAlpha.oninput  = function() {
     thresholdComp = this.value/100;
     outputThresholdAlpha.innerHTML = thresholdComp;
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
 
 }
 sliderRangeField.oninput  = function() {
     rangeFiledComp = Math.round(this.value/10);
     outputSliderRangeField.innerHTML = rangeFiledComp;
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
 
 }
 sliderMaxEdgeThickness.oninput  = function() {
     edgeThickness = Math.round(this.value/10);
     outputSliderMaxEdgeThickness.innerHTML = Math.round(this.value/10);
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
 
 }
 sliderZoomIntensity.oninput  = function() {
@@ -163,25 +189,21 @@ sliderZoomIntensity.oninput  = function() {
 }
 //end of sidebar part
 
-var position ={};
-var buttonActivation = {"zoomActivation":false,"labelsActivation":false}
-//buttonActivation.zoomActivation = false;
-//buttonActivation.labelsActivation = false;
-
 
 //Pixiviewport of the main view space to manage pan and zoom in and out
 viewport
     .drag()
     .wheel({percent:0.1})
     .on('wheel', function(){
-        computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+        computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
     })
     .on('moved', function(){
-        computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+        computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
     }) 
 
 //button label actions
 function searchLabel(){
+   
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
         viewport.pause = true;
@@ -200,11 +222,6 @@ function searchLabel(){
         //document.body.style.cursor = "default"
     }
 }
-
-
-
-document.getElementById("magnifying").style.visibility = 'hidden';
-
 //button zoom actions
 function changestatuszoom(){
 
@@ -224,7 +241,6 @@ function changestatuszoom(){
     }
 }
 //mouse event listener for discover mouse position to compute zoom in a specific area
-var mousedowncontroll = false;
 
 document.getElementById("graph").addEventListener("mousedown", function() {
     mousedowncontroll = true;
@@ -265,7 +281,7 @@ document.getElementById("graph").addEventListener("mousemove", function(){
             position.yend = position.ystart;
 
 
-            computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,graph,pixiGraph,viewport.scaled,containerRootZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+            computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,graph,pixiGraph,viewport.scaled,containerRootZoom,edgesContainerZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
         }
     }
 
@@ -276,27 +292,6 @@ document.getElementById("graph").addEventListener("mouseup", function() {
 });
 
 
-
-//pixi container for node and edges
-let edgesContainer = new PIXI.Container();
-let containerRoot = new PIXI.Container();
-let containerLabels = new PIXI.Container();
-
-//zoom
-let containerRootZoom = new PIXI.Container();
-let edgesContainerZoom = new PIXI.Container();
-
-//FAA for view of node and edges
-const blurFilter1 = new PIXI.filters.FXAAFilter();
-containerRoot.filters = [blurFilter1];
-edgesContainer.filters = [blurFilter1];
-//zoom
-containerRootZoom.filters = [blurFilter1];
-edgesContainerZoom.filters = [blurFilter1];
-
-//Bind PIXI App canvas to element on page 
-document.getElementById('magnifying').appendChild(app2.view);
-document.getElementById('graph').appendChild(app.view);
 
 //extrapolation of data from file
 document.getElementById('file').onchange = function () {
@@ -310,16 +305,11 @@ document.getElementById('file').onchange = function () {
         resetParameters();
     }
 
-    var file = this.files[0];
-    var reader = new FileReader();
-
+    let file = this.files[0];
+    let reader = new FileReader();
     let nodeTemp = new Array();
     let tempSet  = new Set();
-
-    const styleFont = new PIXI.TextStyle({
-        fontFamily: 'Arial',
-        fontSize: 6,
-    });
+    let edgeSet  = new Set();
 
     reader.onload = function (progressEvent) {
 
@@ -340,6 +330,7 @@ document.getElementById('file').onchange = function () {
                 let sou = {
                     "id": sourceNode,
                 }
+
                 nodesDegree.set(sourceNode,listNode.length)
                 
                 if (!tempSet.has(sourceNode)) {
@@ -350,17 +341,24 @@ document.getElementById('file').onchange = function () {
 
                 //if the layout was precalculated
                 if(!layoutComputCheck){
-                    let circleText = new PIXI.Text(sourceNode,styleFont)
-                    circleText.x = xSourceNode;
-                    circleText.y = ySourceNode;
 
-                    circleText.visible = false;
-                    viewport.addChild(circleText);
+                    let circle = new Graphics();
 
-                    let nodeIns = new NodeClass(sourceNode,circleText,circleText.x,circleText.y,1,listNode.length);
+                    circle.x = xSourceNode;
+                    circle.y = ySourceNode;
+                    
+                    circle.lineStyle(0)
+                    circle.beginFill(0xDE3249, 1);
+                    circle.drawCircle(1, 2, 2);
+                    circle.endFill();
+                    circle.visible = false;
+
+                    viewport.addChild(circle);
+                    let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1,listNode.length);
 
                     nodeIns.setPixel(xSourceNode,ySourceNode,0);
                     pixiGraph.insertNodes(nodeIns);
+
                 }                 
 
                 //mange link insertion 
@@ -374,8 +372,11 @@ document.getElementById('file').onchange = function () {
                         nodeTemp[target] = targ;
                         graph.nodes.push(nodeTemp[target]);
                     }
-
-                    graph.edges.push({ "source": nodeTemp[sourceNode], "target": nodeTemp[target] });
+                    //check to draw edges, from a to b and from b to a, only one time like a undirected graph
+                    if(!edgeSet.has(""+sourceNode+target) && !edgeSet.has(""+target+sourceNode)){
+                        graph.edges.push({ "source": nodeTemp[sourceNode], "target": nodeTemp[target]});
+                        edgeSet.add(""+sourceNode+target);
+                    }
                 }
             }
         } else {
@@ -416,17 +417,24 @@ document.getElementById('file').onchange = function () {
                     graph.nodes.push(nodeTemp[source]);
                      //if the layout was precalculated
                     if(!layoutComputCheck){
-                        let circleText = new PIXI.Text(source,styleFont)
-                        circleText.x = xSource;
-                        circleText.y = ySource;
 
-                        circleText.visible = false;
-                        viewport.addChild(circleText);
+                        let circle = new Graphics();
 
-                        let nodeIns = new NodeClass(source,circleText,circleText.x,circleText.y,1,1);
+                        circle.x = xSource;
+                        circle.y = ySource;
+                        
+                        circle.lineStyle(0)
+                        circle.beginFill(0xDE3249, 1);
+                        circle.drawCircle(1, 2, 2);
+                        circle.endFill();
+                        circle.visible = false;
+
+                        viewport.addChild(circle);
+                        let nodeIns = new NodeClass(source,circle,circle.x,circle.y,1,1);
 
                         nodeIns.setPixel(xSource,ySource,0);
                         pixiGraph.insertNodes(nodeIns);
+
                     }   
                 }else{
                     nodesDegree.set(source,(nodesDegree.get(source)+1));
@@ -442,17 +450,24 @@ document.getElementById('file').onchange = function () {
                     graph.nodes.push(nodeTemp[target]);
                      //if the layout was precalculated
                     if(!layoutComputCheck){
-                        let circleText = new PIXI.Text(target,styleFont)
-                        circleText.x = xTarget;
-                        circleText.y = yTarget;
 
-                        circleText.visible = false;
-                        viewport.addChild(circleText);
+                        let circle = new Graphics();
 
-                        let nodeIns = new NodeClass(target,circleText,circleText.x,circleText.y,1,1);
+                        circle.x = xTarget;
+                        circle.y = yTarget;
+                        
+                        circle.lineStyle(0)
+                        circle.beginFill(0xDE3249, 1);
+                        circle.drawCircle(1, 2, 2);
+                        circle.endFill();
+                        circle.visible = false;
+
+                        viewport.addChild(circle);
+                        let nodeIns = new NodeClass(target,circle,circle.x,circle.y,1,1);
 
                         nodeIns.setPixel(xTarget,yTarget,0);
                         pixiGraph.insertNodes(nodeIns);
+
                     }   
                 }else{
                     nodesDegree.set(target,(nodesDegree.get(target)+1));
@@ -461,15 +476,14 @@ document.getElementById('file').onchange = function () {
                     }
                 }
 
-
-
-
                 graph.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
             }
         }
+        edgeSet.clear();
+        tempSet.clear();
 
         nodeTemp = null;
-        tempSet = null;
+
         tab = null;
         let loadingDataEnd = performance.now()
         console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
@@ -515,7 +529,7 @@ function drawGraph(graph,pixiGraph,viewport,document) {
 //function that call layout function + render function
 function firstLayoutCompute(t0fmmm,t1fmmm,t0){
 
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 
     app.stage.addChild(containerRoot);
     app.stage.addChild(viewport);
@@ -771,205 +785,6 @@ async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
     callback(t0fmmm,t1fmmm,t0)
 
 }
-//compute zoom render
-function computeTextureZoom(xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
-    
-    containerRootZoom.cacheAsBitmap = false;
-    edgesContainerZoom.removeChildren();
-
-    let t1Draw = performance.now();
-    let links = graph.edges.length;
-    let pointZero = new PIXI.Point(0,0);
-    let sigmaMod = sigma;
-    let levelsNumber = 11;
-    let raggioScalato = fattoreDiScala*sigmaMod*raggio;
-    let area = Math.round(raggioScalato*3)
-
-    let indici = [];
-    nodes = graph.nodes.length;
-
-    let minxyzoom  = {};
-    minxyzoom.x = 350;
-    minxyzoom.y = 350;
-    minxyzoom.dist = Math.sqrt(Math.pow(350,2)+Math.pow(350,2));;
-
-    //selection of nodes inside the zoom view to render
-    for(let i = 0; i<nodes;i++){
-
-        let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
-        let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
-
-        let xx = Math.round(temp.x-xstart);
-        let yy = Math.round(temp.y-ystart);
-
-        //setto inizialmente tutti i cluster dei vari nodi su loro stessi 
-        //per poi modificarli se sono presenti nella schermata 
-        pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
-        pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
-
-        if(( xx>(-(area)) && xx<(high+Math.abs(high - wid)+area))){
-            if(( yy>(-(area)) && yy<(wid+Math.abs(high - wid)+area))){
-                let distaOrig = Math.sqrt(Math.pow(xx,2)+Math.pow(yy,2));
-                
-
-                if(distaOrig<minxyzoom.dist){
-                    minxyzoom.x = xx;
-                    minxyzoom.y = yy;
-                    minxyzoom.dist = distaOrig;
-                }
-                indici.push(graph.nodes[i]['id']);
-                
-            }
-        }
-
-    } 
-    //pre compute of gaussian area 
-    let matrixPreCompute = [];
-    for(let i = 0; i<=(area);i++){
-        matrixPreCompute[i]= [];
-        for(let j = 0; j<=(area);j++){  
-            matrixPreCompute[i][j] = gasuKern(raggioScalato,raggioScalato,j,i,sigmaMod,fattoreDiScala);
-        }
-    }
-
-    //compute of density field
-    let mat = createMatOutZoom(pixiGraph,wid,high,indici,matrixPreCompute,raggioScalato,maxVal,zoomIntens,minxyzoom);         
-    //compute of cluster 
-    clusterComputeZoom(pixiGraph,wid,high,indici,rangeFiledComp,mat,zoomIntens,minxyzoom);       
-    //compute of aggregate edges
-    edgeComputeZoom(xstart,ystart,xfinish,yfinish,pixiGraph,links,graph,edgesContainerZoom,threshold,edgeThickness);
-    
-    let t2Edge = performance.now();
-    console.log("Time needed to compute edges: "  + (t2Edge - t1Draw) + " milliseconds.");
-
-    if(maxVal.value>0){
-        let scale = generateColorScale(maxVal,levelsNumber,sigmaMod,raggio);
-        //compute of colored texture
-        let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
-        //display texture by pixi sprite
-        texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
-        sprite = PIXI.Sprite.from(texture);
-        containerRootZoom.addChild(sprite);
-    }else{
-        maxVal.value = 1;
-        let scale = generateColorScale(maxVal,11,sigmaMod,raggio);
-        //compute of colored texture
-        let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
-        //display texture by pixi sprite
-        texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
-        sprite = PIXI.Sprite.from(texture);
-        containerRootZoom.addChild(sprite);
-    }
-
-    let t2Draw = performance.now();
-    
-    console.log("Time needed to draw: "  + (t2Draw - t1Draw) + " milliseconds.");
-    containerRootZoom.cacheAsBitmap = true;
-
-    for(let i = 0; i<nodes;i++){
-
-        let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
-        let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
-
-        let xx = Math.round(temp.x+xstart);
-        let yy = Math.round(temp.y+ystart);
-
-        pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
-        pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
-    
-    } 
-
-}
-//compute viewport render
-function computeTexture(graph,pixiGraph,scalare = 1,containerRoot,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
-    
-    containerRoot.cacheAsBitmap = false;
-    edgesContainer.removeChildren();
-
-    let t1Draw = performance.now();
-    let links = graph.edges.length;
-    let pointZero = new PIXI.Point(0,0);
-    let sigmaMod = sigma;
-    let levelsNumber = 11;
-    let raggioScalato = fattoreDiScala*sigmaMod*raggio;
-    let area = Math.round(Math.max(high,wid)/2);
-    let indici = [];
-    nodes = graph.nodes.length;
-
-    //selection of nodes inside de view to render
-    for(let i = 0; i<nodes;i++){
-
-        let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
-        let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
-        
-        let xx = Math.round(temp.x);
-        let yy = Math.round(temp.y);
-        //setto inizialmente tutti i cluster dei vari nodi su loro stessi 
-        //per poi modificarli se sono presenti nella schermata 
-        pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
-
-        pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
-        //prendo in considerazione solo i nodi che sono dentro la finestra e quelli al di fuori al massimo di 100 px 
-        if(( xx>(-(area)) && xx<(high+Math.abs(high - wid)+area))){
-            if(( yy>(-(area)) && yy<(wid+Math.abs(high - wid)+area))){
-                indici.push(graph.nodes[i]['id']);
-                }
-        }
-        
-    } 
-
-    //pre compute of gaussian area 
-    let matrixPreCompute = [];
-    for(let i = 0; i<=(area);i++){
-        matrixPreCompute[i]= [];
-        for(let j = 0; j<=(area);j++){  
-            matrixPreCompute[i][j] = gasuKern(raggioScalato,raggioScalato,j,i,sigmaMod);
-        }
-    }
-
-    //compute of density field
-    let mat = createMatOut(pixiGraph,wid,high,indici,matrixPreCompute,raggioScalato,maxVal);
-    //compute of cluster 
-    clusterCompute(pixiGraph,wid,high,indici,rangeFiledComp,mat);
-    //compute of aggregate edges
-    edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
-
-    let t2Edge = performance.now();
-
-    console.log("Time needed to compute edges: "  + (t2Edge - t1Draw) + " milliseconds.");
-    
-
-    
-    if(maxVal.value>0){
-        let scale = generateColorScale(maxVal,levelsNumber,sigmaMod,raggio);
-        //compute of colored texture
-        let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
-        //display texture by pixi sprite
-        texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
-        sprite = PIXI.Sprite.from(texture);
-        containerRoot.addChild(sprite);
-    }else{
-        maxVal.value = 1;
-        let scale = generateColorScale(maxVal,11,sigmaMod,raggio);
-        //compute of colored texture
-        let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
-        //display texture by pixi sprite
-        texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
-        sprite = PIXI.Sprite.from(texture);
-        containerRoot.addChild(sprite);
-    }
-
-    let t2Draw = performance.now();
-    
-    console.log("Time needed to draw: "  + (t2Draw - t1Draw) + " milliseconds.");
-
-    mat = {};
-    scale = {};
-    buff =  {};
-    texture = {};
-
-    containerRoot.cacheAsBitmap = true;
-}
 //reset all the parameters
 function resetParameters(){
 
@@ -1027,4 +842,22 @@ function resetParameters(){
     document.getElementById('CARis').innerHTML = "";
     
    
+}
+
+//Fps monitorining system 
+function fpsInitialize(){
+
+    //Fps monitorining system 
+    var stats = new Stats();
+    stats.dom.style.position = 'relative';
+    stats.dom.style.float = 'right';
+    document.getElementById("fpsmeterstat").appendChild( stats.dom );
+
+    function animate() {
+        stats.update();
+        requestAnimationFrame( animate );
+    }
+
+    animate();
+
 }
