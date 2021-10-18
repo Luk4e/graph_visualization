@@ -295,24 +295,8 @@ document.getElementById("graph").addEventListener("mouseup", function() {
 //extrapolation of data from file
 document.getElementById('file').onchange = function () {
     
-    //execPageRank = window.confirm("Do you want to use PageRank?");
-    document.getElementById('computePageRankCheckbox').onclick= function(){
-        if(this.checked){
-            execPageRank = true;
-        }else{
-            execPageRank = false;
-        }
-    }
-
-    document.getElementById('computeLayoutCheckbox').onclick= function(){
-        console.log(this.checked)
-        if(this.checked){
-            layoutComputCheck = false;
-        }else{
-            layoutComputCheck = true;
-        }
-    }
-    
+    execPageRank = document.getElementById('computePageRankCheckbox').checked;
+    layoutComputCheck = document.getElementById('computeLayoutCheckbox').checked;
     let loadingDataStart = performance.now()
 
     if (graph.nodes.length != 0) {
@@ -517,7 +501,6 @@ function drawGraph(graph,pixiGraph,viewport,document) {
     document.getElementById('nodePrintSpace').innerHTML = graph.nodes.length;
     document.getElementById('edgesPrintSpace').innerHTML = graph.edges.length;          
     let t0 = performance.now()            
-
 
     //to modify the if else adding a variable to check if the user want to compute or not the network's layout
 
