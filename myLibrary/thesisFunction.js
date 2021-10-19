@@ -490,69 +490,6 @@
         
     }
 
-    /* function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
-        
-        
-        let indici = [];
-        let nodeMap = new Map();
-        let numberOfNodes = graph.nodes.length;
-        
-        //selection of nodes inside the zoom view to render
-        for(let i = 0; i<numberOfNodes;i++){
-
-            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']];
-            let xx = Math.round(temp.x-xstart);
-            let yy = Math.round(temp.y-ystart);
-            let distaOrig = Math.sqrt(Math.pow(xx,2)+Math.pow(yy,2));
-            if(distaOrig<maxDistance){
-                nodeMap.set(graph.nodes[i]['id'],pixiGraph.pixiNodes[graph.nodes[i]['id']].degree)    
-            }
-        }
-
-        let sortedNodeMap = new Map([...nodeMap.entries()].sort((a,b)=>b[1]-a[1]));
-        let k = 0;
-        for(elem of sortedNodeMap){
-            if(k<numOfLabelsToShowUp){
-                indici[k] = elem[0]
-                //pixiGraph.pixiNodes[elem[0]].pixiNode.style.fontSize = 15;
-                //pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
-
-                let style = {
-                    font : 'bold 16px Arial',
-                    fill : '#ffffff',
-                    stroke : '#000000',
-                    strokeThickness : 2
-                }
-
-                let circle = new PIXI.Graphics();
-                circle.lineStyle(0)
-                circle.beginFill(0xDE3249, 1);
-                circle.drawCircle(1, 1, 3);
-                circle.x = pixiGraph.pixiNodes[elem[0]].xCluster;
-                circle.y = pixiGraph.pixiNodes[elem[0]].yCluster
-                circle.endFill();
-                containerLabels.addChild(circle)
-
-                let circleText = new PIXI.Text(elem[0],style);
-                circleText.style.fontSize = 16;
-                circleText.x = pixiGraph.pixiNodes[elem[0]].xCluster;
-                circleText.y = pixiGraph.pixiNodes[elem[0]].yCluster;
-                containerLabels.addChild(circleText)
-                //viewport.addChild(circleText);
-                labelsList.set(elem[0],circleText);
-                
-                k++;
-            }else{
-                break;
-            }
-        }
-        sortedNodeMap.clear();
-        nodeMap.clear();
-
-        return indici;
-    
-    } */
-
     //compute viewport render
     function computeTexture(graph,pixiGraph,scalare = 1,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
         
