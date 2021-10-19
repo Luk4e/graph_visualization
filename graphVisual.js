@@ -214,14 +214,14 @@ function searchLabel(){
     }else{
         buttonActivation.labelsActivation = false;
         viewport.pause = false;
-        if(labelTemp != undefined){
-            for(element of labelTemp){
-                pixiGraph.pixiNodes[element].pixiNode.visible = false;
-            }
-            containerLabels.removeChildren();
-            labelsList.clear();
-            labelTemp = undefined;
-        }
+        //if(labelTemp != undefined){
+            //for(element of labelTemp){
+            //    pixiGraph.pixiNodes[element].pixiNode.visible = false;
+            //}
+        containerLabels.removeChildren();
+        //    labelsList.clear();
+        //    labelTemp = undefined;
+        //}
         //document.body.style.cursor = "default"
     }
 }
@@ -253,17 +253,11 @@ document.getElementById("graph").addEventListener("mousedown", function() {
         position.xstart = e.clientX-rect.left;
         position.ystart = e.clientY-rect.top; 
 
-        if(labelTemp != undefined){
-            //for(element of labelTemp){
-            //    pixiGraph.pixiNodes[element].pixiNode.visible = false;
-            //}
-            labelTemp = undefined;
-            containerLabels.removeChildren();
-            labelsList.clear();
-            labelTemp = labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
-        }else{
-            labelTemp = labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
-        }
+        containerLabels.removeChildren();
+        
+        labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        //labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        
     }
 });
 

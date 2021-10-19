@@ -490,7 +490,7 @@
         
     }
 
-    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    /* function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         
         let indici = [];
@@ -528,15 +528,15 @@
                 circle.lineStyle(0)
                 circle.beginFill(0xDE3249, 1);
                 circle.drawCircle(1, 1, 3);
-                circle.x = pixiGraph.pixiNodes[elem[0]].x;
-                circle.y = pixiGraph.pixiNodes[elem[0]].y
+                circle.x = pixiGraph.pixiNodes[elem[0]].xCluster;
+                circle.y = pixiGraph.pixiNodes[elem[0]].yCluster
                 circle.endFill();
                 containerLabels.addChild(circle)
 
                 let circleText = new PIXI.Text(elem[0],style);
                 circleText.style.fontSize = 16;
-                circleText.x = pixiGraph.pixiNodes[elem[0]].x;
-                circleText.y = pixiGraph.pixiNodes[elem[0]].y;
+                circleText.x = pixiGraph.pixiNodes[elem[0]].xCluster;
+                circleText.y = pixiGraph.pixiNodes[elem[0]].yCluster;
                 containerLabels.addChild(circleText)
                 //viewport.addChild(circleText);
                 labelsList.set(elem[0],circleText);
@@ -551,7 +551,8 @@
 
         return indici;
     
-    }
+    } */
+
     //compute viewport render
     function computeTexture(graph,pixiGraph,scalare = 1,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
         
@@ -750,4 +751,53 @@
         
         } 
 
+    }
+
+    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+        
+        
+        let indici = [];
+        let nodeMap = new Map();
+            
+        let sortedNodeMap = new Map([...nodeMap.entries()].sort((a,b)=>b[1]-a[1]));
+        let k = 0;
+        for(elem of sortedNodeMap){
+            if(k<numOfLabelsToShowUp){
+                indici[k] = elem[0]
+                //pixiGraph.pixiNodes[elem[0]].pixiNode.style.fontSize = 15;
+                //pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
+
+                let style = {
+                    font : 'bold 16px Arial',
+                    fill : '#ffffff',
+                    stroke : '#000000',
+                    strokeThickness : 2
+                }
+
+                let circle = new PIXI.Graphics();
+                circle.lineStyle(0)
+                circle.beginFill(0xDE3249, 1);
+                circle.drawCircle(1, 1, 3);
+                circle.x = pixiGraph.pixiNodes[elem[0]].xCluster;
+                circle.y = pixiGraph.pixiNodes[elem[0]].yCluster
+                circle.endFill();
+                containerLabels.addChild(circle)
+
+                let circleText = new PIXI.Text(elem[0],style);
+                circleText.style.fontSize = 16;
+                circleText.x = pixiGraph.pixiNodes[elem[0]].xCluster;
+                circleText.y = pixiGraph.pixiNodes[elem[0]].yCluster;
+                containerLabels.addChild(circleText)
+                //viewport.addChild(circleText);
+                labelsList.set(elem[0],circleText);
+                
+                k++;
+            }else{
+                break;
+            }
+        }
+        sortedNodeMap.clear();
+        nodeMap.clear();
+
+    
     }
