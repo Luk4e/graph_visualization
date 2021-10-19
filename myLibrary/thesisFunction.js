@@ -755,49 +755,68 @@
 
     function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
-        
-        let indici = [];
-        let nodeMap = new Map();
+        let nodeOrderByCluster = new Map()
+        let numberOfNodes = graph.nodes.length;
+
+        let pointZero = new PIXI.Point(0,0);
+
+        //selection of nodes inside de view to render
+        for(let i = 0; i<nodes;i++){
             
-        let sortedNodeMap = new Map([...nodeMap.entries()].sort((a,b)=>b[1]-a[1]));
-        let k = 0;
-        for(elem of sortedNodeMap){
-            if(k<numOfLabelsToShowUp){
-                indici[k] = elem[0]
-                //pixiGraph.pixiNodes[elem[0]].pixiNode.style.fontSize = 15;
-                //pixiGraph.pixiNodes[elem[0]].pixiNode.visible = true;
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            
+            let xx = temp.x;
+            let yy = temp.y;
 
-                let style = {
-                    font : 'bold 16px Arial',
-                    fill : '#ffffff',
-                    stroke : '#000000',
-                    strokeThickness : 2
+            if(( xx>(0) && xx<(high+Math.abs(high - wid)))){
+                if(( yy>(0) && yy<(wid+Math.abs(high - wid)))){
+
+                    let selectedNode = pixiGraph.pixiNodes[graph.nodes[i]['id']];
+                    if(!nodeOrderByCluster.has(selectedNode.clusterName)){
+                        let tempObj = {
+                            id : selectedNode.id,
+                            degree:selectedNode.degree
+                        }
+                        nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                    }else{
+                        let tempObj = {
+                            id : selectedNode.id,
+                            degree:selectedNode.degree
+                        }
+                        if(nodeOrderByCluster.get(selectedNode.clusterName).degree<tempObj.degree){
+                            nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                        }
+                    }
                 }
-
-                let circle = new PIXI.Graphics();
-                circle.lineStyle(0)
-                circle.beginFill(0xDE3249, 1);
-                circle.drawCircle(1, 1, 3);
-                circle.x = pixiGraph.pixiNodes[elem[0]].xCluster;
-                circle.y = pixiGraph.pixiNodes[elem[0]].yCluster
-                circle.endFill();
-                containerLabels.addChild(circle)
-
-                let circleText = new PIXI.Text(elem[0],style);
-                circleText.style.fontSize = 16;
-                circleText.x = pixiGraph.pixiNodes[elem[0]].xCluster;
-                circleText.y = pixiGraph.pixiNodes[elem[0]].yCluster;
-                containerLabels.addChild(circleText)
-                //viewport.addChild(circleText);
-                labelsList.set(elem[0],circleText);
-                
-                k++;
-            }else{
-                break;
             }
-        }
-        sortedNodeMap.clear();
-        nodeMap.clear();
+            
+        } 
 
+
+        for(nodeToDraw of nodeOrderByCluster){
+            let style = {
+                font : 'bold 16px Arial',
+                fill : '#ffffff',
+                stroke : '#000000',
+                strokeThickness : 2
+            }
+
+            let circle = new PIXI.Graphics();
+            circle.lineStyle(0)
+            circle.beginFill(0xDE3249, 1);
+            circle.drawCircle(1, 1, 3);
+            circle.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
+            circle.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster
+            circle.endFill();
+            containerLabels.addChild(circle)
+
+            let circleText = new PIXI.Text(nodeToDraw[1].id,style);
+            circleText.style.fontSize = 16;
+            circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
+            circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+            containerLabels.addChild(circleText)            
+    
+        }
+        nodeOrderByCluster.clear();
     
     }
