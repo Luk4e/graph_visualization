@@ -1,6 +1,6 @@
 
 // VARIABLES INITIALIZATION
-const testPerformance = true;
+const testPerformance = false;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
 var pixiGraph = new graphClass("Primo");
@@ -210,20 +210,13 @@ function searchLabel(){
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
         viewport.pause = true;
-        //document.body.style.cursor = "crosshair"
+        labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+
     }else{
         buttonActivation.labelsActivation = false;
         viewport.pause = false;
-        if(labelTemp != undefined){
-            for(element of labelTemp){
-                pixiGraph.pixiNodes[element].pixiNode.visible = false;
-            }
-            containerLabels.removeChildren();
-            labelsList.clear();
-            labelTemp = undefined;
-        }
-        //document.body.style.cursor = "default"
-    }
+        containerLabels.removeChildren();
+      }
 }
 //button zoom actions
 function changestatuszoom(){
@@ -247,24 +240,7 @@ function changestatuszoom(){
 
 document.getElementById("graph").addEventListener("mousedown", function() {
     mousedowncontroll = true;
-    if(buttonActivation.labelsActivation && !buttonActivation.zoomActivation){
-        let e = window.event;
-        let rect = e.target.getBoundingClientRect();
-        position.xstart = e.clientX-rect.left;
-        position.ystart = e.clientY-rect.top; 
-
-        if(labelTemp != undefined){
-            //for(element of labelTemp){
-            //    pixiGraph.pixiNodes[element].pixiNode.visible = false;
-            //}
-            labelTemp = undefined;
-            containerLabels.removeChildren();
-            labelsList.clear();
-            labelTemp = labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
-        }else{
-            labelTemp = labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
-        }
-    }
+    
 });
 
 document.getElementById("graph").addEventListener("mousemove", function(){

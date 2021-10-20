@@ -259,7 +259,9 @@
         
         for(var key in edgeIdx){
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
-
+            if(alphaEdge<0.05){
+                alphaEdge=0.05
+            }
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
@@ -366,6 +368,9 @@
         for(var key in edgeIdx){
             let alphaEdge = edgeIdx[key][4]/maxEdgeAgg;
 
+            if(alphaEdge<0.05){
+                alphaEdge=0.05
+            }
             if(alphaEdge>=thresholdAlpha  ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
@@ -490,6 +495,7 @@
         
     }
 
+<<<<<<< HEAD
     function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         
@@ -552,6 +558,8 @@
         return indici;
     
     }
+=======
+>>>>>>> label-mod
     //compute viewport render
     function computeTexture(graph,pixiGraph,scalare = 1,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
         
@@ -750,4 +758,78 @@
         
         } 
 
+    }
+
+    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+        
+        let nodeOrderByCluster = new Map()
+        let maxDegree = 0;
+        let pointZero = new PIXI.Point(0,0);
+
+        //selection of nodes inside de view to render
+        for(let i = 0; i<nodes;i++){
+            
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            
+            let xx = temp.x;
+            let yy = temp.y;
+
+            if(( xx>(0) && xx<(high+Math.abs(high - wid)))){
+                if(( yy>(0) && yy<(wid+Math.abs(high - wid)))){
+
+                    let selectedNode = pixiGraph.pixiNodes[graph.nodes[i]['id']];
+                    if(maxDegree<selectedNode.degree){
+                        maxDegree=selectedNode.degree;
+                    }
+                    if(!nodeOrderByCluster.has(selectedNode.clusterName)){
+                        let tempObj = {
+                            id : selectedNode.id,
+                            degree:selectedNode.degree
+                        }
+                        nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                    }else{
+                        let tempObj = {
+                            id : selectedNode.id,
+                            degree:selectedNode.degree
+                        }
+                        if(nodeOrderByCluster.get(selectedNode.clusterName).degree<tempObj.degree){
+                            nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                        }
+                    }
+                }
+            }
+            
+        } 
+        maxDegree = 0;
+
+        for(nodeToDraw of nodeOrderByCluster){
+            
+            if(nodeToDraw[1].degree>maxDegree){
+                let style = {
+                    font : 'bold 16px Arial',
+                    fill : '#ffffff',
+                    stroke : '#000000',
+                    strokeThickness : 2
+                }
+    
+                let circle = new PIXI.Graphics();
+                circle.lineStyle(0)
+                circle.beginFill(0xDE3249, 1);
+                circle.drawCircle(1, 1, 3);
+                circle.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
+                circle.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster
+                circle.endFill();
+                containerLabels.addChild(circle)
+    
+                let circleText = new PIXI.Text(nodeToDraw[1].id,style);
+                circleText.style.fontSize = 16;
+                circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
+                circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+                containerLabels.addChild(circleText)            
+        
+            }
+        }
+            
+        nodeOrderByCluster.clear();
+    
     }

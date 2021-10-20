@@ -90,6 +90,7 @@ class NodeClass{
         this.weight = weight;
         this.xCluster;
         this.yCluster;
+        this.clusterName;
         this.degree = degree;
     }
 
@@ -102,6 +103,7 @@ class NodeClass{
     setPixel(x,y){
         this.xCluster = x;
         this.yCluster = y;
+        this.clusterName = ""+x+y;
     }
 
     setWeight(weight){
