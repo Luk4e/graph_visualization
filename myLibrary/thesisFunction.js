@@ -259,7 +259,9 @@
         
         for(var key in edgeIdx){
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
-
+            if(alphaEdge<0.05){
+                alphaEdge=0.05
+            }
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
@@ -366,6 +368,9 @@
         for(var key in edgeIdx){
             let alphaEdge = edgeIdx[key][4]/maxEdgeAgg;
 
+            if(alphaEdge<0.05){
+                alphaEdge=0.05
+            }
             if(alphaEdge>=thresholdAlpha  ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
@@ -731,7 +736,7 @@
             
         } 
         maxDegree = 0;
-        
+
         for(nodeToDraw of nodeOrderByCluster){
             
             if(nodeToDraw[1].degree>maxDegree){
