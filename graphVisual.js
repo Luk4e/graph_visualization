@@ -1,6 +1,6 @@
 
 // VARIABLES INITIALIZATION
-const testPerformance = false;
+const testPerformance = true;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
 var pixiGraph = new graphClass("Primo");
