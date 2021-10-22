@@ -282,12 +282,11 @@ document.getElementById('file').onchange = function () {
     }
 
     let file = this.files[0];
-
     let reader = new FileReader();
     let nodeTemp = new Array();
     let tempSet  = new Set();
     let edgeSet  = new Set();
-
+ 
     reader.onload = function (progressEvent) {
 
         var lines = this.result.split('\n');
@@ -454,8 +453,7 @@ document.getElementById('file').onchange = function () {
 
     };
     
-    reader.readAsText(file);
-
+    reader.readAsText(file)
     reader = null;
 };
 //function that is executed after file loading 
@@ -485,7 +483,6 @@ function drawGraph(graph,pixiGraph,viewport,document) {
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }
-
 }
 //function that call layout function + render function
 function firstLayoutCompute(t0fmmm,t1fmmm,t0){
