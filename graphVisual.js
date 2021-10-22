@@ -1,4 +1,4 @@
-
+'use strict';
 // VARIABLES INITIALIZATION
 const testPerformance = true;
 //declaration of graph struct and pixiGraph struct
@@ -324,11 +324,6 @@ document.getElementById('file').onchange = function () {
                     circle.x = xSourceNode;
                     circle.y = ySourceNode;
                     
-                    //circle.lineStyle(0)
-                    //circle.beginFill(0xDE3249, 1);
-                    //circle.drawCircle(1, 1, 1);
-                    //circle.endFill();
-                    //circle.visible = false;
 
                     viewport.addChild(circle);
                     let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1,listNode.length);
@@ -400,11 +395,6 @@ document.getElementById('file').onchange = function () {
                         circle.x = xSource;
                         circle.y = ySource;
                         
-                        //circle.lineStyle(0)
-                        //circle.beginFill(0xDE3249, 1);
-                        //circle.drawCircle(1, 1, 1);
-                        //circle.endFill();
-                        //circle.visible = false;
 
                         viewport.addChild(circle);
                         let nodeIns = new NodeClass(source,circle,circle.x,circle.y,1,1);
@@ -461,7 +451,6 @@ document.getElementById('file').onchange = function () {
 
         nodeTemp = null;
 
-        tab = null;
         let loadingDataEnd = performance.now()
         console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
         console.log("dati letti ");
@@ -530,7 +519,7 @@ function startWorkerGreadability() {
     console.log("start worker")
     if (typeof (Worker) !== "undefined") {
 
-        ww = new Worker("workers/greadabilityWorker.js");
+        let ww = new Worker("workers/greadabilityWorker.js");
         document.getElementById('infoGreadZone').innerHTML = "Loading...";
 
         ww.postMessage(graph);
@@ -566,7 +555,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
     let promise =  new Promise(function(resolve,reject){
         console.log("start worker")
         if (typeof (Worker) !== "undefined") {
-            w = new Worker("workers/layoutComputingWorker.js");
+            let w = new Worker("workers/layoutComputingWorker.js");
             w.postMessage(graphWork);
             w.onmessage = function (e) {
                 let nodes = e.data.nodes.length;
@@ -585,13 +574,6 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         circle.x = xxx;
                         circle.y = yyy;
                         
-
-                        /* circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 1, 1);
-                        circle.endFill();
-                        circle.visible = false;
- */
                         viewport.addChild(circle);
 
                         let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,nodesDegree.get(e.data.nodes[i]['id']));
@@ -608,13 +590,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                   
                         circle.x = e.data.nodes[i]['x'];
                         circle.y = e.data.nodes[i]['y'];
-                        
-                        /* circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 1, 1);
-                        circle.endFill();
-                        circle.visible = false; */
-                        
+                       
                         viewport.addChild(circle);
                         
                         let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,nodesDegree.get(e.data.nodes[i]['id']));
@@ -644,7 +620,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
     let promise =  new Promise(function(resolve,reject){
         console.log("start worker")
         if (typeof (Worker) !== "undefined") {
-            w = new Worker("workers/layoutComputingWorkersAndPageRank.js");
+            let w = new Worker("workers/layoutComputingWorkersAndPageRank.js");
             w.postMessage(graphWork);
             w.onmessage = function (e) {
                 let nodes = e.data.nodes.length;
@@ -662,19 +638,12 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
 
                         circle.x = xxx;
                         circle.y = yyy;
-                         
-                       /*  circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 1, 1);
-                        circle.endFill();
-                        circle.visible = false; */
-                        
+                                            
 
                         viewport.addChild(circle);
                         //arrotondo i pesi cosi da avere solo 10 differenti pesi 
                         let temp = parseFloat(e.data.nodes[i]['weight']);
-                        //let temp = 1;
-                        
+                        //let temp = 1;                    
 
                         let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,nodesDegree.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(xxx,yyy,0);
@@ -692,12 +661,6 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         circle.y = e.data.nodes[i]['y'];
 
                          
-                       /*  circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 1, 1);
-                        circle.endFill();
-                        circle.visible = false;
-                         */
                         
                         viewport.addChild(circle);
 
@@ -733,7 +696,7 @@ async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
     let promise =  new Promise(function(resolve,reject){
         console.log("start worker")
         if (typeof (Worker) !== "undefined") {
-            w = new Worker("workers/pagerankComputing.js");
+            let w = new Worker("workers/pagerankComputing.js");
             w.postMessage(graphWork);
             w.onmessage = function (e) {
                 let nodes = e.data.nodes.length;

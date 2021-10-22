@@ -222,3 +222,16 @@
             margin: 10px;
             align-items: center;
         }
+
+        h4{
+            margin-top: 0;
+        }
+        h1{
+            margin-bottom: 0;
+        }
+
+        .buttons{
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
