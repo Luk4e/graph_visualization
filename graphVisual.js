@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const testPerformance = true;
+const testPerformance = false;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
 var pixiGraph = new graphClass("Primo");
@@ -104,7 +104,7 @@ fpsInitialize();
 var inputs = document.querySelectorAll('.inputfile');
 Array.prototype.forEach.call(inputs, function showName(input) {
 
-    var labelVal = document.getElementById('labelInsert').innerHTML;
+    var labelVal = document.getElementById('graphInsert').innerHTML;
 
     input.addEventListener('change', function (e) {
 
@@ -211,7 +211,6 @@ function searchLabel(){
         buttonActivation.labelsActivation = true;
         viewport.pause = true;
         labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
-
     }else{
         buttonActivation.labelsActivation = false;
         viewport.pause = false;
@@ -283,6 +282,7 @@ document.getElementById('file').onchange = function () {
     }
 
     let file = this.files[0];
+
     let reader = new FileReader();
     let nodeTemp = new Array();
     let tempSet  = new Set();
@@ -423,12 +423,6 @@ document.getElementById('file').onchange = function () {
                         circle.x = xTarget;
                         circle.y = yTarget;
                         
-                        /* circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 1, 1);
-                        circle.endFill();
-                        circle.visible = false;
- */
                         viewport.addChild(circle);
                         let nodeIns = new NodeClass(target,circle,circle.x,circle.y,1,1);
 
@@ -459,7 +453,9 @@ document.getElementById('file').onchange = function () {
 
 
     };
+    
     reader.readAsText(file);
+
     reader = null;
 };
 //function that is executed after file loading 
@@ -778,7 +774,6 @@ function resetParameters(){
     
    
 }
-
 //Fps monitorining system 
 function fpsInitialize(){
 

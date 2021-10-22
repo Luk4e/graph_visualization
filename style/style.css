@@ -133,6 +133,9 @@
         .inputfile+label:hover:after {
             width: 100%;
         }
+        #graphInsert{
+            text-align: left;
+        }
         #labelInsert{
             text-align: left;
         }
