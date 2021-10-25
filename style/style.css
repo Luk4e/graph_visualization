@@ -1,237 +1,237 @@
  
-        * {
-            font-family: 'JetBrains Mono', monospace;
-            box-sizing: border-box;
-           
-        }
+* {
+    font-family: 'JetBrains Mono', monospace;
+    box-sizing: border-box;
+    
+}
 
-        header {
-            margin: 0px;
-            background-color: rgb(5, 168, 170);
-            padding: 5px;
-            text-align: center;
-            width: 100%;
-            font-size: 20px;
-            color: black;
-            padding-left: 30px;
-        }
-
-        
-        body,
-        html {
-            width: 100%;
-            height: 100%;
-            margin:0px;
-            min-width: 1900px;
-            min-height: 800px;
-        }   
-        
-        .mainBody{
-            margin-left: 50px;
-            margin-right: 50px;
-        }
-
-        .col{
-            float: left;
-            padding: 10px;
-            height: 800px;
-        }
-        .left, .right{
-            width: 20%;
-            height: auto;
-            text-align: center;
-        }
-        
-        .middle{
-            width: 60%;
-        }
-        .row:after{
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        .down{
-            margin: 0;
-            background-color: blueviolet;
-        }
-
-        .valoriMod{
-            width: 50px;
-            text-align: center;
-        }
-
-        .menuModValue{
-            margin: auto;
-        }
-        .sliderBarr{
-            width: 150px;
-        }
-        .spaceBetweenPref{
-            width: 40px;
-        }
-        .emptyRow{
-            height: 30px;
-        }
-
-        .specTab{
-            text-align: left;
-        }
-        .resTab{
-            text-align: right;
-
-        }
-        #tableSpec{
-            position: relative;
-        }
-
-        .mainDesc{
-            width: auto;
-        }
-
-        .inputfile {
-            width: 0.1px;
-            height: 0.1px;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-            z-index: -1;
-        }
-
-        .inputfile+label , a{
-            display: block;
-            width: 170px;
-            height: 40px;
-            line-height: 40px;
-            font-size: 14px;
-            text-decoration: none;
-            color: #333; 
-            text-align: center;
-            position: relative;
-         }
-        
-        .inputfile+label span, a{
-            position: relative;
-            z-index: 2;
-            text-decoration: underline;
-        }
-        
-        .inputfile+label:after ,a:after{
-            position: absolute;
-            content: "";
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%; 
-        }
-
-        .inputfile+label:hover , a:hover{
-            cursor: pointer;
-            color: rgb(39, 37, 134);
-        }
-
-        .inputfile+label:hover:after {
-            width: 100%;
-        }
-        #labelInsert{
-            text-align: left;
-        }
-        #greadButton{
-            text-align: left;
-
-        }
+header {
+    margin: 0px;
+    background-color: rgb(5, 168, 170);
+    padding: 5px;
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+    color: black;
+    padding-left: 30px;
+}
 
 
+body,
+html {
+    width: 100%;
+    height: 100%;
+    margin:0px;
+    min-width: 2150px;
+    min-height: 800px;
+}   
+
+.mainBody{
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.col{
+    float: left;
+    padding: 10px;
+    height: 800px;
+}
+.left, .right{
+    width: 20%;
+    height: auto;
+    text-align: center;
+}
+
+.middle{
+    width: 60%;
+}
+.row:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.down{
+    margin: 0;
+    background-color: blueviolet;
+}
+
+.valoriMod{
+    width: 50px;
+    text-align: center;
+}
+
+.menuModValue{
+    margin: auto;
+}
+.sliderBarr{
+    width: 150px;
+}
+.spaceBetweenPref{
+    width: 40px;
+}
+.emptyRow{
+    height: 30px;
+}
+
+.specTab{
+    text-align: left;
+}
+.resTab{
+    text-align: right;
+
+}
+#tableSpec{
+    position: relative;
+}
+
+.mainDesc{
+    width: auto;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile+label , a{
+    display: block;
+    width: 170px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #333; 
+    text-align: center;
+    position: relative;
+    }
+
+.inputfile+label span, a{
+    position: relative;
+    z-index: 2;
+    text-decoration: underline;
+}
+
+.inputfile+label:after ,a:after{
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%; 
+}
+
+.inputfile+label:hover , a:hover{
+    cursor: pointer;
+    color: rgb(39, 37, 134);
+}
+
+.inputfile+label:hover:after {
+    width: 100%;
+}
+#labelInsert{
+    text-align: left;
+}
+#greadButton{
+    text-align: left;
+
+}
 
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 400px;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            margin-top: 5px;
-            margin-left: 10px;
-            padding: 5px 0;
-            
-            /* Position the tooltip */
-            position: absolute;
-            z-index: 1;
-            top: 100%;
-            left: 50%;
-            margin-left: 30px;
-        }
 
 
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 0.6;
-        }
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
 
 
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 25px;
-            background: #d3d3d3;
-            outline: none;
-            opacity: 0.7;
-            -webkit-transition: .2s;
-            transition: opacity .2s;
-        }
-        
-        .slider:hover {
-            opacity: 1;
-        }
-        
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            background: #04AA6D;
-            cursor: pointer;
-        }
-        
-        .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            background: #04AA6D;
-            cursor: pointer;
-        }
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 400px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    margin-top: 5px;
+    margin-left: 10px;
+    padding: 5px 0;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: 30px;
+}
 
-        #magnifying{
-            min-width: 392px;
-            min-height: 392px;
-            width: 394px;
-            height: 394px;
-            position: relative;
-            border-style: solid;
-            border-color: #333;
-        } 
 
-        
-        #labelButton{
-            padding: 5px;
-            margin: 10px;
-            align-items: center;
-        }
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 0.6;
+}
 
-        h4{
-            margin-top: 0;
-        }
-        h1{
-            margin-bottom: 0;
-        }
 
-        .buttons{
-            padding: 5px;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #04AA6D;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #04AA6D;
+    cursor: pointer;
+}
+
+#magnifying{
+    min-width: 392px;
+    min-height: 392px;
+    width: 394px;
+    height: 394px;
+    position: relative;
+    border-style: solid;
+    border-color: #333;
+} 
+
+
+#labelButton{
+    padding: 5px;
+    margin: 10px;
+    align-items: center;
+}
+
+h4{
+    margin-top: 0;
+}
+h1{
+    margin-bottom: 0;
+}
+
+.buttons{
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}

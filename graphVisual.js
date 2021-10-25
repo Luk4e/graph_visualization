@@ -11,8 +11,8 @@ if(testPerformance){
     console.log = () => {};
 }
 //dimension of main rendering windows 
-const wid = 1050;
-const high = 750;
+const wid = 1200;
+const high = 800;
 
 //dimension of zoom windows
 const wid2 = 385;
