@@ -258,7 +258,7 @@
         edgesContainer.removeChildren();
         
         for(var key in edgeIdx){
-            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)-0.2;
             if(alphaEdge<0.05){
                 alphaEdge=0.05
             }

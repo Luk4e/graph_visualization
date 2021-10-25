@@ -162,34 +162,44 @@ outputSliderZoomIntensity.innerHTML = sliderZoomIntensity.value;
 
 //re compute of texture after interaction with slider 
 
+sliderSigma.onchange = function() {
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+}
 sliderSigma.oninput = function() {
     outputSigma.innerHTML = this.value/100;
     sigma = this.value/100;
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+}
+
+sliderThresholdAlpha.onchange  = function() {
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 }
 sliderThresholdAlpha.oninput  = function() {
     thresholdComp = this.value/100;
     outputThresholdAlpha.innerHTML = thresholdComp;
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+}
 
+sliderRangeField.onchange  = function() {
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 }
 sliderRangeField.oninput  = function() {
     rangeFiledComp = Math.round(this.value/10);
     outputSliderRangeField.innerHTML = rangeFiledComp;
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+}
 
+sliderMaxEdgeThickness.onchange  = function() {
+    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 }
 sliderMaxEdgeThickness.oninput  = function() {
     edgeThickness = Math.round(this.value/10);
     outputSliderMaxEdgeThickness.innerHTML = Math.round(this.value/10);
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
-
 }
-sliderZoomIntensity.oninput  = function() {
+
+sliderZoomIntensity.oninput = function() {
     zoomIntens = this.value;
     outputSliderZoomIntensity.innerHTML = this.value;
 
 }
+
 //end of sidebar part
 
 
