@@ -256,16 +256,24 @@
         }
         let scaling = maxEdgeAgg/maxEdgeThickness;
         edgesContainer.removeChildren();
-        
-        for(var key in edgeIdx){
-            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)-0.2;
-            if(alphaEdge<0.05){
-                alphaEdge=0.05
+        //TODO:
+        //aumentare valore della soglia di alpha avvicinandomi e diminuirlo allontanandomi
+        //oppure diminuire valore di alpha di tutti gli archi di un certo tot e aumentarlo fino ad arrivare a uno indietreggiando
+        //oppure
+        //aumentare valore di sigma avvicinandomi 
+        //diminuirlo allontandomi 
+
+
+        for(var key in edgeIdx){            
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
+            
+            if(edgeIdx[key][4]>maxEdgeThickness){
+                edgeIdx[key][4]=maxEdgeThickness
             }
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
-                line.lineStyle(Math.ceil((edgeIdx[key][4]/scaling)) , 0x641E16, alphaEdge);
+                line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
                 line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
                 line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
                 edgesContainer.addChild(line);
@@ -365,16 +373,16 @@
         let scaling = maxEdgeAgg/maxEdgeThickness;
         edgesContainer.removeChildren();
         
-        for(var key in edgeIdx){
-            let alphaEdge = edgeIdx[key][4]/maxEdgeAgg;
-
-            if(alphaEdge<0.05){
-                alphaEdge=0.05
+        for(var key in edgeIdx){            
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
+            
+            if(edgeIdx[key][4]>maxEdgeThickness){
+                edgeIdx[key][4]=maxEdgeThickness
             }
-            if(alphaEdge>=thresholdAlpha  ){
+            if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
-                line.lineStyle(Math.ceil((edgeIdx[key][4]/scaling)) , 0x641E16, alphaEdge);
+                line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);
                 line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
                 line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
                 edgesContainer.addChild(line);

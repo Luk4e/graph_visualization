@@ -7,6 +7,7 @@ var pixiGraph = new graphClass("Primo");
 const nodesDegree = new Map();
 var labelsList = new Map();
 
+//re-inizialize console.log function,if testPerformace is true, to turn off log during tests
 if(testPerformance){
     console.log = () => {};
 }
@@ -24,7 +25,7 @@ let Application = PIXI.Application,
     Text = PIXI.Text;
 
 
-    //global constant value
+//global constant value
 const fattoreDiScala = 10;
 const raggio = 4;
 var sigma  = 0.5;
@@ -45,7 +46,10 @@ var raggioScalato = fattoreDiScala*sigma*raggio;
 var normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
 var scalaRedRGBRigirata = [[249,235,234],[242,215,213],[230,176,170],[217,136,128],[205,97,85],[192,57,43],[169,50,38],[146,43,33],[123,36,28],[100,30,22],[255,255,255]];
 var scalaBluRGBRigirata = [[235,245,251],[214,234,248],[174,214,241],[133,193,233],[93,173,226],[52,152,219],[46,134,193],[40,116,166],[33,97,140],[27,79,114],[255,255,255]];
-
+let scaleBlueAltRGBR2  = [[235,245,251],[202,240,248],[173,232,244],[144,224,239],[72,202,228],[0,180,216],[0,150,199],[0,119,182],[2,6,138],[3,4,94],[255,255,255]];
+let scaleBlueAltRGBR3  = [[177,236,242],[147,228,239],[107,216,233],[71,214,236],[37,212,239],[37,202,239],[0,184,234],[0,178,227],[0,163,208],[0,145,189],[255,255,255]];
+//scalaBluRGBRigirata = scaleBlueAltRGBR3;
+//scalaBluRGBRigirata = scaleBlueAltRGBRigirata;
 //declaration of sprite and texture for texture node computation
 var sprite ;
 var texture;
