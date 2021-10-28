@@ -28,7 +28,7 @@ let Application = PIXI.Application,
 //global constant value
 const fattoreDiScala = 10;
 const raggio = 4;
-var sigma  = 0.85;//0.5;
+var sigma  = 0.5;
 var maxVal = {"value":0};//global maxvalue
 let labelTemp;
 
