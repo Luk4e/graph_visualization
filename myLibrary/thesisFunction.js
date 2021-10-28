@@ -750,6 +750,7 @@
         //console.log((viewport.lastViewport.scaleX/(60/100))/100);
         //console.log(viewport.lastViewport.scaleX/(60/100));
         //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
+
         if(!seeAllLabels){
             count = count*(viewport.lastViewport.scaleX/(60/100))/100;
         }
