@@ -224,7 +224,8 @@ html {
 }
 
 h4{
-    margin-top: 0;
+    margin-top: .4em;
+    color:#2e2e2e;
 }
 h1{
     margin-bottom: 0;

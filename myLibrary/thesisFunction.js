@@ -205,7 +205,7 @@
            
             
             pixiGraph.pixiNodes[vecXY[i]].setPixel(xTemp,yTemp);
-
+            pixiGraph.pixiNodes[vecXY[i]].setClusterValue(temp)
         }
 
     }
@@ -335,7 +335,7 @@
 
     }
 
-    function edgeComputeZoom(xstart,ystart,xstop,ystop,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){ 
+    function edgeComputeZoom(xstart,ystart,xstop,ystop,pixiGraph,links,graph,edgesContainerZoom,thresholdAlpha,maxEdgeThickness){ 
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -371,7 +371,7 @@
             
         }
         let scaling = maxEdgeAgg/maxEdgeThickness;
-        edgesContainer.removeChildren();
+        edgesContainerZoom.removeChildren();
         
         for(var key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
@@ -385,7 +385,7 @@
                 line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);
                 line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
                 line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
-                edgesContainer.addChild(line);
+                edgesContainerZoom.addChild(line);
             }
         }
     }
@@ -604,7 +604,7 @@
         let sigmaMod = sigma;
         let levelsNumber = 11;
         let raggioScalato = fattoreDiScala*sigmaMod*raggio;
-        let area = Math.round(raggioScalato*3)
+        let area = Math.round(350)
 
         let indici = [];
         nodes = graph.nodes.length;
@@ -702,12 +702,13 @@
 
     }
 
-    function labelsView(containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
         let pointZero = new PIXI.Point(0,0);
-
+        let count=0;
+        let sortedByDegree;
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
             
@@ -718,7 +719,7 @@
 
             if(( xx>(0) && xx<(high+Math.abs(high - wid)))){
                 if(( yy>(0) && yy<(wid+Math.abs(high - wid)))){
-
+                    
                     let selectedNode = pixiGraph.pixiNodes[graph.nodes[i]['id']];
                     if(maxDegree<selectedNode.degree){
                         maxDegree=selectedNode.degree;
@@ -726,49 +727,57 @@
                     if(!nodeOrderByCluster.has(selectedNode.clusterName)){
                         let tempObj = {
                             id : selectedNode.id,
-                            degree:selectedNode.degree
+                            degree:selectedNode.degree,
+                            clusterValue:selectedNode.clusterValue
                         }
                         nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
                     }else{
                         let tempObj = {
                             id : selectedNode.id,
-                            degree:selectedNode.degree
+                            degree:selectedNode.degree,
+                            clusterValue:selectedNode.clusterValue
                         }
                         if(nodeOrderByCluster.get(selectedNode.clusterName).degree<tempObj.degree){
                             nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
                         }
                     }
+                    count++;
                 }
             }
             
         } 
-        maxDegree = 0;
+        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        //console.log((viewport.lastViewport.scaleX/(60/100))/100);
+        //console.log(viewport.lastViewport.scaleX/(60/100));
+        //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
+        if(!seeAllLabels){
+            count = count*(viewport.lastViewport.scaleX/(60/100))/100;
+        }
+        for(nodeToDraw of sortedByDegree){
+            if(count>0){//nodeToDraw[1].degree>=maxDegree && 
 
-        for(nodeToDraw of nodeOrderByCluster){
-            
-            if(nodeToDraw[1].degree>maxDegree){
                 let style = {
-                    font : 'bold 16px Arial',
+                    font : 'bold 18px Arial',
                     fill : '#ffffff',
                     stroke : '#000000',
                     strokeThickness : 2
                 }
-    
+
                 let circle = new PIXI.Graphics();
-                circle.lineStyle(0)
+                circle.lineStyle(0);
                 circle.beginFill(0xDE3249, 1);
                 circle.drawCircle(1, 1, 3);
                 circle.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
-                circle.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster
+                circle.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
                 circle.endFill();
-                containerLabels.addChild(circle)
+                containerLabels.addChild(circle);
     
                 let circleText = new PIXI.Text(nodeToDraw[1].id,style);
                 circleText.style.fontSize = 16;
                 circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
                 circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
-                containerLabels.addChild(circleText)            
-        
+                containerLabels.addChild(circleText);
+                count--;
             }
         }
             

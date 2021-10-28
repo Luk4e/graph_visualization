@@ -92,13 +92,16 @@ class NodeClass{
         this.yCluster;
         this.clusterName;
         this.degree = degree;
+        this.clusterValue;
     }
 
     setXY(x,y){
         this.x = x;
         this.y = y;
     }
-
+    setClusterValue(x){
+        this.clusterValue = x;
+    }
 
     setPixel(x,y){
         this.xCluster = x;

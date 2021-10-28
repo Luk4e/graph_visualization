@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const testPerformance = true;
+const testPerformance = false;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
 var pixiGraph = new graphClass("Primo");
@@ -28,7 +28,7 @@ let Application = PIXI.Application,
 //global constant value
 const fattoreDiScala = 10;
 const raggio = 4;
-var sigma  = 0.5;
+var sigma  = 0.85;//0.5;
 var maxVal = {"value":0};//global maxvalue
 let labelTemp;
 
@@ -205,26 +205,38 @@ sliderZoomIntensity.oninput = function() {
 }
 
 //end of sidebar part
-
-
+let prevViewportZoomScale = 1;
+//viewport.plugins.plugins.wheel.options.percent, by default it is equal 0.1
 //Pixiviewport of the main view space to manage pan and zoom in and out
 viewport
     .drag()
-    .wheel({percent:0.1})
+    .wheel()
     .on('wheel', function(){
+        //if(viewport.lastViewport.scaleX>0 && viewport.lastViewport.scaleX<=2){
+        //    sigma = 0.4*(viewport.lastViewport.scaleX);
+        //}
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+        if(buttonActivation.labelsActivation){
+            containerLabels.removeChildren();
+            labelsView(document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        }
     })
     .on('moved', function(){
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
-    }) 
+        if(buttonActivation.labelsActivation){
+            containerLabels.removeChildren();
+            labelsView(document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        }
+    })
+    .clampZoom({ minWidth: wid/60, minHeight: high/60 })//max zoom
 
 //button label actions
 function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        viewport.pause = true;
-        labelsView(containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        labelsView(document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        //viewport.pause = true;
 
     }else{
         buttonActivation.labelsActivation = false;
@@ -792,7 +804,6 @@ function resetParameters(){
     
    
 }
-
 //Fps monitorining system 
 function fpsInitialize(){
 
