@@ -215,9 +215,14 @@ viewport
         //if(viewport.lastViewport.scaleX>0 && viewport.lastViewport.scaleX<=2){
         //    sigma = 0.4*(viewport.lastViewport.scaleX);
         //}
-        sigma = 0.5+(1.5/60)*viewport.lastViewport.scaleX;
+        sigma = 0.5+(1.0/60)*viewport.lastViewport.scaleX;
         sliderSigma.value = sigma*100;
         outputSigma.innerHTML = sigma.toFixed(2);
+
+        thresholdComp = (0.2+(0.3/60)*viewport.lastViewport.scaleX);
+        sliderThresholdAlpha.value = thresholdComp*100;
+        outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
+    
         document.getElementById
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
