@@ -266,14 +266,17 @@
 
         for(var key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
-            
+            //let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
+
             if(edgeIdx[key][4]>maxEdgeThickness){
                 edgeIdx[key][4]=maxEdgeThickness
             }
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
-                line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
+                //line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
+                line.lineStyle(Math.ceil((edgeIdx[key][4]/scaling)) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
+
                 line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
                 line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
                 edgesContainer.addChild(line);
@@ -554,7 +557,8 @@
         //compute of cluster 
         clusterCompute(pixiGraph,wid,high,indici,rangeFiledComp,mat);
         //compute of aggregate edges
-        edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
+        edgeCompute2(indici,area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
+        //edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
 
         let t2Edge = performance.now();
 
@@ -784,4 +788,67 @@
             
         nodeOrderByCluster.clear();
     
+    }
+
+
+    function edgeCompute2(vecArr,area,wid,high,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){
+
+        let edgeIdx = {};
+        let maxEdgeAgg = 1;
+        let setIndici = new Set(vecArr);
+        for (let i = 0; i < links; ++i) {
+
+            let sour = pixiGraph.getNodeById(graph.edges[i]['source'].id);
+            let targ = pixiGraph.getNodeById(graph.edges[i]['target'].id);
+
+            if(setIndici.has(graph.edges[i]['source'].id) && setIndici.has(graph.edges[i]['target'].id)){
+                let sourCluster = ""+sour.xCluster+sour.yCluster;
+                let targCluster = ""+targ.xCluster+targ.yCluster;
+                //if((sour.cluster) != (targ.cluster)){
+                if(sourCluster != targCluster){
+    
+                    //let idClusterEdge = ""+sour.cluster+targ.cluster;
+                    let idClusterEdge = ""+sourCluster+targCluster;
+    
+                    if(edgeIdx[idClusterEdge]){
+                        edgeIdx[idClusterEdge][4] += 1;
+                        if(maxEdgeAgg<edgeIdx[idClusterEdge][4]){
+                            maxEdgeAgg = edgeIdx[idClusterEdge][4];
+                        }
+                    }else{
+                        edgeIdx[idClusterEdge] = [];
+                        edgeIdx[idClusterEdge].push(sour.xCluster);
+                        edgeIdx[idClusterEdge].push(sour.yCluster);
+                        edgeIdx[idClusterEdge].push(targ.xCluster);
+                        edgeIdx[idClusterEdge].push(targ.yCluster);
+                        edgeIdx[idClusterEdge].push(1);
+                    }
+                } 
+            } 
+        }
+        let scaling = maxEdgeAgg/maxEdgeThickness;
+        edgesContainer.removeChildren();
+        //TODO:
+        //aumentare valore della soglia di alpha avvicinandomi e diminuirlo allontanandomi
+        //oppure diminuire valore di alpha di tutti gli archi di un certo tot e aumentarlo fino ad arrivare a uno indietreggiando
+        //oppure
+        //aumentare valore di sigma avvicinandomi 
+        //diminuirlo allontandomi 
+
+
+        for(var key in edgeIdx){            
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
+            
+            if(edgeIdx[key][4]>maxEdgeThickness){
+                edgeIdx[key][4]=maxEdgeThickness
+            }
+            if(alphaEdge>=thresholdAlpha ){
+                let line = new PIXI.Graphics();
+                //line.beginFill(0xFFFFFF,1);
+                line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
+                line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
+                line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
+                edgesContainer.addChild(line);
+            }
+        }
     }
