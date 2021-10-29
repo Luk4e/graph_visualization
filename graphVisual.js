@@ -71,6 +71,10 @@ var outputSliderRangeField = document.getElementById("rangeFieldDisplay");
 var outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
 var outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
 
+thresholdComp = 0.4;
+sliderThresholdAlpha.value = thresholdComp*100;
+outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
+
 
 //variable for zoom and labels button 
 var position ={};
@@ -217,11 +221,11 @@ viewport
         //}
         sigma = 0.5+(1.0/60)*viewport.lastViewport.scaleX;
         sliderSigma.value = sigma*100;
-        outputSigma.innerHTML = sigma.toFixed(2);
+        outputSigma.innerHTML = sigma.toFixed(3);
 
-        thresholdComp = (0.2+(0.3/60)*viewport.lastViewport.scaleX);
+        thresholdComp = (1-(0.6+(0.35/60)*viewport.lastViewport.scaleX));
         sliderThresholdAlpha.value = thresholdComp*100;
-        outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
+        outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
     
         document.getElementById
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
