@@ -706,13 +706,16 @@
 
     }
 
-    function labelsView(seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
         let pointZero = new PIXI.Point(0,0);
         let count=0;
         let sortedByDegree;
+        let varianceDegree=0;
+        let nodeCount=0;
+
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
             
@@ -745,6 +748,9 @@
                             nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
                         }
                     }
+                    nodeCount++;
+                    varianceDegree += Math.pow((selectedNode.degree-averageDegree),2);
+
                     count++;
                 }
             }
@@ -755,11 +761,15 @@
         //console.log(viewport.lastViewport.scaleX/(60/100));
         //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
 
+        varianceDegree = Math.ceil((varianceDegree/count)); 
+        console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
+
         if(!seeAllLabels){
             count = count*(viewport.lastViewport.scaleX/(60/100))/100;
         }
+
         for(nodeToDraw of sortedByDegree){
-            if(count>0){//nodeToDraw[1].degree>=maxDegree && 
+            if(count>0 && (nodeToDraw[1].degree>= (maxDegree-varianceDegree)) ){//nodeToDraw[1].degree>=maxDegree && 
 
                 let style = {
                     font : 'bold 18px Arial',
@@ -789,7 +799,6 @@
         nodeOrderByCluster.clear();
     
     }
-
 
     function edgeCompute2(vecArr,area,wid,high,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){
 
@@ -837,7 +846,7 @@
 
 
         for(var key in edgeIdx){            
-            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
             if(edgeIdx[key][4]>maxEdgeThickness){
                 edgeIdx[key][4]=maxEdgeThickness

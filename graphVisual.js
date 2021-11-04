@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const testPerformance = true;
+const testPerformance = false;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
 var pixiGraph = new graphClass("Primo");
@@ -32,6 +32,7 @@ var sigma  = 0.5;
 var maxVal = {"value":0};//global maxvalue
 let labelTemp;
 
+let averageDegree;
 var thresholdComp = 0.2;
 var rangeFiledComp = 1;
 var edgeThickness = 5;
@@ -172,6 +173,10 @@ outputSliderZoomIntensity.innerHTML = sliderZoomIntensity.value;
 
 sliderSigma.onchange = function() {
     computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+    if(buttonActivation.labelsActivation){
+        containerLabels.removeChildren();
+        labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+    }
 }
 sliderSigma.oninput = function() {
     outputSigma.innerHTML = this.value/100;
@@ -231,14 +236,14 @@ viewport
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
-            labelsView(document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+            labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         }
     })
     .on('moved', function(){
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
-            labelsView(document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+            labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         }
     })
     .clampZoom({ minWidth: wid/60, minHeight: high/60 })//max zoom
@@ -248,7 +253,7 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        labelsView(document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         //viewport.pause = true;
 
     }else{
@@ -493,7 +498,8 @@ document.getElementById('file').onchange = function () {
         let loadingDataEnd = performance.now()
         console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
         console.log("dati letti ");
-
+        averageDegree = 2*Math.round(graph.edges.length/graph.nodes.length);
+        
         drawGraph(graph,pixiGraph,viewport,document);
 
 
