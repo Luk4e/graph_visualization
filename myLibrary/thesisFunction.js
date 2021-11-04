@@ -225,7 +225,7 @@
 
                     if(( targ.x>(-(area)) && targ.x<(high+Math.abs(high - wid)+area))){
                         if(( targ.y>(-(area)) && targ.y<(wid+Math.abs(high - wid)+area))){
-                           
+
                             let sourCluster = ""+sour.xCluster+sour.yCluster;
                             let targCluster = ""+targ.xCluster+targ.yCluster;
                             //if((sour.cluster) != (targ.cluster)){
@@ -263,7 +263,7 @@
         //aumentare valore di sigma avvicinandomi 
         //diminuirlo allontandomi 
 
-
+/* 
         for(var key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
             //let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
@@ -276,7 +276,24 @@
                 //line.beginFill(0xFFFFFF,1);
                 //line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
                 line.lineStyle(Math.ceil((edgeIdx[key][4]/scaling)) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
+                line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
+                line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
+                edgesContainer.addChild(line);
+            }
+        } */
 
+
+
+        for(var key in edgeIdx){            
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
+            
+            if(edgeIdx[key][4]>maxEdgeThickness){
+                edgeIdx[key][4]=maxEdgeThickness
+            }
+            if(alphaEdge>=thresholdAlpha ){
+                let line = new PIXI.Graphics();
+                //line.beginFill(0xFFFFFF,1);
+                line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
                 line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
                 line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
                 edgesContainer.addChild(line);
@@ -554,15 +571,29 @@
 
         //compute of density field
         let mat = createMatOut(pixiGraph,wid,high,indici,matrixPreCompute,raggioScalato,maxVal);
+
+        let t2DensityFiel = performance.now();
+
+        console.log("Time needed to compute Density Field: "  + (t2DensityFiel - t1Draw) + " milliseconds.");
+
+        let t3ClusterStart = performance.now();
         //compute of cluster 
         clusterCompute(pixiGraph,wid,high,indici,rangeFiledComp,mat);
+        let t3ClusterEnd = performance.now();
+
+        console.log("Time needed to compute Cluster: "  + (t3ClusterEnd - t3ClusterStart) + " milliseconds.");
+
+        let t4EdgeAggStart = performance.now();
         //compute of aggregate edges
         edgeCompute2(indici,area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
         //edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
 
-        let t2Edge = performance.now();
+        let t4EdgeAggEnd = performance.now();
 
-        console.log("Time needed to compute edges: "  + (t2Edge - t1Draw) + " milliseconds.");
+        console.log("Time needed to compute Edge Agg all: "  + (t4EdgeAggEnd - t4EdgeAggStart) + " milliseconds.");
+
+
+        console.log("Time needed to compute All : "  + (t4EdgeAggEnd - t1Draw) + " milliseconds.");
         
 
         
@@ -587,7 +618,7 @@
 
         let t2Draw = performance.now();
         
-        console.log("Time needed to draw: "  + (t2Draw - t1Draw) + " milliseconds.");
+        console.log("Time needed to draw: "  + (t2Draw - t4EdgeAggEnd) + " milliseconds.");
 
         mat = {};
         scale = {};
@@ -762,14 +793,15 @@
         //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
 
         varianceDegree = Math.ceil((varianceDegree/count)); 
-        console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
+        //console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
 
+        
         if(!seeAllLabels){
-            count = count*(viewport.lastViewport.scaleX/(60/100))/100;
+            count = Math.floor(count*(viewport.lastViewport.scaleX/(60/100))/100);
         }
 
         for(nodeToDraw of sortedByDegree){
-            if(count>0 && (nodeToDraw[1].degree>= (maxDegree-varianceDegree)) ){//nodeToDraw[1].degree>=maxDegree && 
+            if(count>0 && (nodeToDraw[1].degree>=(maxDegree-varianceDegree)) ){//nodeToDraw[1].degree>=maxDegree && 
 
                 let style = {
                     font : 'bold 18px Arial',

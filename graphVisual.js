@@ -184,7 +184,9 @@ sliderSigma.oninput = function() {
 }
 
 sliderThresholdAlpha.onchange  = function() {
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    //computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    edgeCompute(Math.round(Math.max(high,wid)/2),wid,high,pixiGraph,graph.edges.length,graph,edgesContainer,thresholdComp,edgeThickness);
+
 }
 sliderThresholdAlpha.oninput  = function() {
     thresholdComp = this.value/100;
@@ -200,7 +202,9 @@ sliderRangeField.oninput  = function() {
 }
 
 sliderMaxEdgeThickness.onchange  = function() {
-    computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    //computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    edgeCompute(Math.round(Math.max(high,wid)/2),wid,high,pixiGraph,graph.edges.length,graph,edgesContainer,thresholdComp,edgeThickness);
+
 }
 sliderMaxEdgeThickness.oninput  = function() {
     edgeThickness = Math.round(this.value/10);
@@ -497,7 +501,7 @@ document.getElementById('file').onchange = function () {
 
         let loadingDataEnd = performance.now()
         console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
-        console.log("dati letti ");
+        console.log("dati letti");
         averageDegree = 2*Math.round(graph.edges.length/graph.nodes.length);
         
         drawGraph(graph,pixiGraph,viewport,document);
@@ -550,8 +554,9 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
 
     let t1 = performance.now();
 
-    console.log("Time needed to compute layout: "  + (t1fmmm - t0fmmm) + " milliseconds.");
+    console.log("Time needed to compute Layout: "  + (t1fmmm - t0fmmm) + " milliseconds.");
 
+    console.log("Time needed to compute Layout + Render : "  + (t1 - t0) + " milliseconds.");
     document.getElementById('layoutTimePrintSpace').innerHTML = (t1fmmm - t0fmmm).toFixed();
     document.getElementById('totalTimePrintSpace').innerHTML = (t1 - t0).toFixed();
             
