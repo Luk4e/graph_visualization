@@ -300,7 +300,7 @@
             }
         }
     }
-
+    
     function clusterComputeZoom(pixiGraph,wid,high,vecXY,rangeField=1,precomputedMatrix,scaleZoom=1,origin){
         
         
@@ -746,6 +746,7 @@
         let sortedByDegree;
         let varianceDegree=0;
         let nodeCount=0;
+        let minimumDegree = 0;
 
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
@@ -795,13 +796,15 @@
         varianceDegree = Math.ceil((varianceDegree/count)); 
         //console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
 
-        
+
         if(!seeAllLabels){
             count = Math.floor(count*(viewport.lastViewport.scaleX/(60/100))/100);
+            minimumDegree=(maxDegree-(maxDegree*(0.4+(viewport.lastViewport.scaleX/(60/100))/100)))
         }
-
+        console.log((viewport.lastViewport.scaleX/(60/100)/100))
+        console.log(maxDegree)
         for(nodeToDraw of sortedByDegree){
-            if(count>0 && (nodeToDraw[1].degree>=(maxDegree-varianceDegree)) ){//nodeToDraw[1].degree>=maxDegree && 
+            if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
 
                 let style = {
                     font : 'bold 18px Arial',

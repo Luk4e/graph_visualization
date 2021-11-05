@@ -789,7 +789,7 @@ function resetParameters(){
     edgesContainer.removeChildren();
     edgesContainerZoom.removeChildren();
     containerRootZoom.removeChildren();
-
+    containerLabels.removeChildren();
     //slider parameters
 
     sigma = 0.5;
