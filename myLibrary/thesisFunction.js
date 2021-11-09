@@ -615,12 +615,14 @@
             sprite = PIXI.Sprite.from(texture);
             containerRoot.addChild(sprite);
         }
-
+        
         let t2Draw = performance.now();
         
         console.log("Time needed to draw: "  + (t2Draw - t4EdgeAggEnd) + " milliseconds.");
 
-        mat = {};
+        
+
+        mat = {};   
         scale = {};
         buff =  {};
         texture = {};
@@ -798,11 +800,14 @@
 
 
         if(!seeAllLabels){
-            count = Math.floor(count*(viewport.lastViewport.scaleX/(60/100))/100);
-            minimumDegree=(maxDegree-(maxDegree*(0.4+(viewport.lastViewport.scaleX/(60/100))/100)))
+
+            count = Math.ceil(count*(viewport.lastViewport.scaleX/(60/100))/100);
+            minimumDegree=Math.ceil((maxDegree-(maxDegree*(0.4+(viewport.lastViewport.scaleX/(60/100))/100))));
         }
-        console.log((viewport.lastViewport.scaleX/(60/100)/100))
-        console.log(maxDegree)
+
+        //console.log(count)
+        //console.log(maxDegree)
+
         for(nodeToDraw of sortedByDegree){
             if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
 

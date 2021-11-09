@@ -41,7 +41,6 @@ var execPageRank = true;
 let layoutComputCheck = true;
 
 
-
 var raggioScalato = fattoreDiScala*sigma*raggio;
 //palette of colours
 var normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
@@ -52,12 +51,14 @@ let scaleBlueAltRGBR3  = [[177,236,242],[147,228,239],[107,216,233],[71,214,236]
 //scalaBluRGBRigirata = scaleBlueAltRGBR3;
 //scalaBluRGBRigirata = scaleBlueAltRGBRigirata;
 //declaration of sprite and texture for texture node computation
-var sprite ;
+var sprite;
 var texture;
 //nodes and link variable global declaration
 var nodes;
 var links;
 
+let selectedAreaZoom;
+let viewportPosition = {x:0,y:0};
 
 //slider variables 
 var sliderSigma = document.getElementById("sigmaSlider");
@@ -75,7 +76,6 @@ var outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
 thresholdComp = 0.4;
 sliderThresholdAlpha.value = thresholdComp*100;
 outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
-
 
 //variable for zoom and labels button 
 var position ={};
@@ -146,7 +146,6 @@ let app2 = new Application({
     backgroundColor: 0xFFFFFF
 });
 
-
 //Bind PIXI App canvas to element on page 
 document.getElementById('magnifying').appendChild(app2.view);
 document.getElementById('graph').appendChild(app.view);
@@ -159,7 +158,6 @@ const viewport = new pixi_viewport.Viewport({
     worldHeight: high,
     interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 })
-
 
 //slider
 //write on screen slider value
@@ -218,7 +216,6 @@ sliderZoomIntensity.oninput = function() {
 }
 
 //end of sidebar part
-let prevViewportZoomScale = 1;
 //viewport.plugins.plugins.wheel.options.percent, by default it is equal 0.1
 //Pixiviewport of the main view space to manage pan and zoom in and out
 viewport
@@ -235,7 +232,8 @@ viewport
         thresholdComp = (1-(0.6+(0.35/60)*viewport.lastViewport.scaleX));
         sliderThresholdAlpha.value = thresholdComp*100;
         outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
-    
+        
+
         document.getElementById
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
@@ -251,7 +249,7 @@ viewport
         }
     })
     .clampZoom({ minWidth: wid/60, minHeight: high/60 })//max zoom
-
+     
 //button label actions
 function searchLabel(){
    
@@ -274,6 +272,11 @@ function changestatuszoom(){
         buttonActivation.zoomActivation = true;
         viewport.pause = true;
         document.body.style.cursor = "crosshair"
+        //selectedAreaZoom = new PIXI.Graphics();
+        //selectedAreaZoom.lineStyle(2,0x000000);
+        //selectedAreaZoom.drawRect(0,0,100,100);
+        //selectedAreaZoom.visible = false;
+        //viewport.addChild(selectedAreaZoom);
     }else{
         document.getElementById("magnifying").style.visibility = 'hidden';
         viewport.pause = false;
@@ -282,20 +285,29 @@ function changestatuszoom(){
         containerRootZoom.removeChildren();
         edgesContainerZoom.removeChildren();
         containerRootZoom.cacheAsBitmap = false;
+        //viewport.removeChild(selectedAreaZoom);
+
     }
 }
 //mouse event listener for discover mouse position to compute zoom in a specific area
 
-document.getElementById("graph").addEventListener("mousedown", function() {
+
+//selectedAreaZoom.beginFill(0xff0000);
+//viewport.removeChild(selectedAreaZoom);
+
+document.getElementById("graph").addEventListener("mousedown", function(e) {
     mousedowncontroll = true;
-    
+    if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
+        //selectedAreaZoom.visible = false;
+    }
 });
 
-document.getElementById("graph").addEventListener("mousemove", function(){
+//cambia secondo lo zoom quindi è da riverede
+document.getElementById("graph").addEventListener("mousemove", function(e){
+
     if(mousedowncontroll){
         if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
 
-            let e = window.event;
             let rect = e.target.getBoundingClientRect();
 
             position.xstart = e.clientX-rect.left;
@@ -306,8 +318,6 @@ document.getElementById("graph").addEventListener("mousemove", function(){
 
             position.xend = position.xstart;
             position.yend = position.ystart;
-
-
             computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,graph,pixiGraph,viewport.scaled,containerRootZoom,edgesContainerZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
         }
     }
@@ -316,6 +326,16 @@ document.getElementById("graph").addEventListener("mousemove", function(){
 
 document.getElementById("graph").addEventListener("mouseup", function() {
     mousedowncontroll = false;
+
+    if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
+        
+        //selectedAreaZoom.x = position.xstart;
+        //selectedAreaZoom.y = position.ystart;
+        //selectedAreaZoom.visible = true;
+
+        //viewport.addChild(selectedAreaZoom);
+    }
+
 });
 
 
@@ -340,7 +360,7 @@ document.getElementById('file').onchange = function () {
 
         var lines = this.result.split('\n');
         let linesLength = lines.length;
-        if (this.result[0] == "[") {
+        if (file.name.match(/.json/i)) {
 
             for (let line = 0; line < (linesLength - 1); line++) {
 
@@ -399,7 +419,7 @@ document.getElementById('file').onchange = function () {
                     }
                 }
             }
-        } else {
+        } else if(file.name.match(/.txt/i)){
 
             //layoutComputCheck = true;
 
@@ -493,6 +513,8 @@ document.getElementById('file').onchange = function () {
 
                 graph.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
             }
+        } else if(file.name.match(/.txt/i)){
+
         }
         edgeSet.clear();
         tempSet.clear();
