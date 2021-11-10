@@ -3,9 +3,9 @@
 const testPerformance = false;
 //declaration of graph struct and pixiGraph struct
 const graph = { "nodes": new Array(), "edges": new Array() };
-var pixiGraph = new graphClass("Primo");
+let pixiGraph = new graphClass("Primo");
 const nodesDegree = new Map();
-var labelsList = new Map();
+let labelsList = new Map();
 
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
 if(testPerformance){
@@ -28,61 +28,61 @@ let Application = PIXI.Application,
 //global constant value
 const fattoreDiScala = 10;
 const raggio = 4;
-var sigma  = 0.5;
-var maxVal = {"value":0};//global maxvalue
+let sigma  = 0.5;
+let maxVal = {"value":0};//global maxvalue
 let labelTemp;
 
 let averageDegree;
-var thresholdComp = 0.2;
-var rangeFiledComp = 1;
-var edgeThickness = 5;
-var zoomIntens = 4;
-var execPageRank = true;
+let thresholdComp = 0.2;
+let rangeFiledComp = 1;
+let edgeThickness = 5;
+let zoomIntens = 4;
+let execPageRank = true;
 let layoutComputCheck = true;
 
 
-var raggioScalato = fattoreDiScala*sigma*raggio;
+let raggioScalato = fattoreDiScala*sigma*raggio;
 //palette of colours
-var normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
-var scalaRedRGBRigirata = [[249,235,234],[242,215,213],[230,176,170],[217,136,128],[205,97,85],[192,57,43],[169,50,38],[146,43,33],[123,36,28],[100,30,22],[255,255,255]];
-var scalaBluRGBRigirata = [[235,245,251],[214,234,248],[174,214,241],[133,193,233],[93,173,226],[52,152,219],[46,134,193],[40,116,166],[33,97,140],[27,79,114],[255,255,255]];
+let normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
+let scalaRedRGBRigirata = [[249,235,234],[242,215,213],[230,176,170],[217,136,128],[205,97,85],[192,57,43],[169,50,38],[146,43,33],[123,36,28],[100,30,22],[255,255,255]];
+let scalaBluRGBRigirata = [[235,245,251],[214,234,248],[174,214,241],[133,193,233],[93,173,226],[52,152,219],[46,134,193],[40,116,166],[33,97,140],[27,79,114],[255,255,255]];
 let scaleBlueAltRGBR2  = [[235,245,251],[202,240,248],[173,232,244],[144,224,239],[72,202,228],[0,180,216],[0,150,199],[0,119,182],[2,6,138],[3,4,94],[255,255,255]];
 let scaleBlueAltRGBR3  = [[177,236,242],[147,228,239],[107,216,233],[71,214,236],[37,212,239],[37,202,239],[0,184,234],[0,178,227],[0,163,208],[0,145,189],[255,255,255]];
 //scalaBluRGBRigirata = scaleBlueAltRGBR3;
 //scalaBluRGBRigirata = scaleBlueAltRGBRigirata;
 //declaration of sprite and texture for texture node computation
-var sprite;
-var texture;
+let sprite;
+let texture;
 //nodes and link variable global declaration
-var nodes;
-var links;
+let nodes;
+let links;
 
 let selectedAreaZoom;
 let viewportPosition = {x:0,y:0};
 
 //slider variables 
-var sliderSigma = document.getElementById("sigmaSlider");
-var sliderThresholdAlpha = document.getElementById("thresholdAlphaSlider");
-var sliderRangeField = document.getElementById("rangeFieldSlider");
-var sliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessSlider");
-var sliderZoomIntensity = document.getElementById("zoomIntensitySlider");
+let sliderSigma = document.getElementById("sigmaSlider");
+let sliderThresholdAlpha = document.getElementById("thresholdAlphaSlider");
+let sliderRangeField = document.getElementById("rangeFieldSlider");
+let sliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessSlider");
+let sliderZoomIntensity = document.getElementById("zoomIntensitySlider");
 
-var outputSigma = document.getElementById("sigmaDisplay");
-var outputThresholdAlpha = document.getElementById("thresholdAlphaDisplay");
-var outputSliderRangeField = document.getElementById("rangeFieldDisplay");
-var outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
-var outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
+let outputSigma = document.getElementById("sigmaDisplay");
+let outputThresholdAlpha = document.getElementById("thresholdAlphaDisplay");
+let outputSliderRangeField = document.getElementById("rangeFieldDisplay");
+let outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
+let outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
 
 thresholdComp = 0.4;
 sliderThresholdAlpha.value = thresholdComp*100;
 outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
 
 //variable for zoom and labels button 
-var position ={};
-var buttonActivation = {"zoomActivation":false,"labelsActivation":false}
+let position ={};
+let buttonActivation = {"zoomActivation":false,"labelsActivation":false}
 
 
-var mousedowncontroll = false;
+let mousedowncontroll = false;
 
 document.getElementById("magnifying").style.visibility = 'hidden';
 
@@ -110,14 +110,14 @@ document.getElementById('graph').onwheel = () => false ;
 
 fpsInitialize();
 
-var inputs = document.querySelectorAll('.inputfile');
+let inputs = document.querySelectorAll('.inputfile');
 Array.prototype.forEach.call(inputs, function showName(input) {
 
-    var labelVal = document.getElementById('labelInsert').innerHTML;
+    let labelVal = document.getElementById('labelInsert').innerHTML;
 
     input.addEventListener('change', function (e) {
 
-        var fileName = ' ';
+        let fileName = ' ';
 
         fileName = e.target.value.split('\\')[2];
 
@@ -359,7 +359,7 @@ document.getElementById('file').onchange = function () {
 
     reader.onload = function (progressEvent) {
 
-        var lines = this.result.split('\n');
+        let lines = this.result.split('\n');
         let linesLength = lines.length;
         if (file.name.match(/.json/i)) {
 
@@ -424,7 +424,7 @@ document.getElementById('file').onchange = function () {
 
             //layoutComputCheck = true;
 
-            for (var line = 0; line < linesLength; line++) {
+            for (let line = 0; line < linesLength; line++) {
                 let tab;
                 if(lines[line].includes(' ')){
                     tab = lines[line].split(' ');
@@ -898,7 +898,7 @@ function resetParameters(){
 function fpsInitialize(){
 
     //Fps monitorining system 
-    var stats = new Stats();
+    let stats = new Stats();
     stats.dom.style.position = 'relative';
     stats.dom.style.float = 'right';
     document.getElementById("fpsmeterstat").appendChild( stats.dom );

@@ -16,6 +16,7 @@
     }
     //function that use the scale to map the pixel on the colors scale 
     function colorScreen(row,col,matrix,scale,colorScale,alpha=255,startX=0,startY=0){
+
         let buf = new Uint8Array(col * row * 4)
         let temp;
 
@@ -159,7 +160,6 @@
     }
 
     function clusterCompute(pixiGraph,wid,high,vecXY,rangeField=1,precomputedMatrix){
-        
        
         
         let xDa;
@@ -211,6 +211,7 @@
     }
 
     function edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){
+        "use strict";
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -264,7 +265,7 @@
         //diminuirlo allontandomi 
 
 /* 
-        for(var key in edgeIdx){            
+        for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
             //let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
 
@@ -284,7 +285,7 @@
 
 
 
-        for(var key in edgeIdx){            
+        for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
             if(edgeIdx[key][4]>maxEdgeThickness){
@@ -302,7 +303,7 @@
     }
     
     function clusterComputeZoom(pixiGraph,wid,high,vecXY,rangeField=1,precomputedMatrix,scaleZoom=1,origin){
-        
+  
         
         let xDa;
         let xA;
@@ -356,6 +357,7 @@
     }
 
     function edgeComputeZoom(xstart,ystart,xstop,ystop,pixiGraph,links,graph,edgesContainerZoom,thresholdAlpha,maxEdgeThickness){ 
+        "use strict";
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -393,7 +395,7 @@
         let scaling = maxEdgeAgg/maxEdgeThickness;
         edgesContainerZoom.removeChildren();
         
-        for(var key in edgeIdx){            
+        for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
             if(edgeIdx[key][4]>maxEdgeThickness){
@@ -411,6 +413,8 @@
     }
 
     function createMatOut(pixiGraph,wid,high,vecXY,precomputedMatrix,rag,maxValueObj){
+        "use strict";
+ 
         let xOfNode;
         let yOfNode;
         let maxxi = 0;
@@ -421,6 +425,7 @@
         let yA;
         let w;
         let p;
+        let weightOfNode;
         
         let emptyMatrix = [];
         for(let i = 0;i<high;i++){
@@ -524,7 +529,7 @@
     }
     //compute viewport render
     function computeTexture(graph,pixiGraph,scalare = 1,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
-        
+    
         containerRoot.cacheAsBitmap = false;
         edgesContainer.removeChildren();
 
@@ -631,7 +636,7 @@
     }
     //compute zoom render
     function computeTextureZoom(xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRootZoom,edgesContainerZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
-        
+    
         containerRootZoom.cacheAsBitmap = false;
         edgesContainerZoom.removeChildren();
 
@@ -740,7 +745,7 @@
     }
 
     function labelsView(labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
-        
+    
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
         let pointZero = new PIXI.Point(0,0);
@@ -849,6 +854,7 @@
     }
 
     function edgeCompute2(vecArr,area,wid,high,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){
+        "use strict";
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -893,7 +899,7 @@
         //diminuirlo allontandomi 
 
 
-        for(var key in edgeIdx){            
+        for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
             if(edgeIdx[key][4]>maxEdgeThickness){
