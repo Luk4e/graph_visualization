@@ -173,7 +173,7 @@ sliderSigma.onchange = function() {
     computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
-        labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        labelsView(labelsMap,averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
     }
 }
 sliderSigma.oninput = function() {
@@ -238,14 +238,14 @@ viewport
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
-            labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+            labelsView(labelsMap,averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         }
     })
     .on('moved', function(){
         computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
-            labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+            labelsView(labelsMap,averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         }
     })
     .clampZoom({ minWidth: wid/60, minHeight: high/60 })//max zoom
@@ -255,7 +255,7 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        labelsView(averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
+        labelsView(labelsMap,averageDegree,document.getElementById("seeAllLabels").checked,viewport,containerLabels,labelsList,position.xstart,position.ystart,graph,pixiGraph);
         //viewport.pause = true;
 
     }else{
@@ -338,6 +338,7 @@ document.getElementById("graph").addEventListener("mouseup", function() {
 
 });
 
+const labelsMap = new Map();
 
 //extrapolation of data from file
 document.getElementById('file').onchange = function () {
@@ -513,8 +514,51 @@ document.getElementById('file').onchange = function () {
 
                 graph.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
             }
-        } else if(file.name.match(/.txt/i)){
+        } else if(file.name.match(/.gml/i)){
+            let lines = this.result.split('\n');
+            let directed = lines[1][10];
+            let weighted = lines[2][10];
 
+            for (let line = 3; line < (linesLength - 1); line++) {
+                if(lines[line].match(/\snode\s\[/)){
+                    labelsMap.set(lines[line+1].split(' ')[1],lines[line+2].split('"')[1])
+                }
+                if(lines[line].match(/\sedge\s\[/)){
+                    let source = lines[line+1].split(' ')[1];
+                    let target = lines[line+2].split(' ')[1];     
+                    
+                    let sou = {
+                        "id": source
+                    }
+                    let tar = {
+                        "id"  : target
+                    }
+
+                    if (!tempSet.has(source)) {
+                        nodesDegree.set(source,1);
+                        nodeTemp[source] = sou;
+                        tempSet.add(source);
+                        graph.nodes.push(nodeTemp[source]);
+                        
+                    }else{
+                        nodesDegree.set(source,(nodesDegree.get(source)+1));
+                        
+                    }
+                    if (!tempSet.has(target)) {
+                        nodesDegree.set(target,1);
+                        nodeTemp[target] = tar;
+                        tempSet.add(target);
+                        graph.nodes.push(nodeTemp[target]);                    
+                    }else{
+                        nodesDegree.set(target,(nodesDegree.get(target)+1));
+                        
+                    }
+    
+                    graph.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
+    
+                }
+                 
+            }
         }
         edgeSet.clear();
         tempSet.clear();

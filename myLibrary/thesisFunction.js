@@ -739,7 +739,7 @@
 
     }
 
-    function labelsView(averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
         
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -826,12 +826,20 @@
                 circle.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
                 circle.endFill();
                 containerLabels.addChild(circle);
-    
-                let circleText = new PIXI.Text(nodeToDraw[1].id,style);
-                circleText.style.fontSize = 16;
-                circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
-                circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
-                containerLabels.addChild(circleText);
+                if(labelsMap.size!=0){
+                    let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
+                    circleText.style.fontSize = 16;
+                    circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+                    containerLabels.addChild(circleText);
+                }else{
+                    let circleText = new PIXI.Text(nodeToDraw[1].id,style);
+                    circleText.style.fontSize = 16;
+                    circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+                    containerLabels.addChild(circleText);
+                }
+                
                 count--;
             }
         }
