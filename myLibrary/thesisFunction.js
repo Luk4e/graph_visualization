@@ -579,14 +579,14 @@
 
         let t2DensityFiel = performance.now();
 
-        console.log("Time needed to compute Density Field: "  + (t2DensityFiel - t1Draw) + " milliseconds.");
+        console.log(`Time needed to compute Density Field: ${(t2DensityFiel - t1Draw)} +  milliseconds.`);
 
         let t3ClusterStart = performance.now();
         //compute of cluster 
         clusterCompute(pixiGraph,wid,high,indici,rangeFiledComp,mat);
         let t3ClusterEnd = performance.now();
 
-        console.log("Time needed to compute Cluster: "  + (t3ClusterEnd - t3ClusterStart) + " milliseconds.");
+        console.log(`Time needed to compute Cluster: ${(t3ClusterEnd - t3ClusterStart)} milliseconds.`);
 
         let t4EdgeAggStart = performance.now();
         //compute of aggregate edges
@@ -595,10 +595,10 @@
 
         let t4EdgeAggEnd = performance.now();
 
-        console.log("Time needed to compute Edge Agg all: "  + (t4EdgeAggEnd - t4EdgeAggStart) + " milliseconds.");
+        console.log(`Time needed to compute Edge Agg all: ${(t4EdgeAggEnd - t4EdgeAggStart)} milliseconds.`);
 
 
-        console.log("Time needed to compute All : "  + (t4EdgeAggEnd - t1Draw) + " milliseconds.");
+        console.log(`Time needed to compute All : ${(t4EdgeAggEnd - t1Draw)} milliseconds.`);
         
 
         
@@ -623,7 +623,7 @@
         
         let t2Draw = performance.now();
         
-        console.log("Time needed to draw: "  + (t2Draw - t4EdgeAggEnd) + " milliseconds.");
+        console.log(`Time needed to draw: ${(t2Draw - t4EdgeAggEnd)} milliseconds.`);
 
         
 
@@ -703,7 +703,7 @@
         edgeComputeZoom(xstart,ystart,xfinish,yfinish,pixiGraph,links,graph,edgesContainerZoom,threshold,edgeThickness);
         
         let t2Edge = performance.now();
-        console.log("Time needed to compute edges: "  + (t2Edge - t1Draw) + " milliseconds.");
+        console.log(`Time needed to compute edges: ${(t2Edge - t1Draw)} milliseconds.`);
 
         if(maxVal.value>0){
             let scale = generateColorScale(maxVal,levelsNumber,sigmaMod,raggio);
@@ -726,7 +726,7 @@
 
         let t2Draw = performance.now();
         
-        console.log("Time needed to draw: "  + (t2Draw - t1Draw) + " milliseconds.");
+        console.log(`Time needed to draw: ${(t2Draw - t1Draw)} milliseconds.`);
         containerRootZoom.cacheAsBitmap = true;
 
         for(let i = 0; i<nodes;i++){
@@ -744,7 +744,7 @@
 
     }
 
-    function labelsView(labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,pixiGraph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
     
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -758,7 +758,7 @@
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
             
-            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            let temp = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
             
             let xx = temp.x;
             let yy = temp.y;
@@ -766,7 +766,7 @@
             if(( xx>(0) && xx<(high+Math.abs(high - wid)))){
                 if(( yy>(0) && yy<(wid+Math.abs(high - wid)))){
                     
-                    let selectedNode = pixiGraph.pixiNodes[graph.nodes[i]['id']];
+                    let selectedNode = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']];
                     if(maxDegree<selectedNode.degree){
                         maxDegree=selectedNode.degree;
                     }
@@ -827,21 +827,21 @@
                 circle.lineStyle(0);
                 circle.beginFill(0xDE3249, 1);
                 circle.drawCircle(1, 1, 3);
-                circle.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
-                circle.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+                circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                 circle.endFill();
                 containerLabels.addChild(circle);
                 if(labelsMap.size!=0){
                     let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
                     circleText.style.fontSize = 16;
-                    circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
-                    circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                     containerLabels.addChild(circleText);
                 }else{
                     let circleText = new PIXI.Text(nodeToDraw[1].id,style);
                     circleText.style.fontSize = 16;
-                    circleText.x = pixiGraph.pixiNodes[nodeToDraw[1].id].xCluster;
-                    circleText.y = pixiGraph.pixiNodes[nodeToDraw[1].id].yCluster;
+                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                     containerLabels.addChild(circleText);
                 }
                 

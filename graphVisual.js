@@ -174,7 +174,7 @@ sliderSigma.onchange = function() {
     computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
-        labelsView(MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH,pixiGraph);
+        labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
 sliderSigma.oninput = function() {
@@ -239,14 +239,14 @@ VIEWPORT
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
-            labelsView(MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH,pixiGraph);
+            labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .on('moved', function(){
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
-            labelsView(MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH,pixiGraph);
+            labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
@@ -256,7 +256,7 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        labelsView(MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH,pixiGraph);
+        labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         //viewport.pause = true;
 
     }else{
@@ -619,9 +619,9 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
 
     let t1 = performance.now();
 
-    console.log("Time needed to compute Layout: "  + (t1fmmm - t0fmmm) + " milliseconds.");
+    console.log(`Time needed to compute Layout: ${t1fmmm - t0fmmm}  milliseconds.`);
 
-    console.log("Time needed to compute Layout + Render : "  + (t1 - t0) + " milliseconds.");
+    console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
     document.getElementById('layoutTimePrintSpace').innerHTML = (t1fmmm - t0fmmm).toFixed();
     document.getElementById('totalTimePrintSpace').innerHTML = (t1 - t0).toFixed();
             
