@@ -810,8 +810,6 @@
             minimumDegree=Math.ceil((maxDegree-(maxDegree*(0.4+(viewport.lastViewport.scaleX/(60/100))/100))));
         }
 
-        //console.log(count)
-        //console.log(maxDegree)
 
         for(nodeToDraw of sortedByDegree){
             if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
@@ -833,7 +831,8 @@
                 containerLabels.addChild(circle);
                 if(labelsMap.size!=0){
                     let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
-                    circleText.style.fontSize = 16;
+                    //circleText.style.fontSize = 16;
+                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+5;
                     circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                     circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                     containerLabels.addChild(circleText);
