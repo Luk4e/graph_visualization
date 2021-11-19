@@ -817,7 +817,7 @@
             if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
 
                 let style = {
-                    font : 'bold 18px Arial',
+                    font : 'bold 16px Arial',
                     fill : '#ffffff',
                     stroke : '#000000',
                     strokeThickness : 2

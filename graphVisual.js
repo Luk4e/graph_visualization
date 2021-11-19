@@ -177,6 +177,7 @@ sliderSigma.onchange = function() {
         labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
+
 sliderSigma.oninput = function() {
     outputSigma.innerHTML = this.value/100;
     sigma = this.value/100;
@@ -520,7 +521,7 @@ document.getElementById('file').onchange = function () {
 
             for (let line = 3; line < (linesLength - 1); line++) {
                 if(lines[line].match(/\snode\s\[/)){
-                    MAPLABELS.set(lines[line+1].split(' ')[1],lines[line+2].split('"')[1])
+                    MAPLABELS.set(lines[line+1].split(' ')[1],lines[line+2].split('"')[1]);//1835
                 }
                 if(lines[line].match(/\sedge\s\[/)){
                     let source = lines[line+1].split(' ')[1];
