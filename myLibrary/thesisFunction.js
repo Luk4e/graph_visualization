@@ -635,10 +635,11 @@
         containerRoot.cacheAsBitmap = true;
     }
     //compute zoom render
-    function computeTextureZoom(xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRootZoom,edgesContainerZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
+    function computeTextureZoom(xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRootZoom,edgesContainerZoom,containerLabelsZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness,buttonActivation,viewport){   
     
         containerRootZoom.cacheAsBitmap = false;
         edgesContainerZoom.removeChildren();
+        containerLabelsZoom.removeChildren();
 
         let t1Draw = performance.now();
         let links = graph.edges.length;
@@ -725,7 +726,11 @@
         }
 
         let t2Draw = performance.now();
-        
+
+        if(buttonActivation.labelsActivation){
+            labelsViewZoom(pixiGraph,high,wid,MAPLABELS,averageDegree,viewport,containerLabelsZoom,GRAPH,buttonActivation);
+        }
+
         console.log(`Time needed to draw: ${(t2Draw - t1Draw)} milliseconds.`);
         containerRootZoom.cacheAsBitmap = true;
 
@@ -818,7 +823,7 @@
                     font : 'bold 16px Arial',
                     fill : '#ffffff',
                     stroke : '#000000',
-                    strokeThickness : 2
+                    strokeThickness : 2,
                 }
 
                 let circle = new PIXI.Graphics();
@@ -832,13 +837,13 @@
                 if(labelsMap.size!=0){
                     let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
                     //circleText.style.fontSize = 16;
-                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+5;
+                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
                     circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                     circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                     containerLabels.addChild(circleText);
                 }else{
                     let circleText = new PIXI.Text(nodeToDraw[1].id,style);
-                    circleText.style.fontSize = 16;
+                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
                     circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                     circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                     containerLabels.addChild(circleText);
@@ -913,4 +918,105 @@
                 edgesContainer.addChild(line);
             }
         }
+    }
+
+    function labelsViewZoom(pixiGraphStruct,high,wid,labelsMap,averageDegree,viewport,containerLabels,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    
+        let nodeOrderByCluster = new Map()
+        let maxDegree = 0;
+        let pointZero = new PIXI.Point(0,0);
+        let count=0;
+        let sortedByDegree;
+        let varianceDegree=0;
+        let nodeCount=0;
+        let minimumDegree = 0;
+
+        //selection of nodes inside de view to render
+        for(let i = 0; i<nodes;i++){
+            
+            let temp = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            
+            let xx = temp.x;
+            let yy = temp.y;
+
+            if(( xx>(0) && xx<(high+Math.abs(high - wid)))){
+                if(( yy>(0) && yy<(wid+Math.abs(high - wid)))){
+                    
+                    let selectedNode = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']];
+                    if(maxDegree<selectedNode.degree){
+                        maxDegree=selectedNode.degree;
+                    }
+                    if(!nodeOrderByCluster.has(selectedNode.clusterName)){
+                        let tempObj = {
+                            id : selectedNode.id,
+                            degree:selectedNode.degree,
+                            clusterValue:selectedNode.clusterValue
+                        }
+                        nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                    }else{
+                        let tempObj = {
+                            id : selectedNode.id,
+                            degree:selectedNode.degree,
+                            clusterValue:selectedNode.clusterValue
+                        }
+                        if(nodeOrderByCluster.get(selectedNode.clusterName).degree<tempObj.degree){
+                            nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                        }
+                    }
+                    nodeCount++;
+                    varianceDegree += Math.pow((selectedNode.degree-averageDegree),2);
+
+                    count++;
+                }
+            }
+            
+        } 
+        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        
+        varianceDegree = Math.ceil((varianceDegree/count)); 
+
+ 
+        //minimumDegree=Math.ceil((maxDegree-(maxDegree*(0.4+(viewport.lastViewport.scaleX/(60/100))/100))));
+        minimumDegree=0;
+        count = count*0.05;
+
+        for(nodeToDraw of sortedByDegree){
+            if((nodeToDraw[1].degree>=minimumDegree && count>0)){
+
+                let style = {
+                    font : 'bold 16px Arial',
+                    fill : '#ffffff',
+                    stroke : '#000000',
+                    strokeThickness : 2,
+                }
+
+                let circle = new PIXI.Graphics();
+                circle.lineStyle(0);
+                circle.beginFill(0xDE3249, 1);
+                circle.drawCircle(1, 1, 3);
+                circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                circle.endFill();
+                containerLabels.addChild(circle);
+                if(labelsMap.size!=0){
+                    let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
+                    //circleText.style.fontSize = 16;
+                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
+                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                    containerLabels.addChild(circleText);
+                }else{
+                    let circleText = new PIXI.Text(nodeToDraw[1].id,style);
+                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
+                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                    containerLabels.addChild(circleText);
+                }
+                
+                count--;
+            }
+        }
+            
+        nodeOrderByCluster.clear();
+    
     }

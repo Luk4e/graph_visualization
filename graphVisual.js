@@ -3,7 +3,7 @@
 const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
-let pixiGraph = new graphClass("Primo");
+let pixiGraph = new graphClass("");
 const NODESDEGREE = new Map();
 let labelsList = new Map();
 const MAPLABELS = new Map();
@@ -96,6 +96,7 @@ let containerLabels = new PIXI.Container();
 //zoom
 let containerRootZoom = new PIXI.Container();
 let edgesContainerZoom = new PIXI.Container();
+let containerLabelsZoom = new PIXI.Container();
 
 //FAA for view of node and edges
 const BLURFILTER = new PIXI.filters.FXAAFilter();
@@ -177,12 +178,10 @@ sliderSigma.onchange = function() {
         labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
-
 sliderSigma.oninput = function() {
     outputSigma.innerHTML = this.value/100;
     sigma = this.value/100;
 }
-
 sliderThresholdAlpha.onchange  = function() {
     //computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
     edgeCompute(Math.round(Math.max(HIGH,WID)/2),WID,HIGH,pixiGraph,GRAPH.edges.length,GRAPH,edgesContainer,thresholdComp,edgeThickness);
@@ -192,7 +191,6 @@ sliderThresholdAlpha.oninput  = function() {
     thresholdComp = this.value/100;
     outputThresholdAlpha.innerHTML = thresholdComp;
 }
-
 sliderRangeField.onchange  = function() {
     computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 }
@@ -236,14 +234,14 @@ VIEWPORT
         outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
         
 
-        document.getElementById
+        //document.getElementById
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
             labelsView(pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
-    .on('moved', function(){
+    .on('moved-end', function(){
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
@@ -264,6 +262,8 @@ function searchLabel(){
         buttonActivation.labelsActivation = false;
         VIEWPORT.pause = false;
         containerLabels.removeChildren();
+        containerLabelsZoom.removeChildren();
+
       }
 }
 //button zoom actions
@@ -272,23 +272,20 @@ function changestatuszoom(){
     if(!buttonActivation.zoomActivation){
         document.getElementById("magnifying").style.visibility = 'visible';
         buttonActivation.zoomActivation = true;
-        VIEWPORT.pause = true;
+        //VIEWPORT.pause = true;
         document.body.style.cursor = "crosshair"
-        //selectedAreaZoom = new PIXI.Graphics();
-        //selectedAreaZoom.lineStyle(2,0x000000);
-        //selectedAreaZoom.drawRect(0,0,100,100);
-        //selectedAreaZoom.visible = false;
-        //viewport.addChild(selectedAreaZoom);
+        
     }else{
         document.getElementById("magnifying").style.visibility = 'hidden';
-        VIEWPORT.pause = false;
+        //VIEWPORT.pause = false;
         buttonActivation.zoomActivation = false;
         document.body.style.cursor = "default"
         containerRootZoom.removeChildren();
         edgesContainerZoom.removeChildren();
+        containerLabelsZoom.removeChildren();
         containerRootZoom.cacheAsBitmap = false;
-        //viewport.removeChild(selectedAreaZoom);
 
+        
     }
 }
 //mouse event listener for discover mouse position to compute zoom in a specific area
@@ -299,16 +296,9 @@ function changestatuszoom(){
 
 document.getElementById("graph").addEventListener("mousedown", function(e) {
     mousedowncontroll = true;
-    if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
-        //selectedAreaZoom.visible = false;
-    }
-});
-
-//cambia secondo lo zoom quindi è da riverede
-document.getElementById("graph").addEventListener("mousemove", function(e){
-
+    
     if(mousedowncontroll){
-        if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
+        if(buttonActivation.zoomActivation){
 
             let rect = e.target.getBoundingClientRect();
 
@@ -320,23 +310,25 @@ document.getElementById("graph").addEventListener("mousemove", function(e){
 
             position.xend = position.xstart;
             position.yend = position.ystart;
-            computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+            computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
         }
     }
-
 });
+
+//cambia secondo lo zoom quindi è da riverede
+//document.getElementById("graph").addEventListener("mousemove", function(e){
+//});
 
 document.getElementById("graph").addEventListener("mouseup", function() {
     mousedowncontroll = false;
-
-    if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
+    //if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
         
         //selectedAreaZoom.x = position.xstart;
         //selectedAreaZoom.y = position.ystart;
         //selectedAreaZoom.visible = true;
 
         //viewport.addChild(selectedAreaZoom);
-    }
+    //}
 
 });
 
@@ -574,7 +566,7 @@ document.getElementById('file').onchange = function () {
 
 
     };
-    reader.readAsText(file);
+    reader.readAsText(file,'ISO-8859-1');
     reader = null;
 };
 //function that is executed after file loading 
@@ -617,6 +609,7 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     app.stage.addChild(containerLabels);
     app2.stage.addChild(containerRootZoom);
     app2.stage.addChild(edgesContainerZoom);
+    app2.stage.addChild(containerLabelsZoom);
 
     let t1 = performance.now();
 
@@ -840,7 +833,7 @@ async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
 function resetParameters(){
 
     //reset of graph values and pixi containers
-    pixiGraph = new graphClass("Primo");
+    pixiGraph = new graphClass("");
     NODESDEGREE.clear();
     GRAPH.nodes.length = 0;
     GRAPH.edges.length = 0;
@@ -856,6 +849,7 @@ function resetParameters(){
     edgesContainerZoom.removeChildren();
     containerRootZoom.removeChildren();
     containerLabels.removeChildren();
+    containerLabelsZoom.removeChildren();
     //slider parameters
 
     sigma = 0.5;
