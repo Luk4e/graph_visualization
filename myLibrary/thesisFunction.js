@@ -834,6 +834,7 @@
                 circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                 circle.endFill();
                 containerLabels.addChild(circle);
+
                 if(labelsMap.size!=0){
                     let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
                     //circleText.style.fontSize = 16;

@@ -8,6 +8,8 @@ const NODESDEGREE = new Map();
 let labelsList = new Map();
 const MAPLABELS = new Map();
 
+const MAPVERTEXEDGES = new Map();
+
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
 if(DISABLECONSOLELOG){
     console.log = () => {};
@@ -342,6 +344,7 @@ document.getElementById('file').onchange = function () {
     if (GRAPH.nodes.length != 0) {
         resetParameters();
     }
+    MAPVERTEXEDGES.clear();
 
     let file = this.files[0];
     let reader = new FileReader();
@@ -355,8 +358,8 @@ document.getElementById('file').onchange = function () {
         let linesLength = lines.length;
         if (file.name.match(/.json/i)) {
 
-            for (let line = 0; line < (linesLength - 1); line++) {
-
+            for (let line = 0; line < (linesLength); line++) {
+                if(lines[line]===""){break}
                 let tab = lines[line].substring(1, lines[line].length - 2);
                 let firstSplit = tab.split("[")
                 let firstPart = firstSplit[0].split(",");
@@ -405,6 +408,11 @@ document.getElementById('file').onchange = function () {
                         nodeTemp[target] = targ;
                         GRAPH.nodes.push(nodeTemp[target]);
                     }
+                    if(MAPVERTEXEDGES.has(sourceNode)){
+                        MAPVERTEXEDGES.set(sourceNode,[...MAPVERTEXEDGES.get(sourceNode),target])
+                    }else{
+                        MAPVERTEXEDGES.set(sourceNode,[target])
+                    }
                     //check to draw edges, from a to b and from b to a, only one time like a undirected graph
                     if(!edgeSet.has(""+sourceNode+target) && !edgeSet.has(""+target+sourceNode)){
                         GRAPH.edges.push({ "source": nodeTemp[sourceNode], "target": nodeTemp[target]});
@@ -435,6 +443,7 @@ document.getElementById('file').onchange = function () {
                 let xTarget = (isNaN(parseFloat(tab[4]))) ? 0.0 : parseFloat(tab[4]);
                 let yTarget = (isNaN(parseFloat(tab[5]))) ? 0.0 : parseFloat(tab[5]);
 
+              
                 let sou = {
                     "id": source
                 }
@@ -448,6 +457,9 @@ document.getElementById('file').onchange = function () {
                     nodeTemp[source] = sou;
                     tempSet.add(source);
                     GRAPH.nodes.push(nodeTemp[source]);
+                    //create list of nightbour
+                    MAPVERTEXEDGES.set(source,[target]);
+
                      //if the layout was precalculated
                     if(!layoutComputCheck){
 
@@ -466,6 +478,8 @@ document.getElementById('file').onchange = function () {
                     }   
                 }else{
                     NODESDEGREE.set(source,(NODESDEGREE.get(source)+1));
+                    MAPVERTEXEDGES.set(source,[...MAPVERTEXEDGES.get(source),target])
+
                     if(!layoutComputCheck){
                         pixiGraph.pixiNodes[source].addOneDegree();
                     }
@@ -476,6 +490,9 @@ document.getElementById('file').onchange = function () {
                     nodeTemp[target] = tar;
                     tempSet.add(target);
                     GRAPH.nodes.push(nodeTemp[target]);
+
+                    MAPVERTEXEDGES.set(target,[source])
+
                      //if the layout was precalculated
                     if(!layoutComputCheck){
 
@@ -499,6 +516,8 @@ document.getElementById('file').onchange = function () {
                     }   
                 }else{
                     NODESDEGREE.set(target,(NODESDEGREE.get(target)+1));
+                    MAPVERTEXEDGES.set(target,[...MAPVERTEXEDGES.get(target),source])
+
                     if(!layoutComputCheck){
                         pixiGraph.pixiNodes[target].addOneDegree();
                     }
@@ -512,12 +531,12 @@ document.getElementById('file').onchange = function () {
             let weighted = lines[2][10];
 
             for (let line = 3; line < (linesLength - 1); line++) {
-                if(lines[line].match(/\snode\s\[/)){
-                    MAPLABELS.set(lines[line+1].split(' ')[1],lines[line+2].split('"')[1]);//1835
+                if(lines[line].match(/\snode\s\[/)){    
+                    MAPLABELS.set(parseInt(lines[line+1].split(' ')[1]),lines[line+2].split('"')[1]);//1835
                 }
                 if(lines[line].match(/\sedge\s\[/)){
-                    let source = lines[line+1].split(' ')[1];
-                    let target = lines[line+2].split(' ')[1];     
+                    let source = parseInt(lines[line+1].split(' ')[1]);
+                    let target = parseInt(lines[line+2].split(' ')[1]);     
                     
                     let sou = {
                         "id": source
@@ -531,19 +550,30 @@ document.getElementById('file').onchange = function () {
                         nodeTemp[source] = sou;
                         tempSet.add(source);
                         GRAPH.nodes.push(nodeTemp[source]);
+                         //create list of nightbour
+                        MAPVERTEXEDGES.set(source,[target]);
+
                         
                     }else{
                         NODESDEGREE.set(source,(NODESDEGREE.get(source)+1));
+                        //create list of nightbour
+                        MAPVERTEXEDGES.set(source,[...MAPVERTEXEDGES.get(source),target])
+
                         
                     }
                     if (!tempSet.has(target)) {
                         NODESDEGREE.set(target,1);
                         nodeTemp[target] = tar;
                         tempSet.add(target);
-                        GRAPH.nodes.push(nodeTemp[target]);                    
+                        GRAPH.nodes.push(nodeTemp[target]);  
+                         //create list of nightbour
+                        MAPVERTEXEDGES.set(target,[source]);
+                  
                     }else{
                         NODESDEGREE.set(target,(NODESDEGREE.get(target)+1));
-                        
+                        //create list of nightbour
+                        MAPVERTEXEDGES.set(target,[...MAPVERTEXEDGES.get(target),source])
+
                     }
     
                     GRAPH.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
@@ -552,6 +582,8 @@ document.getElementById('file').onchange = function () {
                  
             }
         }
+        
+        
         edgeSet.clear();
         tempSet.clear();
 
@@ -592,6 +624,10 @@ function drawGraph(graph,pixiGraph,viewport,document) {
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }else if(!execPageRank && !layoutComputCheck){
+        //for(let k = 0;k<graph.nodes;k++){
+        //    pixiGraph.pixiNodes[graph.nodes[k]].setArchList(MAPVERTEXEDGES.get(graph.nodes[k]));
+
+        //}
         firstLayoutCompute(t0,t0,t0)
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
@@ -685,7 +721,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                         
                         viewport.addChild(circle);
 
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,NODESDEGREE.get(e.data.nodes[i]['id']));
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,NODESDEGREE.get(e.data.nodes[i]['id']),MAPVERTEXEDGES.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(xxx,yyy,0);
                         pixiGraph.insertNodes(nodeIns);
                 
@@ -702,7 +738,7 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
                        
                         viewport.addChild(circle);
                         
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,NODESDEGREE.get(e.data.nodes[i]['id']));
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,1,NODESDEGREE.get(e.data.nodes[i]['id']),MAPVERTEXEDGES.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
                         pixiGraph.insertNodes(nodeIns);
 
@@ -754,7 +790,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         let temp = parseFloat(e.data.nodes[i]['weight']);
                         //let temp = 1;                    
 
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,NODESDEGREE.get(e.data.nodes[i]['id']));
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,NODESDEGREE.get(e.data.nodes[i]['id']),MAPVERTEXEDGES.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(xxx,yyy,0);
                         pixiGraph.insertNodes(nodeIns);
                 
@@ -778,7 +814,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
                         
                         //let temp = 1;
 
-                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,NODESDEGREE.get(e.data.nodes[i]['id']));
+                        let nodeIns = new NodeClass(e.data.nodes[i]['id'],circle,circle.x,circle.y,temp,NODESDEGREE.get(e.data.nodes[i]['id']),MAPVERTEXEDGES.get(e.data.nodes[i]['id']));
                         nodeIns.setPixel(e.data.nodes[i]['x'],e.data.nodes[i]['y'],0);
                         pixiGraph.insertNodes(nodeIns);
 

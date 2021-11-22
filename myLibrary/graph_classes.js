@@ -92,9 +92,11 @@ class NodeClass{
         this.yCluster;
         this.clusterName;
         this.degree = degree;
-        this.clusterValue;
+        this.clusterValue;  
+        this.archlist = archlist;
     }
 
+  
     setXY(x,y){
         this.x = x;
         this.y = y;
@@ -121,5 +123,8 @@ class NodeClass{
         this.degree+=1;
     }
 
+    setArchList(edgesList){
+        this.archlist = edgesList;
+    }
 
 }
