@@ -749,7 +749,7 @@
 
     }
 
-    function labelsView(pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
     
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -759,6 +759,8 @@
         let varianceDegree=0;
         let nodeCount=0;
         let minimumDegree = 0;
+        let controlLabelAdiacent = {value:false};
+        let labelsAlreadyDisplayed = new Set();
 
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
@@ -781,7 +783,7 @@
                             degree:selectedNode.degree,
                             clusterValue:selectedNode.clusterValue
                         }
-                        nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                        nodeOrderByCluster.set(selectedNode.clusterName,tempObj);
                     }else{
                         let tempObj = {
                             id : selectedNode.id,
@@ -789,7 +791,7 @@
                             clusterValue:selectedNode.clusterValue
                         }
                         if(nodeOrderByCluster.get(selectedNode.clusterName).degree<tempObj.degree){
-                            nodeOrderByCluster.set(selectedNode.clusterName,tempObj)
+                            nodeOrderByCluster.set(selectedNode.clusterName,tempObj);
                         }
                     }
                     nodeCount++;
@@ -808,7 +810,6 @@
         varianceDegree = Math.ceil((varianceDegree/count)); 
         //console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
 
-
         if(!seeAllLabels){
 
             count = Math.ceil(count*(viewport.lastViewport.scaleX/(60/100))/100);
@@ -825,13 +826,13 @@
                     stroke : '#000000',
                     strokeThickness : 2,
                 }
-
                 let circle = new PIXI.Graphics();
                 circle.lineStyle(0);
                 circle.beginFill(0xDE3249, 1);
                 circle.drawCircle(1, 1, 3);
                 circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                 circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                labelsAlreadyDisplayed.add(pixiGraphStruct.pixiNodes[nodeToDraw[1].id].clusterName);
                 circle.endFill();
                 containerLabels.addChild(circle);
 
@@ -841,15 +842,25 @@
                     circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
                     circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                     circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                    circleText.interactive = true;
+
+                    circleText.refToId = nodeToDraw[1].id;
                     containerLabels.addChild(circleText);
+                    circleText.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+                    
+
                 }else{
                     let circleText = new PIXI.Text(nodeToDraw[1].id,style);
                     circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
                     circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                     circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                    circleText.interactive = true;
+                    circleText.refToId = nodeToDraw[1].id;
+
                     containerLabels.addChild(circleText);
+                    circleText.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+
                 }
-                
                 count--;
             }
         }
@@ -1020,4 +1031,93 @@
             
         nodeOrderByCluster.clear();
     
+    }
+
+    function showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot){
+
+        if(controlLabelAdiacent.value){
+            containerAdiacentLabels.removeChildren();
+            controlLabelAdiacent.value = false;
+            //containerLabels = true;
+        }else{
+            let nodeOrderByClusterAdiac = new Map()
+            let sortedByDegreeAdiac;
+            containerAdiacentLabels.removeChildren();
+            let maxDegree = 0;
+
+            for(edge of pixiGraphStruct.pixiNodes[circleText.refToId].archlist){
+
+                let tempAdiac = pixiGraphStruct.pixiNodes[edge].pixiNode.toGlobal(pointZero);
+
+                let xxAdiac = tempAdiac.x;
+                let yyAdiac = tempAdiac.y;
+
+                if(( xxAdiac>(0) && xxAdiac<(high+Math.abs(high - wid)))){
+                    if(( yyAdiac>(0) && yyAdiac<(wid+Math.abs(high - wid)))){
+                        
+                        let selectedNodeAdiac = pixiGraphStruct.pixiNodes[edge];
+                        if(maxDegree<selectedNodeAdiac.degree){
+                            maxDegree=selectedNodeAdiac.degree;
+                        }
+                        if(!nodeOrderByClusterAdiac.has(selectedNodeAdiac.clusterName)){
+                            let tempObjAdiac = {
+                                id : selectedNodeAdiac.id,
+                                degree:selectedNodeAdiac.degree,
+                                clusterValue:selectedNodeAdiac.clusterValue
+                            }
+                            nodeOrderByClusterAdiac.set(selectedNodeAdiac.clusterName,tempObjAdiac);
+                        }else{
+                            let tempObjAdiac = {
+                                id : selectedNodeAdiac.id,
+                                degree:selectedNodeAdiac.degree,
+                                clusterValue:selectedNodeAdiac.clusterValue
+                            }
+                            if(nodeOrderByClusterAdiac.get(selectedNodeAdiac.clusterName).degree<tempObjAdiac.degree){
+                                nodeOrderByClusterAdiac.set(selectedNodeAdiac.clusterName,tempObjAdiac);
+                            }
+                        }
+                    }
+                }
+            
+            } 
+            sortedByDegreeAdiac = new Map([...nodeOrderByClusterAdiac.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+            //console.log((viewport.lastViewport.scaleX/(60/100))/100);
+            let styleAdiac = {
+                font : 'bold 16px Arial',
+                fill : '#ffffff',
+                stroke : '#000000',
+                strokeThickness : 2,
+            }                
+        
+            for(edgeSel of sortedByDegreeAdiac){
+
+                if(!labelsAlreadyDisplayed.has(pixiGraphStruct.pixiNodes[edgeSel[1].id].clusterName)){
+                   
+                    let circleAdiac = new PIXI.Graphics();
+                    let circleTextAdiac;
+                    circleAdiac.lineStyle(0);
+                    circleAdiac.beginFill(0xDE3249, 1);
+                    circleAdiac.drawCircle(1, 1, 3);
+                    circleAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
+                    circleAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
+                    circleAdiac.endFill();
+                    containerAdiacentLabels.addChild(circleAdiac);
+
+                    if(labelsMap.size!=0){
+                        circleTextAdiac = new PIXI.Text(labelsMap.get(edgeSel[1].id),styleAdiac);
+                    }else{
+                        circleTextAdiac = new PIXI.Text(edgeSel[1].id,styleAdiac);
+                    }
+                    circleTextAdiac.style.fontSize = (Math.floor((15/maxDegTot)*pixiGraphStruct.pixiNodes[edgeSel[1].id].degree))+10;
+                    circleTextAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
+                    circleTextAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
+                    
+                    containerAdiacentLabels.addChild(circleTextAdiac);
+                } 
+                
+            }
+            controlLabelAdiacent.value = true;
+            //containerLabels.visible = false;
+        }
+        
     }
