@@ -76,7 +76,7 @@ let outputSliderRangeField = document.getElementById("rangeFieldDisplay");
 let outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
 let outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
 
-thresholdComp = 0.4;
+thresholdComp = 0.20;
 sliderThresholdAlpha.value = thresholdComp*100;
 outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
 
@@ -232,7 +232,7 @@ VIEWPORT
         sliderSigma.value = sigma*100;
         outputSigma.innerHTML = sigma.toFixed(3);
 
-        thresholdComp = (1-(0.6+(0.35/60)*VIEWPORT.lastViewport.scaleX));
+        thresholdComp = (1-(0.75+(0.20/60)*VIEWPORT.lastViewport.scaleX));
         sliderThresholdAlpha.value = thresholdComp*100;
         outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
         
