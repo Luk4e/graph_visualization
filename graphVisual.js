@@ -11,7 +11,7 @@ const MAPLABELS = new Map();
 const MAPVERTEXEDGES = new Map();
 
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
-if(DISABLECONSOLELOG){
+if (DISABLECONSOLELOG) {
     console.log = () => {};
 }
 //dimension of main rendering windows 
@@ -31,7 +31,7 @@ let Application = PIXI.Application,
 //global constant value
 const SCALEFACTOR = 10;
 const RADIUS = 4;
-let sigma  = 0.5;
+let sigma  = 1.0;
 let maxVal = {"value":0};//global maxvalue
 let labelTemp;
 
@@ -228,7 +228,7 @@ VIEWPORT
         //if(viewport.lastViewport.scaleX>0 && viewport.lastViewport.scaleX<=2){
         //    sigma = 0.4*(viewport.lastViewport.scaleX);
         //}
-        sigma = 0.5+(1.0/60)*VIEWPORT.lastViewport.scaleX;
+        sigma = 1.0+(1.0/60)*VIEWPORT.lastViewport.scaleX;
         sliderSigma.value = sigma*100;
         outputSigma.innerHTML = sigma.toFixed(3);
 

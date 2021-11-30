@@ -756,11 +756,13 @@
         let pointZero = new PIXI.Point(0,0);
         let count=0;
         let sortedByDegree;
-        let varianceDegree=0;
+        //let varianceDegree=0;
         let nodeCount=0;
         let minimumDegree = 0;
         let controlLabelAdiacent = {value:false};
         let labelsAlreadyDisplayed = new Set();
+        
+        containerLabels.removeChildren();
 
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
@@ -795,7 +797,7 @@
                         }
                     }
                     nodeCount++;
-                    varianceDegree += Math.pow((selectedNode.degree-averageDegree),2);
+                    //varianceDegree += Math.pow((selectedNode.degree-averageDegree),2);
 
                     count++;
                 }
@@ -807,7 +809,7 @@
         //console.log(viewport.lastViewport.scaleX/(60/100));
         //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
 
-        varianceDegree = Math.ceil((varianceDegree/count)); 
+        //varianceDegree = Math.ceil((varianceDegree/count)); 
         //console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
 
         if(!seeAllLabels){
@@ -1038,7 +1040,7 @@
         if(controlLabelAdiacent.value){
             containerAdiacentLabels.removeChildren();
             controlLabelAdiacent.value = false;
-            //containerLabels = true;
+
         }else{
             let nodeOrderByClusterAdiac = new Map()
             let sortedByDegreeAdiac;
@@ -1111,7 +1113,9 @@
                     circleTextAdiac.style.fontSize = (Math.floor((15/maxDegTot)*pixiGraphStruct.pixiNodes[edgeSel[1].id].degree))+10;
                     circleTextAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
                     circleTextAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
-                    
+                    circleTextAdiac.refToId = edgeSel[1].id;
+                    circleTextAdiac.interactive = true;
+                    circleTextAdiac.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleTextAdiac,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot)})
                     containerAdiacentLabels.addChild(circleTextAdiac);
                 } 
                 
