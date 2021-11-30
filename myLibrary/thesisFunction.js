@@ -1113,9 +1113,9 @@
                     circleTextAdiac.style.fontSize = (Math.floor((15/maxDegTot)*pixiGraphStruct.pixiNodes[edgeSel[1].id].degree))+10;
                     circleTextAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
                     circleTextAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
-                    circleTextAdiac.refToId = edgeSel[1].id;
-                    circleTextAdiac.interactive = true;
-                    circleTextAdiac.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleTextAdiac,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot)})
+                    //circleTextAdiac.refToId = edgeSel[1].id;
+                    //circleTextAdiac.interactive = true;
+                    //circleTextAdiac.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleTextAdiac,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot)})
                     containerAdiacentLabels.addChild(circleTextAdiac);
                 } 
                 
