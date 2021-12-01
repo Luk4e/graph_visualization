@@ -47,28 +47,64 @@
         <div class="row up">
             <table class="menuModValue">
                 <tr>
-                    <td> <p> Vertex Aggr: </p> </td>
+
+                    <td class="inputFileBSpace">
+                        <input type="file" name="file" id="file" class="inputfile">
+                        <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label>
+                    </td>   
+
+                    <td><p class="specTab" >File: </p></td>
+                    <td><p clas="resTab" id="fileNameSpace"></p></td>
+
+                    <td><p class="specTab">PageRank: </p></td>
+                    <td class="leftAlign"><input type="checkbox" id="computePageRankCheckbox" /></td>
+
+                    <td><p class="specTab">FM3: </p></td>
+                    <td class="leftAlign"><input type="checkbox" id="computeLayoutCheckbox" checked/></td>
+ 
+                    <td><p class="specTab" >Nodes: </p></td>
+                    <td><p  id="nodePrintSpace" class="leftAlign"></p></td>
+
+                    <td><p class="specTab">Edges: </p></td>
+                    <td><p  id="edgesPrintSpace" class="leftAlign"></p></td>
+
+                    <!-- <td><p class="specTab">PageRank: </p></td>
+                    <td><p clas="resTab" id="pageRankYesOrNo"></p></td> -->
+
+                    <td><p class="specTab">Layout [ms]: </p></td>
+                    <td><p  id="layoutTimePrintSpace" class="leftAlign"></p></td>
+
+                    <td><p class="specTab">Total [ms]: </p></td>
+                    <td><p  id="totalTimePrintSpace" class="leftAlign"></p></td>
+                </tr>
+            </table>
+            <table class="menuModValue">
+
+                <tr>
+                    <td> <p class="modParameterBar"> Vertex Aggr: </p> </td>
                     <td> <p id="sigmaDisplay" class="valoriMod"> </p> </td>
                     <td> <input class="sliderBarr" type="range" min="1" max="400" value="100" id="sigmaSlider"> </td>
-                    <td class="spaceBetweenPref"></td>
+            
     
-                    <td> <p> Edges Aggr: </p> </td>
+                    <td> <p class="modParameterBar"> Edges Aggr: </p> </td>
                     <td> <p id="thresholdAlphaDisplay" class="valoriMod"></p> </td>
                     <td> <input class="sliderBarr" type="range" min="1" max="100" value="20" id="thresholdAlphaSlider"> </td>
-                    <td class="spaceBetweenPref"></td>
+            
     
-                    <td> <p> Cluster Aggr: </p> </td>
+                    <td> <p class="modParameterBar"> Cluster Aggr: </p> </td>
                     <td> <p id="rangeFieldDisplay" class="valoriMod"></p> </td>
                     <td> <input class="sliderBarr" type="range" min="10" max="100" value="10" id="rangeFieldSlider"> </td>
-                    <td class="spaceBetweenPref"></td>
+               
     
-                    <td> <p> Edge Thickness: </p> </td>
+                    <td> <p class="modParameterBar"> Edge Thickness: </p> </td>
                     <td> <p id="maxEdgeThicknessDisplay" class="valoriMod"></p> </td>
                     <td> <input class="sliderBarr" type="range" min="10" max="150" value="50" id="maxEdgeThicknessSlider"></td>
                    
                     <td> <button type="button" class="buttons" id="labelButton" onclick="searchLabel()">Labels</button> </td>
                     <td><input type="checkbox" id="seeAllLabels"> All</input> </td>
-
+                    
+                
+                    
                 </tr>
             </table>
            
@@ -76,50 +112,23 @@
     
         </div>
         <div class="row mid">
-            <div class="col left">
+
+            <div class="col middle" id="graph">
                 <div id="fpsmeterstat"></div>
-                <table id="tableSpec">
-                
+            </div>
+            <div class="col right">
+                <table class="zoomZone">
                     <tr>
-                        <td class="inputFileBSpace">
-                            <input type="file" name="file" id="file" class="inputfile">
-                            <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label>
-                        </td>   
-                    </tr>
-                    <tr>
-                        <td><p class="specTab">PageRank: </p></td>
-                        <td><input type="checkbox" id="computePageRankCheckbox" /></td>
-                    </tr>
-                    <tr>
-                        <td><p class="specTab">FM3: </p></td>
-                        <td><input type="checkbox" id="computeLayoutCheckbox" checked/></td>
+                        <td> <button type="button"  id="zoomOnPointButton" class="buttons" onclick="changestatuszoom()">Zoom</button> </td>
+                        <td class="spaceBetweenPref"></td>
+    
+                        <td> <p> zoom  </p> </td>
+                        <td> <p id="zoomIntensityDisplay" class="valoriMod"></p> </td>
+                        <td> <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider"> </td>           
                     </tr>
                     <tr>
-                        <td><p class="specTab" >File: </p></td>
-                        <td><p clas="resTab" id="fileNameSpace"></p></td>
+                        <div id="magnifying"></div>
                     </tr>
-                    <tr>
-                        <td><p class="specTab" >Nodes: </p></td>
-                        <td><p clas="resTab" id="nodePrintSpace"></p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="specTab">Edges: </p></td>
-                        <td><p clas="resTab" id="edgesPrintSpace"></p></td>
-                    </tr>
-                    <tr >
-                        <td><p class="specTab">PageRank: </p></td>
-                        <td><p clas="resTab" id="pageRankYesOrNo"></p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="specTab">Layout time [ms]: </p></td>
-                        <td><p clas="resTab" id="layoutTimePrintSpace"></p></td>
-                    </tr>
-                    
-                    <tr >
-                        <td><p class="specTab">Total time [ms]: </p></td>
-                        <td><p clas="resTab" id="totalTimePrintSpace"></p></td>
-                    </tr>
-                    
                 </table>
                 <table>
                     <tr>
@@ -160,25 +169,6 @@
                         <td clas="resTab" >
                             <p id="CARis"></p>
                         </td>
-                    </tr>
-                </table>
-    
-            </div>
-            <div class="col middle" id="graph"></div>
-            <div class="col right">
-                
-                
-                <table class="zoomZone">
-                    <tr>
-                        <td> <button type="button"  id="zoomOnPointButton" class="buttons" onclick="changestatuszoom()">Zoom</button> </td>
-                        <td class="spaceBetweenPref"></td>
-    
-                        <td> <p> zoom : </p> </td>
-                        <td> <p id="zoomIntensityDisplay" class="valoriMod"></p> </td>
-                        <td> <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider"> </td>           
-                    </tr>
-                    <tr>
-                        <div id="magnifying"></div>
                     </tr>
                 </table>
                      

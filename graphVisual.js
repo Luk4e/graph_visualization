@@ -15,8 +15,8 @@ if (DISABLECONSOLELOG) {
     console.log = () => {};
 }
 //dimension of main rendering windows 
-const WID = 1050;
-const HIGH = 750;
+const WID = 1400;
+const HIGH = 800;
 
 //dimension of zoom windows
 const WIDZOOM = 385;
@@ -127,10 +127,7 @@ Array.prototype.forEach.call(inputs, function showName(input) {
 
         fileName = fileName.split('\.')[0];
 
-        if (fileName)
-            document.getElementById('fileNameSpace').innerHTML = fileName ;
-        else
-            document.getElementById('fileNameSpace').innerHTML = labelVal ;
+        (fileName)?document.getElementById('fileNameSpace').innerHTML = fileName:document.getElementById('fileNameSpace').innerHTML = labelVal ;
         
     });
 });
@@ -232,7 +229,7 @@ VIEWPORT
         sliderSigma.value = sigma*100;
         outputSigma.innerHTML = sigma.toFixed(3);
 
-        thresholdComp = (1-(0.75+(0.20/60)*VIEWPORT.lastViewport.scaleX));
+        thresholdComp = (1-(0.8+(0.20/60)*VIEWPORT.lastViewport.scaleX));
         sliderThresholdAlpha.value = thresholdComp*100;
         outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
         
@@ -625,7 +622,7 @@ function drawGraph(graph,pixiGraph,viewport,document) {
 
     }else if(!execPageRank && layoutComputCheck){
         startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0);
-        document.getElementById('pageRankYesOrNo').innerHTML = "off"
+        //document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }else if(!execPageRank && !layoutComputCheck){
         for(let k = 0;k<graph.nodes;k++){
@@ -937,7 +934,7 @@ function fpsInitialize(){
     //Fps monitorining system 
     let stats = new Stats();
     stats.dom.style.position = 'relative';
-    stats.dom.style.float = 'right';
+    stats.dom.style.float = 'left';
     document.getElementById("fpsmeterstat").appendChild( stats.dom );
 
     function animate() {
