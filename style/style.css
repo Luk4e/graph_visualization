@@ -14,8 +14,9 @@ header {
     font-size: 14px;
     color: black;
     padding-left: 30px;
-}
+    box-shadow: 0px 2.98256px 7.4564px rgba(0, 0, 0, 0.5);
 
+}
 
 body,
 html {
