@@ -232,10 +232,10 @@ td{
 }
 
 #magnifying{
-    min-width: 392px;
-    min-height: 392px;
-    width: 394px;
-    height: 394px;
+    min-width: 306px;
+    min-height: 306px;
+    width: 306px;
+    height: 306px;
     position: relative;
     border-style: solid;
     border-color: #333;

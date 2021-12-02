@@ -19,8 +19,8 @@ const WID = 1400;
 const HIGH = 800;
 
 //dimension of zoom windows
-const WIDZOOM = 385;
-const HIGHZOOM = 385;
+const WIDZOOM = 300;
+const HIGHZOOM = 300;
 
 //Aliases for pixi 
 let Application = PIXI.Application,
