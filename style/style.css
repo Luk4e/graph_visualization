@@ -28,6 +28,9 @@ html {
     min-height: 800px;
 }   
 
+
+
+
 .mainBody{
     margin-left: 50px;
     margin-right: 50px;
@@ -77,13 +80,14 @@ td{
 }
 
 .valoriMod{
-    width: 10px;
+    width: 30px;
     text-align: center;
 }
 
 .menuModValue{
     margin: 0px;
     align-items: center;
+    margin-top: 5px;
 
 }
 .sliderBarr{
@@ -156,24 +160,25 @@ td{
 .inputfile+label:hover:after {
     width: 100%;
 }
+
 #labelInsert{
     text-align: left;
 }
+
 #greadButton{
     text-align: left;
 
 }
 
+
 .modParameterBar{
     text-align: right;
 }
-
 
 .tooltip {
     position: relative;
     display: inline-block;
 }
-
 
 .tooltip .tooltiptext {
     visibility: hidden;
@@ -193,12 +198,10 @@ td{
     margin-left: 30px;
 }
 
-
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 0.6;
 }
-
 
 .slider {
     -webkit-appearance: none;
@@ -241,7 +244,6 @@ td{
     border-color: #333;
 } 
 
-
 #labelButton{
     padding: 5px;
     margin: 10px;
@@ -261,7 +263,6 @@ h1{
     padding-left: 10px;
     padding-right: 10px;
 }
-
 
 .specGraphTable{
     align-items: center;

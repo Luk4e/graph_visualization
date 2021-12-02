@@ -182,7 +182,8 @@ sliderSigma.onchange = function() {
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
         containerAdiacentLabels.removeChildren();
-        labelsDisplayedText=labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+
     }
 }
 sliderSigma.oninput = function() {
@@ -227,7 +228,7 @@ sliderTextLabels.onchange = function() {
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
         containerAdiacentLabels.removeChildren();
-        labelsDisplayedText=labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
 
@@ -260,7 +261,7 @@ VIEWPORT
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
             containerAdiacentLabels.removeChildren();
-            labelsDisplayedText = labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .on('moved-end', function(){
@@ -268,7 +269,7 @@ VIEWPORT
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
             containerAdiacentLabels.removeChildren()
-            labelsDisplayedText = labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
@@ -278,7 +279,7 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        labelsDisplayedText = labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         //viewport.pause = true;
         
     }else{
@@ -334,7 +335,7 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
 
             position.xend = position.xstart;
             position.yend = position.ystart;
-            computeTextureZoom(position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
+            computeTextureZoom(baseTextSize,position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
         }
     }
 });
@@ -956,6 +957,7 @@ function fpsInitialize(){
     let stats = new Stats();
     stats.dom.style.position = 'relative';
     stats.dom.style.float = 'left';
+    stats.dom.style.margin = '10px'
     document.getElementById("fpsmeterstat").appendChild( stats.dom );
 
     function animate() {

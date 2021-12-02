@@ -635,7 +635,7 @@
         containerRoot.cacheAsBitmap = true;
     }
     //compute zoom render
-    function computeTextureZoom(xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRootZoom,edgesContainerZoom,containerLabelsZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness,buttonActivation,viewport){   
+    function computeTextureZoom(baseTextSize,xstart,ystart,xfinish,yfinish,graph,pixiGraph,scalare = 1,containerRootZoom,edgesContainerZoom,containerLabelsZoom,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness,buttonActivation,viewport){   
     
         containerRootZoom.cacheAsBitmap = false;
         edgesContainerZoom.removeChildren();
@@ -728,7 +728,7 @@
         let t2Draw = performance.now();
 
         if(buttonActivation.labelsActivation){
-            labelsViewZoom(pixiGraph,high,wid,MAPLABELS,averageDegree,viewport,containerLabelsZoom,GRAPH,buttonActivation);
+            labelsViewZoom(baseTextSize,pixiGraph,high,wid,MAPLABELS,averageDegree,viewport,containerLabelsZoom,GRAPH,buttonActivation);
         }
 
         console.log(`Time needed to draw: ${(t2Draw - t1Draw)} milliseconds.`);
@@ -861,7 +861,7 @@
                     circleText.refToId = nodeToDraw[1].id;
 
                     containerLabels.addChild(circleText);
-                    circleText.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+                    circleText.on('mouseup',() => {showAdiacentLabels(baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
 
                 }
                 count--;
