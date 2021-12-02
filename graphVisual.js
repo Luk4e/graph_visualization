@@ -1,13 +1,13 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
 const NODESDEGREE = new Map();
 let labelsList = new Map();
 const MAPLABELS = new Map();
-
+let labelsDisplayedText;
 const MAPVERTEXEDGES = new Map();
 
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
@@ -40,6 +40,7 @@ let thresholdComp = 0.2;
 let rangeFiledComp = 1;
 let edgeThickness = 5;
 let zoomIntens = 4;
+let baseTextSize = 10;
 let execPageRank = true;
 let layoutComputCheck = true;
 
@@ -69,17 +70,22 @@ let sliderThresholdAlpha = document.getElementById("thresholdAlphaSlider");
 let sliderRangeField = document.getElementById("rangeFieldSlider");
 let sliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessSlider");
 let sliderZoomIntensity = document.getElementById("zoomIntensitySlider");
+let sliderTextLabels = document.getElementById("labelsFontSizeSlider");
 
 let outputSigma = document.getElementById("sigmaDisplay");
 let outputThresholdAlpha = document.getElementById("thresholdAlphaDisplay");
 let outputSliderRangeField = document.getElementById("rangeFieldDisplay");
 let outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
 let outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
+let outputSliderTextLablesSize = document.getElementById("labelsFontSizeDisplay")
 
 thresholdComp = 0.20;
 sliderThresholdAlpha.value = thresholdComp*100;
 outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
 
+
+sliderTextLabels.value = baseTextSize*10;
+outputSliderTextLablesSize.innerHTML = baseTextSize;
 //variable for zoom and labels button 
 let position ={};
 let buttonActivation = {"zoomActivation":false,"labelsActivation":false}
@@ -167,6 +173,7 @@ outputThresholdAlpha.innerHTML = sliderThresholdAlpha.value/100;
 outputSliderRangeField.innerHTML = Math.round(sliderRangeField.value/10);
 outputSliderMaxEdgeThickness.innerHTML = Math.round(sliderMaxEdgeThickness.value/10);
 outputSliderZoomIntensity.innerHTML = sliderZoomIntensity.value;
+outputSliderTextLablesSize.innerHTML = sliderTextLabels.value/10;
 
 //re compute of texture after interaction with slider 
 
@@ -175,7 +182,7 @@ sliderSigma.onchange = function() {
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
         containerAdiacentLabels.removeChildren();
-        labelsView(containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsDisplayedText=labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
 sliderSigma.oninput = function() {
@@ -215,6 +222,20 @@ sliderZoomIntensity.oninput = function() {
 
 }
 
+
+sliderTextLabels.onchange = function() {
+    if(buttonActivation.labelsActivation){
+        containerLabels.removeChildren();
+        containerAdiacentLabels.removeChildren();
+        labelsDisplayedText=labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+    }
+}
+
+sliderTextLabels.oninput = function() {
+    outputSliderTextLablesSize.innerHTML =  Math.round(this.value/10);
+    baseTextSize = Math.round(this.value/10);
+}
+
 //end of sidebar part
 //viewport.plugins.plugins.wheel.options.percent, by default it is equal 0.1
 //Pixiviewport of the main view space to manage pan and zoom in and out
@@ -239,7 +260,7 @@ VIEWPORT
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
             containerAdiacentLabels.removeChildren();
-            labelsView(containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsDisplayedText = labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .on('moved-end', function(){
@@ -247,7 +268,7 @@ VIEWPORT
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
             containerAdiacentLabels.removeChildren()
-            labelsView(containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsDisplayedText = labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
@@ -257,9 +278,9 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        labelsView(containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsDisplayedText = labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         //viewport.pause = true;
-
+        
     }else{
         buttonActivation.labelsActivation = false;
         VIEWPORT.pause = false;
