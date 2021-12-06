@@ -749,7 +749,7 @@
 
     }
 
-    function labelsView(baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
     
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -822,7 +822,7 @@
 
         for(nodeToDraw of sortedByDegree){
             if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
-
+                let circleText;
                 let style = {
                     font : 'bold 16px Arial',
                     fill : '#ffffff',
@@ -832,38 +832,33 @@
                 let circle = new PIXI.Graphics();
                 circle.lineStyle(0);
                 circle.beginFill(0xDE3249, 1);
-                circle.drawCircle(1, 1, 3);
+                circle.drawCircle(1, 1, 5);
                 circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                 circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                 labelsAlreadyDisplayed.add(pixiGraphStruct.pixiNodes[nodeToDraw[1].id].clusterName);
                 circle.endFill();
+                circle.interactive = true;
                 containerLabels.addChild(circle);
 
                 if(labelsMap.size!=0){
-                    let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
-                    //circleText.style.fontSize = 16;
-                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
-                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
-                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
-                    circleText.interactive = true;
-
-                    circleText.refToId = nodeToDraw[1].id;
-                    containerLabels.addChild(circleText);
-                    circleText.on('mouseup',() => {showAdiacentLabels(baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
-                    labelsDisplayedText.push(circleText)
-
+                    circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
                 }else{
-                    let circleText = new PIXI.Text(nodeToDraw[1].id,style);
-                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+10;
-                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
-                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
-                    circleText.interactive = true;
-                    circleText.refToId = nodeToDraw[1].id;
-
-                    containerLabels.addChild(circleText);
-                    circleText.on('mouseup',() => {showAdiacentLabels(baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
-
+                    circleText = new PIXI.Text(nodeToDraw[1].id,style);
                 }
+
+                //circleText.style.fontSize = 16;
+                circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
+                circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                circleText.interactive = true;
+
+                circleText.refToId = nodeToDraw[1].id;
+                containerLabels.addChild(circleText);
+                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+                circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
+                labelsDisplayedText.push(circleText)
+
+                
                 count--;
             }
         }
@@ -1000,7 +995,7 @@
 
         for(nodeToDraw of sortedByDegree){
             if((nodeToDraw[1].degree>=minimumDegree && count>0)){
-
+                let circleText;
                 let style = {
                     font : 'bold 16px Arial',
                     fill : '#ffffff',
@@ -1015,21 +1010,24 @@
                 circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
                 circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
                 circle.endFill();
+                circle.interactive = true;
+
                 containerLabels.addChild(circle);
                 if(labelsMap.size!=0){
-                    let circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
-                    //circleText.style.fontSize = 16;
-                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
-                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
-                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
-                    containerLabels.addChild(circleText);
+                    circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
                 }else{
-                    let circleText = new PIXI.Text(nodeToDraw[1].id,style);
-                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
-                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
-                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
-                    containerLabels.addChild(circleText);
+                    circleText = new PIXI.Text(nodeToDraw[1].id,style);
+                     
                 }
+                    //circleText.style.fontSize = 16;
+                circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
+                circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+
+                circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
+
+                containerLabels.addChild(circleText);
+            
                 
                 count--;
             }
@@ -1039,13 +1037,14 @@
     
     }
 
-    function showAdiacentLabels(baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot){
-
-        if(controlLabelAdiacent.value){
+    function showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot){
+        if(controlLabelAdiacent.value && !buttonActivationZoom.zoomActivation){
+ 
             containerAdiacentLabels.removeChildren();
             controlLabelAdiacent.value = false;
 
-        }else{
+        }else if(!buttonActivationZoom.zoomActivation){
+ 
             let nodeOrderByClusterAdiac = new Map()
             let sortedByDegreeAdiac;
             containerAdiacentLabels.removeChildren();
@@ -1107,6 +1106,8 @@
                     circleAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
                     circleAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
                     circleAdiac.endFill();
+                    circleAdiac.interactive = true;
+
                     containerAdiacentLabels.addChild(circleAdiac);
 
                     if(labelsMap.size!=0){
@@ -1117,6 +1118,9 @@
                     circleTextAdiac.style.fontSize = (Math.floor((15/maxDegTot)*pixiGraphStruct.pixiNodes[edgeSel[1].id].degree))+baseTextSize;
                     circleTextAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
                     circleTextAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
+
+                    circleAdiac.on('mouseup',()=>{circleTextAdiac.visible = !circleTextAdiac.visible})
+
                     //circleTextAdiac.refToId = edgeSel[1].id;
                     //circleTextAdiac.interactive = true;
                     //circleTextAdiac.on('mouseup',() => {showAdiacentLabels(controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleTextAdiac,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot)})
@@ -1128,4 +1132,125 @@
             //containerLabels.visible = false;
         }
         
+    }
+    
+    function labelsViewPoint(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){
+
+
+        let nodeOrderByCluster = new Map()
+        let maxDegree = 0;
+        let pointZero = new PIXI.Point(0,0);
+        let count=0;
+        let sortedByDegree;
+        //let varianceDegree=0;
+        let nodeCount=0;
+        let minimumDegree = 0;
+        let controlLabelAdiacent = {value:false};
+        let labelsAlreadyDisplayed = new Set();
+        let labelsDisplayedText = new Array();
+        
+        containerLabels.removeChildren();
+
+        //selection of nodes inside de view to render
+        for(let i = 0; i<nodes;i++){
+            
+            //let temp = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            let temp = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']];
+
+            let xx = temp.x-xstart-25;
+            let yy = temp.y-ystart-25;
+            let distaOrig = Math.sqrt(Math.pow(xx,2)+Math.pow(yy,2));
+
+            if(distaOrig<maxDistance){
+                    
+                let selectedNode = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']];
+                if(maxDegree<selectedNode.degree){
+                    maxDegree=selectedNode.degree;
+                }
+                if(!nodeOrderByCluster.has(selectedNode.clusterName)){
+                    let tempObj = {
+                        id : selectedNode.id,
+                        degree:selectedNode.degree,
+                        clusterValue:selectedNode.clusterValue
+                    }
+                    nodeOrderByCluster.set(selectedNode.clusterName,tempObj);
+                }else{
+                    let tempObj = {
+                        id : selectedNode.id,
+                        degree:selectedNode.degree,
+                        clusterValue:selectedNode.clusterValue
+                    }
+                    if(nodeOrderByCluster.get(selectedNode.clusterName).degree<tempObj.degree){
+                        nodeOrderByCluster.set(selectedNode.clusterName,tempObj);
+                    }
+                }
+                nodeCount++;
+                //varianceDegree += Math.pow((selectedNode.degree-averageDegree),2);
+
+                count++;
+            }
+            
+        } 
+        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        //console.log((viewport.lastViewport.scaleX/(60/100))/100);
+        //console.log(viewport.lastViewport.scaleX/(60/100));
+        //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
+
+        //varianceDegree = Math.ceil((varianceDegree/count)); 
+        //console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
+
+        if(!seeAllLabels){
+
+            count = Math.ceil(count*(viewport.lastViewport.scaleX/(60/100))/100);
+            minimumDegree=Math.ceil((maxDegree-(maxDegree*(0.6+(viewport.lastViewport.scaleX/(40/100))/100))));
+        }
+
+
+        for(nodeToDraw of sortedByDegree){
+            if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
+                let circleText;
+                let style = {
+                    font : 'bold 16px Arial',
+                    fill : '#ffffff',
+                    stroke : '#000000',
+                    strokeThickness : 2,
+                }
+                let circle = new PIXI.Graphics();
+                circle.lineStyle(0);
+                circle.beginFill(0xDE3249, 1);
+                circle.drawCircle(1, 1, 5);
+                circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                labelsAlreadyDisplayed.add(pixiGraphStruct.pixiNodes[nodeToDraw[1].id].clusterName);
+                circle.endFill();
+                circle.interactive = true;
+                containerLabels.addChild(circle);
+
+                if(labelsMap.size!=0){
+                    circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
+                }else{
+                    circleText = new PIXI.Text(nodeToDraw[1].id,style);
+                }
+
+                //circleText.style.fontSize = 16;
+                circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
+                circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                circleText.interactive = true;
+
+                circleText.refToId = nodeToDraw[1].id;
+                containerLabels.addChild(circleText);
+                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+                circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
+                labelsDisplayedText.push(circleText)
+
+                
+                count--;
+            }
+        }
+
+            
+        nodeOrderByCluster.clear();
+    
+        return labelsDisplayedText;
     }

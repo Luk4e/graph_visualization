@@ -91,7 +91,7 @@ let position ={};
 let buttonActivation = {"zoomActivation":false,"labelsActivation":false}
 
 
-let mousedowncontroll = false;
+//let mousedowncontroll = false;
 
 document.getElementById("magnifying").style.visibility = 'hidden';
 
@@ -101,6 +101,7 @@ let edgesContainer = new PIXI.Container();
 let containerRoot = new PIXI.Container();
 let containerLabels = new PIXI.Container();
 let containerAdiacentLabels = new PIXI.Container();
+let containerLabelsOnClick = new PIXI.Container();
 //zoom
 let containerRootZoom = new PIXI.Container();
 let edgesContainerZoom = new PIXI.Container();
@@ -181,8 +182,9 @@ sliderSigma.onchange = function() {
     computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
+        containerLabelsOnClick.removeChildren()
         containerAdiacentLabels.removeChildren();
-        labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
 
     }
 }
@@ -223,12 +225,12 @@ sliderZoomIntensity.oninput = function() {
 
 }
 
-
 sliderTextLabels.onchange = function() {
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
         containerAdiacentLabels.removeChildren();
-        labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        containerLabelsOnClick.removeChildren();
+        labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
 
@@ -260,16 +262,18 @@ VIEWPORT
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
+            containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren();
-            labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .on('moved-end', function(){
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.removeChildren();
+            containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren()
-            labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
@@ -279,13 +283,13 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation){
         buttonActivation.labelsActivation = true;
-        labelsView(baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         //viewport.pause = true;
-        
     }else{
         buttonActivation.labelsActivation = false;
         VIEWPORT.pause = false;
         containerLabels.removeChildren();
+        containerLabelsOnClick.removeChildren();
         containerAdiacentLabels.removeChildren();
         containerLabelsZoom.removeChildren();
 
@@ -308,7 +312,9 @@ function changestatuszoom(){
         containerRootZoom.removeChildren();
         edgesContainerZoom.removeChildren();
         containerLabelsZoom.removeChildren();
+        containerLabelsOnClick.removeChildren();
         containerRootZoom.cacheAsBitmap = false;
+        computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
 
         
     }
@@ -320,24 +326,22 @@ function changestatuszoom(){
 //viewport.removeChild(selectedAreaZoom);
 
 document.getElementById("graph").addEventListener("mousedown", function(e) {
-    mousedowncontroll = true;
     
-    if(mousedowncontroll){
-        if(buttonActivation.zoomActivation){
+    let rect = e.target.getBoundingClientRect();
 
-            let rect = e.target.getBoundingClientRect();
+    position.xstart = e.clientX-rect.left;
+    position.ystart = e.clientY-rect.top; 
 
-            position.xstart = e.clientX-rect.left;
-            position.ystart = e.clientY-rect.top; 
+    position.xstart -= Math.ceil((200)/(zoomIntens));
+    position.ystart -= Math.ceil((200)/(zoomIntens));
 
-            position.xstart -= Math.ceil((200)/(zoomIntens));
-            position.ystart -= Math.ceil((200)/(zoomIntens));
+    position.xend = position.xstart;
+    position.yend = position.ystart;
 
-            position.xend = position.xstart;
-            position.yend = position.ystart;
-            computeTextureZoom(baseTextSize,position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
-        }
+    if(buttonActivation.zoomActivation){  
+        computeTextureZoom(baseTextSize,position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
     }
+ 
 });
 
 //cambia secondo lo zoom quindi è da riverede
@@ -345,7 +349,11 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
 //});
 
 document.getElementById("graph").addEventListener("mouseup", function() {
-    mousedowncontroll = false;
+    //mousedowncontroll = false;
+    if(buttonActivation.labelsActivation && document.getElementById("labelsOnClick").checked && !buttonActivation.zoomActivation){
+        labelsViewPoint(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+    }
+
     //if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
         
         //selectedAreaZoom.x = position.xstart;
@@ -667,6 +675,7 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     app.stage.addChild(VIEWPORT);
     app.stage.addChild(edgesContainer);
     app.stage.addChild(containerLabels);
+    app.stage.addChild(containerLabelsOnClick)
     app.stage.addChild(containerAdiacentLabels);
     app2.stage.addChild(containerRootZoom);
     app2.stage.addChild(edgesContainerZoom);
@@ -910,6 +919,7 @@ function resetParameters(){
     edgesContainerZoom.removeChildren();
     containerRootZoom.removeChildren();
     containerAdiacentLabels.removeChildren();
+    containerLabelsOnClick.removeChildren();
     containerLabels.removeChildren();
     containerLabelsZoom.removeChildren();
     //slider parameters
