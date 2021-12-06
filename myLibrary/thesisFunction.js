@@ -648,6 +648,7 @@
         let levelsNumber = 11;
         let raggioScalato = fattoreDiScala*sigmaMod*raggio;
         let area = Math.round(350)
+        let tempPixiGraph = pixiGraph;
 
         let indici = [];
         nodes = graph.nodes.length;

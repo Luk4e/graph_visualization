@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = True;
+const DISABLECONSOLELOG = true;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
