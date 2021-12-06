@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -108,12 +108,12 @@ let edgesContainerZoom = new PIXI.Container();
 let containerLabelsZoom = new PIXI.Container();
 
 //FAA for view of node and edges
-const BLURFILTER = new PIXI.filters.FXAAFilter();
-containerRoot.filters = [BLURFILTER];
-edgesContainer.filters = [BLURFILTER];
+//const ANTIALIASFILTER = new PIXI.filters.FXAAFilter();
+//containerRoot.filters = [ANTIALIASFILTER];
+//edgesContainer.filters = [ANTIALIASFILTER];
 //zoom
-containerRootZoom.filters = [BLURFILTER];
-edgesContainerZoom.filters = [BLURFILTER];
+//containerRootZoom.filters = [ANTIALIASFILTER];
+//edgesContainerZoom.filters = [ANTIALIASFILTER];
 
 
 //for zoom in and out without scrolling page
@@ -144,14 +144,16 @@ Array.prototype.forEach.call(inputs, function showName(input) {
 let app = new Application({
     width: WID,
     height: HIGH,
-    backgroundColor: 0xFFFFFF
+    backgroundColor: 0xFFFFFF,
+    antialias: true
 });
 
 //app pixi for zoom space
 let app2 = new Application({
     width: WIDZOOM,
     height: HIGHZOOM,
-    backgroundColor: 0xFFFFFF
+    backgroundColor: 0xFFFFFF,
+    antialias: true
 });
 
 //Bind PIXI App canvas to element on page 
@@ -281,7 +283,7 @@ VIEWPORT
 //button label actions
 function searchLabel(){
    
-    if(!buttonActivation.labelsActivation){
+    if(!buttonActivation.labelsActivation && !buttonActivation.zoomActivation){
         buttonActivation.labelsActivation = true;
         labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         //viewport.pause = true;
@@ -293,7 +295,7 @@ function searchLabel(){
         containerAdiacentLabels.removeChildren();
         containerLabelsZoom.removeChildren();
 
-      }
+    }
 }
 //button zoom actions
 function changestatuszoom(){

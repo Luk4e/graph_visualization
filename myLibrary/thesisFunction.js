@@ -288,9 +288,10 @@
         for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
-            if(edgeIdx[key][4]>maxEdgeThickness){
-                edgeIdx[key][4]=maxEdgeThickness
-            }
+            if(maxEdgeAgg>maxEdgeThickness){
+                edgeIdx[key][4]=(edgeIdx[key][4]/maxEdgeAgg)*maxEdgeThickness
+            } 
+            
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
@@ -392,15 +393,16 @@
             
             
         }
-        let scaling = maxEdgeAgg/maxEdgeThickness;
+        //let scaling = maxEdgeAgg/maxEdgeThickness;
         edgesContainerZoom.removeChildren();
         
         for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
-            if(edgeIdx[key][4]>maxEdgeThickness){
-                edgeIdx[key][4]=maxEdgeThickness
-            }
+            if(maxEdgeAgg>maxEdgeThickness){
+                edgeIdx[key][4]=(edgeIdx[key][4]/maxEdgeAgg)*maxEdgeThickness
+            } 
+
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
@@ -648,8 +650,7 @@
         let levelsNumber = 11;
         let raggioScalato = fattoreDiScala*sigmaMod*raggio;
         let area = Math.round(350)
-        let tempPixiGraph = pixiGraph;
-
+ 
         let indici = [];
         nodes = graph.nodes.length;
 
@@ -907,22 +908,16 @@
                 } 
             } 
         }
-        let scaling = maxEdgeAgg/maxEdgeThickness;
+        let x = maxEdgeAgg/maxEdgeThickness;
         edgesContainer.removeChildren();
-        //TODO:
-        //aumentare valore della soglia di alpha avvicinandomi e diminuirlo allontanandomi
-        //oppure diminuire valore di alpha di tutti gli archi di un certo tot e aumentarlo fino ad arrivare a uno indietreggiando
-        //oppure
-        //aumentare valore di sigma avvicinandomi 
-        //diminuirlo allontandomi 
-
 
         for(let key in edgeIdx){            
-            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
+            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)//>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
             
-            if(edgeIdx[key][4]>maxEdgeThickness){
-                edgeIdx[key][4]=maxEdgeThickness
-            }
+            if(maxEdgeAgg>maxEdgeThickness){
+                edgeIdx[key][4]=(edgeIdx[key][4]/maxEdgeAgg)*maxEdgeThickness
+            } 
+            
             if(alphaEdge>=thresholdAlpha ){
                 let line = new PIXI.Graphics();
                 //line.beginFill(0xFFFFFF,1);
