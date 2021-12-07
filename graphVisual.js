@@ -102,6 +102,7 @@ let containerRoot = new PIXI.Container();
 let containerLabels = new PIXI.Container();
 let containerAdiacentLabels = new PIXI.Container();
 let containerLabelsOnClick = new PIXI.Container();
+let containerClickedPoint = new PIXI.Container();
 //zoom
 let containerRootZoom = new PIXI.Container();
 let edgesContainerZoom = new PIXI.Container();
@@ -316,8 +317,9 @@ function changestatuszoom(){
         containerLabelsZoom.removeChildren();
         containerLabelsOnClick.removeChildren();
         containerRootZoom.cacheAsBitmap = false;
-        computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
+        containerClickedPoint.removeChildren();
 
+        computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         
     }
 }
@@ -342,6 +344,14 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
 
     if(buttonActivation.zoomActivation){  
         computeTextureZoom(baseTextSize,position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
+        containerClickedPoint.removeChildren();
+        let ring = new PIXI.Graphics();
+        ring.lineStyle(2,0x000000);
+        ring.drawCircle(0,0,50);
+        ring.x = e.clientX-rect.left;
+        ring.y = e.clientY-rect.top;
+        ring.endFill();
+        containerClickedPoint.addChild(ring)
     }
  
 });
@@ -679,6 +689,7 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     app.stage.addChild(containerLabels);
     app.stage.addChild(containerLabelsOnClick)
     app.stage.addChild(containerAdiacentLabels);
+    app.stage.addChild(containerClickedPoint);
     app2.stage.addChild(containerRootZoom);
     app2.stage.addChild(edgesContainerZoom);
     app2.stage.addChild(containerLabelsZoom);
