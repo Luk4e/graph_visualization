@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -264,6 +264,7 @@ VIEWPORT
         //document.getElementById
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
+            containerLabels.visible = true;
             containerLabels.removeChildren();
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren();
@@ -276,6 +277,7 @@ VIEWPORT
     .on('moved-end', function(){
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
+            containerLabels.visible = true;
             containerLabels.removeChildren();
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren()
@@ -296,6 +298,7 @@ function searchLabel(){
         //viewport.pause = true;
     }else{
         buttonActivation.labelsActivation = false;
+        containerLabels.visible = true;
         VIEWPORT.pause = false;
         containerLabels.removeChildren();
         containerLabelsOnClick.removeChildren();

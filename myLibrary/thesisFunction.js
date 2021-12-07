@@ -856,7 +856,7 @@
 
                 circleText.refToId = nodeToDraw[1].id;
                 containerLabels.addChild(circleText);
-                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
                 circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
                 labelsDisplayedText.push(circleText)
 
@@ -1033,11 +1033,14 @@
     
     }
 
-    function showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot){
+    function showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circleRefToText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot,containerLabels){
+        
         if(controlLabelAdiacent.value && !buttonActivationZoom.zoomActivation){
  
             containerAdiacentLabels.removeChildren();
             controlLabelAdiacent.value = false;
+            containerLabels.visible = true;
+            containerLabels.addChild(circleText,circleRefToText)
 
         }else if(!buttonActivationZoom.zoomActivation){
  
@@ -1092,13 +1095,13 @@
         
             for(edgeSel of sortedByDegreeAdiac){
 
-                if(!labelsAlreadyDisplayed.has(pixiGraphStruct.pixiNodes[edgeSel[1].id].clusterName)){
+                if( pixiGraphStruct.pixiNodes[edgeSel[1].id].clusterName!==pixiGraphStruct.pixiNodes[circleText.refToId].clusterName){
                    
                     let circleAdiac = new PIXI.Graphics();
                     let circleTextAdiac;
                     circleAdiac.lineStyle(0);
                     circleAdiac.beginFill(0xDE3249, 1);
-                    circleAdiac.drawCircle(1, 1, 3);
+                    circleAdiac.drawCircle(1, 1, 4);
                     circleAdiac.x = pixiGraphStruct.pixiNodes[edgeSel[1].id].xCluster;
                     circleAdiac.y = pixiGraphStruct.pixiNodes[edgeSel[1].id].yCluster;
                     circleAdiac.endFill();
@@ -1124,10 +1127,12 @@
                 } 
                 
             }
+            containerAdiacentLabels.addChild(circleText,circleRefToText)
+            containerLabels.visible = false;
             controlLabelAdiacent.value = true;
             //containerLabels.visible = false;
         }
-        
+
     }
     
     function labelsViewPoint(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){
@@ -1236,7 +1241,7 @@
 
                 circleText.refToId = nodeToDraw[1].id;
                 containerLabels.addChild(circleText);
-                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree)});
+                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
                 circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
                 labelsDisplayedText.push(circleText)
 
