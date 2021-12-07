@@ -269,6 +269,9 @@ VIEWPORT
             containerAdiacentLabels.removeChildren();
             labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
+        if(buttonActivation.zoomActivation){  
+            containerClickedPoint.removeChildren();
+        }
     })
     .on('moved-end', function(){
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
@@ -277,6 +280,9 @@ VIEWPORT
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren()
             labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        }
+        if(buttonActivation.zoomActivation){  
+            containerClickedPoint.removeChildren();
         }
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
@@ -336,6 +342,9 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
     position.xstart = e.clientX-rect.left;
     position.ystart = e.clientY-rect.top; 
 
+    position.xRing = e.clientX-rect.left
+    position.yRing = e.clientY-rect.top; 
+
     position.xstart -= Math.ceil((200)/(zoomIntens));
     position.ystart -= Math.ceil((200)/(zoomIntens));
 
@@ -348,8 +357,8 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
         let ring = new PIXI.Graphics();
         ring.lineStyle(2,0x000000);
         ring.drawCircle(0,0,50);
-        ring.x = e.clientX-rect.left;
-        ring.y = e.clientY-rect.top;
+        ring.x = position.xRing;
+        ring.y = position.yRing;
         ring.endFill();
         containerClickedPoint.addChild(ring)
     }
