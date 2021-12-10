@@ -359,7 +359,12 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
         ring.x = position.xRing;
         ring.y = position.yRing;
         ring.endFill();
-        containerClickedPoint.addChild(ring)
+
+        let rect = new PIXI.Graphics();
+        rect.lineStyle(2,0x000000);
+        rect.drawRect(position.xRing-40,position.yRing-40,80,80)
+        rect.endFill();
+        containerClickedPoint.addChild(rect)
     }
  
 });
