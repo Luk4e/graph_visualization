@@ -108,7 +108,7 @@ class NodeClass{
     setPixel(x,y){
         this.xCluster = x;
         this.yCluster = y;
-        this.clusterName = ""+x+y;
+        this.clusterName = ""+x+"-"+y;
     }
 
     setWeight(weight){

@@ -212,6 +212,7 @@
 
     function edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){
         "use strict";
+        edgesContainerZoom.removeChildren();
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -227,13 +228,13 @@
                     if(( targ.x>(-(area)) && targ.x<(high+Math.abs(high - wid)+area))){
                         if(( targ.y>(-(area)) && targ.y<(wid+Math.abs(high - wid)+area))){
 
-                            let sourCluster = ""+sour.xCluster+sour.yCluster;
-                            let targCluster = ""+targ.xCluster+targ.yCluster;
+                            let sourCluster = ""+sour.xCluster+"-"+sour.yCluster;
+                            let targCluster = ""+targ.xCluster+"-"+targ.yCluster;
                             //if((sour.cluster) != (targ.cluster)){
                             if(sourCluster != targCluster){
                 
                                 //let idClusterEdge = ""+sour.cluster+targ.cluster;
-                                let idClusterEdge = ""+sourCluster+targCluster;
+                                let idClusterEdge = ""+sourCluster+"-"+targCluster;
                 
                                 if(edgeIdx[idClusterEdge]){
                                     edgeIdx[idClusterEdge][4] += 1;
@@ -256,7 +257,7 @@
             }
         }
         let scaling = maxEdgeAgg/maxEdgeThickness;
-        edgesContainer.removeChildren();
+
         //TODO:
         //aumentare valore della soglia di alpha avvicinandomi e diminuirlo allontanandomi
         //oppure diminuire valore di alpha di tutti gli archi di un certo tot e aumentarlo fino ad arrivare a uno indietreggiando
@@ -359,6 +360,8 @@
 
     function edgeComputeZoom(xstart,ystart,xstop,ystop,pixiGraph,links,graph,edgesContainerZoom,thresholdAlpha,maxEdgeThickness){ 
         "use strict";
+        edgesContainerZoom.removeChildren();
+
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -368,13 +371,13 @@
             let sour = pixiGraph.getNodeById(graph.edges[i]['source'].id);
             let targ = pixiGraph.getNodeById(graph.edges[i]['target'].id);
 
-            let sourCluster = ""+sour.xCluster+sour.yCluster;
-            let targCluster = ""+targ.xCluster+targ.yCluster;
+            let sourCluster = ""+sour.xCluster+"-"+sour.yCluster;
+            let targCluster = ""+targ.xCluster+"-"+targ.yCluster;
             //if((sour.cluster) != (targ.cluster)){
             if(sourCluster != targCluster){
 
                 //let idClusterEdge = ""+sour.cluster+targ.cluster;
-                let idClusterEdge = ""+sourCluster+targCluster;
+                let idClusterEdge = ""+sourCluster+"-"+targCluster;
 
                 if(edgeIdx[idClusterEdge]){
                     edgeIdx[idClusterEdge][4] += 1;
@@ -394,7 +397,6 @@
             
         }
         //let scaling = maxEdgeAgg/maxEdgeThickness;
-        edgesContainerZoom.removeChildren();
         
         for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
@@ -751,7 +753,7 @@
 
     }
 
-    function labelsView(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(buttonActivationZoom,labelsOnClick,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
     
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -807,7 +809,9 @@
             }
             
         } 
-        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        //sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree ));
+
         //console.log((viewport.lastViewport.scaleX/(60/100))/100);
         //console.log(viewport.lastViewport.scaleX/(60/100));
         //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
@@ -856,7 +860,7 @@
 
                 circleText.refToId = nodeToDraw[1].id;
                 containerLabels.addChild(circleText);
-                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
+                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,labelsOnClick,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
                 circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
                 labelsDisplayedText.push(circleText)
 
@@ -868,12 +872,13 @@
             
         nodeOrderByCluster.clear();
     
-        return labelsDisplayedText;
+        return labelsAlreadyDisplayed;
 
     }
 
     function edgeCompute2(vecArr,area,wid,high,pixiGraph,links,graph,edgesContainer,thresholdAlpha,maxEdgeThickness){
         "use strict";
+        edgesContainer.removeChildren();
 
         let edgeIdx = {};
         let maxEdgeAgg = 1;
@@ -884,13 +889,13 @@
             let targ = pixiGraph.getNodeById(graph.edges[i]['target'].id);
 
             if(setIndici.has(graph.edges[i]['source'].id) && setIndici.has(graph.edges[i]['target'].id)){
-                let sourCluster = ""+sour.xCluster+sour.yCluster;
-                let targCluster = ""+targ.xCluster+targ.yCluster;
+                let sourCluster = ""+sour.xCluster+"-"+sour.yCluster;
+                let targCluster = ""+targ.xCluster+"-"+targ.yCluster;
                 //if((sour.cluster) != (targ.cluster)){
                 if(sourCluster != targCluster){
     
                     //let idClusterEdge = ""+sour.cluster+targ.cluster;
-                    let idClusterEdge = ""+sourCluster+targCluster;
+                    let idClusterEdge = ""+sourCluster+"-"+targCluster;
     
                     if(edgeIdx[idClusterEdge]){
                         edgeIdx[idClusterEdge][4] += 1;
@@ -909,7 +914,6 @@
             } 
         }
         let x = maxEdgeAgg/maxEdgeThickness;
-        edgesContainer.removeChildren();
 
         for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)//>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
@@ -943,13 +947,13 @@
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
             
-            let temp = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            let temp = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']]//.pixiNode.toGlobal(pointZero);
             
             let xx = temp.x;
             let yy = temp.y;
 
-            if(( xx>(0) && xx<(high+Math.abs(high - wid)))){
-                if(( yy>(0) && yy<(wid+Math.abs(high - wid)))){
+            if(( xx>(0) && xx<(high))){
+                if(( yy>(0) && yy<(wid))){
                     
                     let selectedNode = pixiGraphStruct.pixiNodes[graph.nodes[i]['id']];
                     if(maxDegree<selectedNode.degree){
@@ -980,17 +984,20 @@
             }
             
         } 
-        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree));
         
         varianceDegree = Math.ceil((varianceDegree/count)); 
 
  
         //minimumDegree=Math.ceil((maxDegree-(maxDegree*(0.4+(viewport.lastViewport.scaleX/(60/100))/100))));
         minimumDegree=0;
-        count = count*0.05;
+        
+        count = count*0.5;
+     
+
 
         for(nodeToDraw of sortedByDegree){
-            if((nodeToDraw[1].degree>=minimumDegree && count>0)){
+            if((count>0)){
                 let circleText;
                 let style = {
                     font : 'bold 16px Arial',
@@ -1033,7 +1040,7 @@
     
     }
 
-    function showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circleRefToText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot,containerLabels){
+    function showAdiacentLabels(buttonActivationZoom,labelsOnClick,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circleRefToText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot,containerLabels){
         
         if(controlLabelAdiacent.value && !buttonActivationZoom.zoomActivation){
  
@@ -1042,7 +1049,7 @@
             containerLabels.visible = true;
             containerLabels.addChild(circleText,circleRefToText)
 
-        }else if(!buttonActivationZoom.zoomActivation){
+        }else if(!buttonActivationZoom.zoomActivation ){
  
             let nodeOrderByClusterAdiac = new Map()
             let sortedByDegreeAdiac;
@@ -1084,7 +1091,7 @@
                 }
             
             } 
-            sortedByDegreeAdiac = new Map([...nodeOrderByClusterAdiac.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+            sortedByDegreeAdiac = new Map([...nodeOrderByClusterAdiac.entries()].sort((a, b) => b[1].degree - a[1].degree ));
             //console.log((viewport.lastViewport.scaleX/(60/100))/100);
             let styleAdiac = {
                 font : 'bold 16px Arial',
@@ -1135,8 +1142,9 @@
 
     }
     
-    function labelsViewPoint(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){
+    function labelsViewPoint(buttonActivationZoom,labelsOnClick,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){
 
+        //TODO: aggiungere i labels al container principale solo sui punti dove non esistona gia labels visualizzati
 
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -1150,7 +1158,7 @@
         let labelsAlreadyDisplayed = new Set();
         let labelsDisplayedText = new Array();
         
-        containerLabels.removeChildren();
+        //containerLabels.removeChildren();
 
         //selection of nodes inside de view to render
         for(let i = 0; i<nodes;i++){
@@ -1192,7 +1200,7 @@
             }
             
         } 
-        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
+        sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree ));
         //console.log((viewport.lastViewport.scaleX/(60/100))/100);
         //console.log(viewport.lastViewport.scaleX/(60/100));
         //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
@@ -1209,44 +1217,48 @@
 
         for(nodeToDraw of sortedByDegree){
             if(count>0 && (nodeToDraw[1].degree>=minimumDegree)){//nodeToDraw[1].degree>=maxDegree && 
-                let circleText;
-                let style = {
-                    font : 'bold 16px Arial',
-                    fill : '#ffffff',
-                    stroke : '#000000',
-                    strokeThickness : 2,
+                if(!labelsList.has(pixiGraphStruct.pixiNodes[nodeToDraw[1].id].clusterName)){
+                    let circleText;
+                    let style = {
+                        font : 'bold 16px Arial',
+                        fill : '#ffffff',
+                        stroke : '#000000',
+                        strokeThickness : 2,
+                    }
+                    let circle = new PIXI.Graphics();
+                    circle.lineStyle(0);
+                    circle.beginFill(0xDE3249, 1);
+                    circle.drawCircle(1, 1, 5);
+                    circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                    labelsList.add(pixiGraphStruct.pixiNodes[nodeToDraw[1].id].clusterName);
+                    circle.endFill();
+                    circle.interactive = true;
+                    containerLabels.addChild(circle);
+
+                    if(labelsMap.size!=0){
+                        circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
+                    }else{
+                        circleText = new PIXI.Text(nodeToDraw[1].id,style);
+                    }
+
+                    //circleText.style.fontSize = 16;
+                    circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
+                    circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
+                    circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
+                    circleText.interactive = true;
+
+                    circleText.refToId = nodeToDraw[1].id;
+                    containerLabels.addChild(circleText);
+                    circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,labelsOnClick,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
+                    circle.on('mouseup',()=>{ circleText.visible = !circleText.visible})
+                    labelsDisplayedText.push(circleText)
+
+                    
+                    count--;
+
                 }
-                let circle = new PIXI.Graphics();
-                circle.lineStyle(0);
-                circle.beginFill(0xDE3249, 1);
-                circle.drawCircle(1, 1, 5);
-                circle.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
-                circle.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
-                labelsAlreadyDisplayed.add(pixiGraphStruct.pixiNodes[nodeToDraw[1].id].clusterName);
-                circle.endFill();
-                circle.interactive = true;
-                containerLabels.addChild(circle);
-
-                if(labelsMap.size!=0){
-                    circleText = new PIXI.Text(labelsMap.get(nodeToDraw[1].id),style);
-                }else{
-                    circleText = new PIXI.Text(nodeToDraw[1].id,style);
-                }
-
-                //circleText.style.fontSize = 16;
-                circleText.style.fontSize = (Math.floor((15/maxDegree)*nodeToDraw[1].degree))+baseTextSize;
-                circleText.x = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].xCluster;
-                circleText.y = pixiGraphStruct.pixiNodes[nodeToDraw[1].id].yCluster;
-                circleText.interactive = true;
-
-                circleText.refToId = nodeToDraw[1].id;
-                containerLabels.addChild(circleText);
-                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
-                circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
-                labelsDisplayedText.push(circleText)
-
                 
-                count--;
             }
         }
 

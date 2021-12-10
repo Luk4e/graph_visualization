@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -187,7 +187,7 @@ sliderSigma.onchange = function() {
         containerLabels.removeChildren();
         containerLabelsOnClick.removeChildren()
         containerAdiacentLabels.removeChildren();
-        labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
 
     }
 }
@@ -233,7 +233,7 @@ sliderTextLabels.onchange = function() {
         containerLabels.removeChildren();
         containerAdiacentLabels.removeChildren();
         containerLabelsOnClick.removeChildren();
-        labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
 
@@ -248,10 +248,7 @@ sliderTextLabels.oninput = function() {
 VIEWPORT
     .drag()
     .wheel()
-    .on('wheel', function(){
-        //if(viewport.lastViewport.scaleX>0 && viewport.lastViewport.scaleX<=2){
-        //    sigma = 0.4*(viewport.lastViewport.scaleX);
-        //}
+    .on('wheel', function(){ 
         sigma = 1.0+(1.0/60)*VIEWPORT.lastViewport.scaleX;
         sliderSigma.value = sigma*100;
         outputSigma.innerHTML = sigma.toFixed(3);
@@ -268,24 +265,26 @@ VIEWPORT
             containerLabels.removeChildren();
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren();
-            labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
         if(buttonActivation.zoomActivation){  
             containerClickedPoint.removeChildren();
         }
     })
     .on('moved-end', function(){
+        
         computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
         if(buttonActivation.labelsActivation){
             containerLabels.visible = true;
             containerLabels.removeChildren();
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren()
-            labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
         if(buttonActivation.zoomActivation){  
             containerClickedPoint.removeChildren();
         }
+        
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
      
@@ -294,12 +293,12 @@ function searchLabel(){
    
     if(!buttonActivation.labelsActivation && !buttonActivation.zoomActivation){
         buttonActivation.labelsActivation = true;
-        labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         //viewport.pause = true;
     }else{
         buttonActivation.labelsActivation = false;
         containerLabels.visible = true;
-        VIEWPORT.pause = false;
+        //VIEWPORT.pause = false;
         containerLabels.removeChildren();
         containerLabelsOnClick.removeChildren();
         containerAdiacentLabels.removeChildren();
@@ -335,9 +334,6 @@ function changestatuszoom(){
 //mouse event listener for discover mouse position to compute zoom in a specific area
 
 
-//selectedAreaZoom.beginFill(0xff0000);
-//viewport.removeChild(selectedAreaZoom);
-
 document.getElementById("graph").addEventListener("mousedown", function(e) {
     
     let rect = e.target.getBoundingClientRect();
@@ -367,26 +363,19 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
     }
  
 });
-
-//cambia secondo lo zoom quindi è da riverede
-//document.getElementById("graph").addEventListener("mousemove", function(e){
-//});
-
-document.getElementById("graph").addEventListener("mouseup", function() {
+ 
+document.getElementById("graph").addEventListener("contextmenu", function(e) {
     //mousedowncontroll = false;
+    e.preventDefault()
+
     if(buttonActivation.labelsActivation && document.getElementById("labelsOnClick").checked && !buttonActivation.zoomActivation){
-        labelsViewPoint(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        //VIEWPORT.pause = true;
+        labelsViewPoint(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+    }else{
+        //VIEWPORT.pause = false;
     }
 
-    //if(buttonActivation.zoomActivation && !buttonActivation.labelsActivation){
-        
-        //selectedAreaZoom.x = position.xstart;
-        //selectedAreaZoom.y = position.ystart;
-        //selectedAreaZoom.visible = true;
-
-        //viewport.addChild(selectedAreaZoom);
-    //}
-
+ 
 });
 
 //extrapolation of data from file
