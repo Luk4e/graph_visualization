@@ -15,8 +15,12 @@ if (DISABLECONSOLELOG) {
     console.log = () => {};
 }
 //dimension of main rendering windows 
-const WID = 1400;
-const HIGH = 800;
+//const WID = 1250;
+//const HIGH = 800;
+
+//dimension of main rendering windows 
+const WID = window.screen.width-400;
+const HIGH = window.screen.height-100;
 
 //dimension of zoom windows
 const WIDZOOM = 300;
@@ -121,8 +125,9 @@ let containerLabelsZoom = new PIXI.Container();
 document.getElementById('graph').onwheel = () => false ;
 
 fpsInitialize();
-
+/* 
 let inputs = document.querySelectorAll('.inputfile');
+console.log(inputs)
 Array.prototype.forEach.call(inputs, function showName(input) {
 
     let labelVal = document.getElementById('labelInsert').innerHTML;
@@ -138,7 +143,7 @@ Array.prototype.forEach.call(inputs, function showName(input) {
         (fileName)?document.getElementById('fileNameSpace').innerHTML = fileName:document.getElementById('fileNameSpace').innerHTML = labelVal ;
         
     });
-});
+}); */
  
 
 //app pixi for main view space 
@@ -385,7 +390,9 @@ document.getElementById("graph").addEventListener("contextmenu", function(e) {
 
 //extrapolation of data from file
 document.getElementById('file').onchange = function () {
-    
+    //let inputs = document.querySelectorAll('.inputfile');
+ 
+    //document.getElementById('fileNameSpace').innerHTML = inputs[0].value.split('\\')[2].split('\.')[0];
     execPageRank = document.getElementById('computePageRankCheckbox').checked;
     layoutComputCheck = document.getElementById('computeLayoutCheckbox').checked;
     let loadingDataStart = performance.now()
@@ -654,8 +661,8 @@ document.getElementById('file').onchange = function () {
 function drawGraph(graph,pixiGraph,viewport,document) {
 
     
-    document.getElementById('nodePrintSpace').innerHTML = graph.nodes.length;
-    document.getElementById('edgesPrintSpace').innerHTML = graph.edges.length;          
+    document.getElementById('nodePrintSpace').innerHTML = ": "+graph.nodes.length;
+    document.getElementById('edgesPrintSpace').innerHTML = ": "+graph.edges.length;          
     let t0 = performance.now()            
 
     //to modify the if else adding a variable to check if the user want to compute or not the network's layout
@@ -705,8 +712,8 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     console.log(`Time needed to compute Layout: ${t1fmmm - t0fmmm}  milliseconds.`);
 
     console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
-    document.getElementById('layoutTimePrintSpace').innerHTML = (t1fmmm - t0fmmm).toFixed();
-    document.getElementById('totalTimePrintSpace').innerHTML = (t1 - t0).toFixed();
+    document.getElementById('layoutTimePrintSpace').innerHTML = ": "+(t1fmmm - t0fmmm).toFixed();
+    document.getElementById('totalTimePrintSpace').innerHTML = ": "+(t1 - t0).toFixed();
             
     console.log("finish");
 
