@@ -35,22 +35,24 @@
     <div class="mainBody container-fluid bg-light ">
         
 
-        <div class="row p-3">
+        <!--<div class="row p-3">
             <div class="col-lg-1 m-2 me-3"align="center">
                 <h1>
                     <a href="?">JLink</a>
                 </h1>
             </div>
-
+            
             <div class="inputFileBSpace col-lg-2 mt-3" align="center">
                 <input type="file" name="file" id="file" class="inputfile form-control">
-                <!--<label id="labelInsert" for="file"> <span>Choose a Graph</span> </label> -->
+                <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label> 
             </div>   
 
-            <!--<div class="col">
+            <div class="col">
                 <p class="specTab" >File </p>
                 <p clas="resTab" id="fileNameSpace"></p>
-            </div>-->
+            </div>
+            
+
 
             <div class="col-lg mt-4" align="center">
                 <input type="checkbox" id="computePageRankCheckbox" class="form-check-input"/>
@@ -72,8 +74,8 @@
                 <label  id="edgesPrintSpace" class="leftAlign"/>
             </div>
 
-            <!-- <td><p class="specTab">PageRank: </p></td>
-            <td><p clas="resTab" id="pageRankYesOrNo"></p></td> -->
+             <td><p class="specTab">PageRank: </p></td>
+            <td><p clas="resTab" id="pageRankYesOrNo"></p></td>
 
             <div class="col-lg mt-4" align="center">
                 <label class="specTab">Layout [ms]  </label>
@@ -84,26 +86,31 @@
                 <label class="specTab">Total [ms] </label> 
                 <label  id="totalTimePrintSpace" class="leftAlign"/>
             </div >
-        </div>
+        </div>-->
 
 
-        <div class="row mt-1 p-3">
+        <div class="row p-3">
+            <div class="col-lg-1 m-3 me-3"align="center">
+                <h1>
+                    <a class="link-dark" href="?">JLink</a>
+                </h1>
+            </div>
 
-            <div class="col-lg-2 " align="center">
+            <div class="col-lg-2 mt-3 " align="center">
                 <label class="modParameterBar">Vertex Aggr :</label> 
                 <label id="sigmaDisplay" class="valoriMod"> </label> 
                 <input class="sliderBarr form-range" type="range" min="1" max="250" value="100" id="sigmaSlider"/> 
             </div>
     
 
-            <div class="col-lg-2" align="center"> 
+            <div class="col-lg-2 mt-3" align="center"> 
                 <label class="modParameterBar">Edges Aggr :</label>
                 <label id="thresholdAlphaDisplay" class="valoriMod"></label>
                 <input class="sliderBarr form-range" type="range" min="1" max="100" value="20" id="thresholdAlphaSlider"/> 
             </div>
     
 
-            <div class="col-lg-2" align="center">
+            <!--<div class="col-lg-2" align="center">
                 <label class="modParameterBar"> Cluster Aggr: </label>  
                 <label id="rangeFieldDisplay" class="valoriMod"></label>  
                 <input class="sliderBarr form-range" type="range" min="10" max="100" value="10" id="rangeFieldSlider"/>  
@@ -114,15 +121,15 @@
                 <label class="modParameterBar"> Edge Thickness :</label> 
                 <label id="maxEdgeThicknessDisplay" class="valoriMod"></label>
                 <input class="sliderBarr form-range" type="range" min="10" max="150" value="50" id="maxEdgeThicknessSlider"/>
-            </div>
+            </div>-->
             
-            <div class="col-lg-2" align="center"> 
+            <div class="col-lg-2 mt-3" align="center"> 
                 <label class="modParameterBar"> Labels size :</label>  
                 <label id="labelsFontSizeDisplay" class="valoriMod"></label> 
                 <input class="sliderBarr form-range" type="range" min="20" max="250" value="100" id="labelsFontSizeSlider"/>
             </div>
             
-            <div class="col-lg-2" align="center">
+            <div class="col-lg-2 mt-3" align="center">
                 <button type="button" class="btn btn-primary mb-2" id="labelButton" onclick="searchLabel()">Labels</button> </br>
                 <input type="checkbox" id="seeAllLabels" class="form-check-input mt-2 ms-2"/><label class="form-check-label mt-1 ms-2" for="seeAllLabels">All</label>
                 <input type="checkbox" id="labelsOnClick" class="form-check-input mt-2 ms-2"/><label class="form-check-label mt-1 ms-2" for="labelsOnClick">Area Labels</label>
@@ -152,7 +159,7 @@
                         <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider" class="form-range mt-2 sliderBarr"/> 
                     </div>                     
                 </div>
-                
+                <!-- 
                 <div class="row-1 mt-3">  
                     <button type="button" class="btn btn-primary mt-2" id="greadButton" onclick="startWorkerGreadability()">Greadability </button>
                 </div>
@@ -200,7 +207,7 @@
                         <label id="CARis"></label>
                     </div>
                 </div>
-                  
+            -->
                      
             </div>
 

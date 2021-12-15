@@ -386,6 +386,7 @@ document.getElementById('file').onchange = function () {
             enableDisableButton(buttonReference)
         }
     }
+    
     MAPVERTEXEDGES.clear();
 
     let file = this.files[0];
