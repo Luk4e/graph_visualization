@@ -38,7 +38,7 @@
         <div class="row p-3">
             <div class="col-lg-1 m-2 me-3"align="center">
                 <h1>
-                    JLink
+                    <a href="?">JLink</a>
                 </h1>
             </div>
 
@@ -132,7 +132,7 @@
 
         <div class="row mt-4 p-3" >
             
-            <div class="col position-relative " id="graph" >
+            <div class="col position-relative  " id="graph" >
                 <div id="fpsmeterstat" class="position-absolute"></div>
             </div>
             <div class="col">
@@ -149,7 +149,7 @@
                         <label id="zoomIntensityDisplay" class="valoriMod" for="zoomIntensitySlider"></label>    
                     </div>
                     <div class="col-6 ms-2">
-                        <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider" class="form-range mt-2"/> 
+                        <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider" class="form-range mt-2 sliderBarr"/> 
                     </div>                     
                 </div>
                 
@@ -157,37 +157,50 @@
                     <button type="button" class="btn btn-primary mt-2" id="greadButton" onclick="startWorkerGreadability()">Greadability </button>
                 </div>
                 
-                <div class="row">
+                <div class="row mt-3">
                     <label class="specTab mt-3" id="infoGreadZone"></label>
                 </div>
-                <div class="row">
-                    <div class="specTab" id="ARDDesc"> 
+                <div class="row mt-4">
+                    <div class="col"> 
+                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Angular resoluction (deviation) measures the average deviation of angles between incident edges on each vertex.">
+                            <p>ARD</p>
+                        </span>
                     </div>
-                    <div clas="resTab" >
+                    <div class="col" >
                         <label id="ARDRis"></label>
                     </div>
                 </div>
-                <div class="row">     
-                    <div class="specTab" id="ARMDesc"> 
+                <div class="row ">
+                    <div class="col"> 
+                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Angular resolution (minimum) measures the mean deviation of adjacent incident edge angles from the ideal minimum angles (360 degrees divided by the degree of that node).">
+                            <p>ARM</p>
+                        </span>
                     </div>
-                    <div clas="resTab">
+                    <div class="col" >
                         <label id="ARMRis"></label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="specTab" id="CDesc"> 
+                <div class="row ">
+                    <div class="col"> 
+                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Edge crossings measures the fraction of edges that cross (intersect) out of an approximate maximum number that can cross.">
+                            <p>CD</p>
+                        </span>
                     </div>
-                    <div clas="resTab" >
+                    <div class="col" >
                         <label id="CRis"></label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="specTab col" id="CADesc"> 
+                <div class="row ">
+                    <div class="col"> 
+                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Edge crossing angle measures the mean deviation of edge crossing angles from the ideal edge crossing angle (70 degrees).">
+                            <p>CA</p>
+                        </span>
                     </div>
-                    <div clas="resTab col" >
+                    <div class="col" >
                         <label id="CARis"></label>
                     </div>
                 </div>
+                  
                      
             </div>
 
