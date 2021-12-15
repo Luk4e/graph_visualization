@@ -34,19 +34,28 @@
    
     <div class="mainBody container-fluid bg-light ">
         
-
-        <!--<div class="row p-3">
+         
+        <div class="row p-3">
             <div class="col-lg-1 m-2 me-3"align="center">
                 <h1>
                     <a href="?">JLink</a>
                 </h1>
             </div>
-            
+            <div class="col-lg-2 mt-4" align="center">
+                <label class="specTab" >Nodes </label>
+                <label  id="nodePrintSpace" class="leftAlign"/>
+            </div>
+
+            <div class="col-lg-2 mt-4" align="center">
+                <label class="specTab">Edges </label>
+                <label  id="edgesPrintSpace" class="leftAlign"/>
+            </div>
+            <!-- 
             <div class="inputFileBSpace col-lg-2 mt-3" align="center">
                 <input type="file" name="file" id="file" class="inputfile form-control">
                 <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label> 
             </div>   
-
+             
             <div class="col">
                 <p class="specTab" >File </p>
                 <p clas="resTab" id="fileNameSpace"></p>
@@ -63,17 +72,9 @@
                 <input type="checkbox" id="computeLayoutCheckbox" class="form-check-input" checked>
                 <label class="specTab form-check-label" for="computeLayoutCheckbox">FM3</label>
             </div>
-
-            <div class="col-lg mt-4" align="center">
-                <label class="specTab" >Nodes </label>
-                <label  id="nodePrintSpace" class="leftAlign"/>
-            </div>
-
-            <div class="col-lg mt-4" align="center">
-                <label class="specTab">Edges </label>
-                <label  id="edgesPrintSpace" class="leftAlign"/>
-            </div>
-
+        -->
+           
+            <!-- 
              <td><p class="specTab">PageRank: </p></td>
             <td><p clas="resTab" id="pageRankYesOrNo"></p></td>
 
@@ -85,25 +86,21 @@
             <div class="col-lg mt-4" align="center">
                 <label class="specTab">Total [ms] </label> 
                 <label  id="totalTimePrintSpace" class="leftAlign"/>
-            </div >
-        </div>-->
+            </div >-->
+        </div>
 
 
         <div class="row p-3">
-            <div class="col-lg-1 m-3 me-3"align="center">
-                <h1>
-                    <a class="link-dark" href="?">JLink</a>
-                </h1>
-            </div>
-
-            <div class="col-lg-2 mt-3 " align="center">
+            
+           
+            <div class="col-lg-2 mt-2 " align="center">
                 <label class="modParameterBar">Vertex Aggr :</label> 
                 <label id="sigmaDisplay" class="valoriMod"> </label> 
                 <input class="sliderBarr form-range" type="range" min="1" max="250" value="100" id="sigmaSlider"/> 
             </div>
     
 
-            <div class="col-lg-2 mt-3" align="center"> 
+            <div class="col-lg-2 mt-2" align="center"> 
                 <label class="modParameterBar">Edges Aggr :</label>
                 <label id="thresholdAlphaDisplay" class="valoriMod"></label>
                 <input class="sliderBarr form-range" type="range" min="1" max="100" value="20" id="thresholdAlphaSlider"/> 
@@ -123,13 +120,14 @@
                 <input class="sliderBarr form-range" type="range" min="10" max="150" value="50" id="maxEdgeThicknessSlider"/>
             </div>-->
             
-            <div class="col-lg-2 mt-3" align="center"> 
+            <div class="col-lg-2 mt-2" align="center"> 
                 <label class="modParameterBar"> Labels size :</label>  
                 <label id="labelsFontSizeDisplay" class="valoriMod"></label> 
                 <input class="sliderBarr form-range" type="range" min="20" max="250" value="100" id="labelsFontSizeSlider"/>
             </div>
             
-            <div class="col-lg-2 mt-3" align="center">
+            
+            <div class="col-lg-2 mt-2" align="center">
                 <button type="button" class="btn btn-primary mb-2" id="labelButton" onclick="searchLabel()">Labels</button> </br>
                 <input type="checkbox" id="seeAllLabels" class="form-check-input mt-2 ms-2"/><label class="form-check-label mt-1 ms-2" for="seeAllLabels">All</label>
                 <input type="checkbox" id="labelsOnClick" class="form-check-input mt-2 ms-2"/><label class="form-check-label mt-1 ms-2" for="labelsOnClick">Area Labels</label>

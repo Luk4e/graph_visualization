@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -156,9 +156,9 @@ const VIEWPORT = new pixi_viewport.Viewport({
 //slider
 //write on screen slider value
 outputSigma.innerHTML = sliderSigma.value/100;
-outputThresholdAlpha.innerHTML = sliderThresholdAlpha.value/100;
+outputThresholdAlpha.innerHTML = sliderThresholdAlpha.value/100;/* 
 outputSliderRangeField.innerHTML = Math.round(sliderRangeField.value/10);
-outputSliderMaxEdgeThickness.innerHTML = Math.round(sliderMaxEdgeThickness.value/10);
+outputSliderMaxEdgeThickness.innerHTML = Math.round(sliderMaxEdgeThickness.value/10); */
 outputSliderZoomIntensity.innerHTML = sliderZoomIntensity.value;
 outputSliderTextLablesSize.innerHTML = sliderTextLabels.value/10;
 
@@ -186,7 +186,7 @@ sliderThresholdAlpha.onchange  = function() {
 sliderThresholdAlpha.oninput  = function() {
     thresholdComp = this.value/100;
     outputThresholdAlpha.innerHTML = thresholdComp;
-}
+}/* 
 sliderRangeField.onchange  = function() {
     computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 }
@@ -203,7 +203,7 @@ sliderMaxEdgeThickness.onchange  = function() {
 sliderMaxEdgeThickness.oninput  = function() {
     edgeThickness = Math.round(this.value/10);
     outputSliderMaxEdgeThickness.innerHTML = Math.round(this.value/10);
-}
+} */
 
 sliderZoomIntensity.oninput = function() {
     zoomIntens = this.value;
@@ -367,16 +367,12 @@ document.getElementById("graph").addEventListener("contextmenu", function(e) {
  
 });
 
-//extrapolation of data from file
-document.getElementById('file').onchange = function () {
-    //let inputs = document.querySelectorAll('.inputfile');
- 
-    //document.getElementById('fileNameSpace').innerHTML = inputs[0].value.split('\\')[2].split('\.')[0];
-    execPageRank = document.getElementById('computePageRankCheckbox').checked;
-    layoutComputCheck = document.getElementById('computeLayoutCheckbox').checked;
-    let loadingDataStart = performance.now()
-
+//preload one file
+let client = new XMLHttpRequest();
+let loadingDataStart = performance.now()
+client.onload=function(){
     
+
     if (GRAPH.nodes.length != 0) {
         resetParameters();
         if(!sliderReference[0].disable){
@@ -386,259 +382,82 @@ document.getElementById('file').onchange = function () {
             enableDisableButton(buttonReference)
         }
     }
-    
+
     MAPVERTEXEDGES.clear();
 
-    let file = this.files[0];
-    let reader = new FileReader();
     let nodeTemp = new Array();
     let tempSet  = new Set();
     let edgeSet  = new Set();
+    let lines = client.responseText.split('\n')
+    let linesLength = lines.length;
+    //let directed = lines[1][10];
+    //let weighted = lines[2][10];
 
-    reader.onload = function (progressEvent) {
-
-        let lines = this.result.split('\n');
-        let linesLength = lines.length;
-        if (file.name.match(/.json/i)) {
-
-            for (let line = 0; line < (linesLength); line++) {
-                if(lines[line]===""){break}
-                let tab = lines[line].substring(1, lines[line].length - 2);
-                let firstSplit = tab.split("[")
-                let firstPart = firstSplit[0].split(",");
-                let sourceNode = parseInt(firstPart[0]);
-                let xSourceNode = firstPart[1];
-                let ySourceNode = firstPart[2];
-                let listNode = firstSplit[1].split(",");
-
-                let sou = {
-                    "id": sourceNode,
-                }
-
-                NODESDEGREE.set(sourceNode,listNode.length)
-                
-                if (!tempSet.has(sourceNode)) {
-                    tempSet.add(sourceNode);
-                    nodeTemp[sourceNode] = sou;
-                    GRAPH.nodes.push(nodeTemp[sourceNode]);
-                }
-
-                //if the layout was precalculated
-                if(!layoutComputCheck){
-
-                    let circle = new Graphics();
-
-                    circle.x = xSourceNode;
-                    circle.y = ySourceNode;
-                    
-
-                    VIEWPORT.addChild(circle);
-                    let nodeIns = new NodeClass(sourceNode,circle,circle.x,circle.y,1,listNode.length);
-
-                    nodeIns.setPixel(xSourceNode,ySourceNode,0);
-                    pixiGraph.insertNodes(nodeIns);
-
-                }                 
-
-                //mange link insertion 
-                for (let i in listNode) {
-                    let target = parseInt(listNode[i]);
-                    let targ = {
-                        "id": target
-                    }
-                    if (!tempSet.has(target)) {
-                        tempSet.add(target);
-                        nodeTemp[target] = targ;
-                        GRAPH.nodes.push(nodeTemp[target]);
-                    }
-                    if(MAPVERTEXEDGES.has(sourceNode)){
-                        MAPVERTEXEDGES.set(sourceNode,[...MAPVERTEXEDGES.get(sourceNode),target])
-                    }else{
-                        MAPVERTEXEDGES.set(sourceNode,[target])
-                    }
-                    //check to draw edges, from a to b and from b to a, only one time like a undirected graph
-                    if(!edgeSet.has(""+sourceNode+target) && !edgeSet.has(""+target+sourceNode)){
-                        GRAPH.edges.push({ "source": nodeTemp[sourceNode], "target": nodeTemp[target]});
-                        edgeSet.add(""+sourceNode+target);
-                    }
-                }
-            }
-        } else if(file.name.match(/.txt/i)){
-
-            //layoutComputCheck = true;
-
-            for (let line = 0; line < linesLength; line++) {
-                let tab;
-                if(lines[line].includes(' ')){
-                    tab = lines[line].split(' ');
-                }else if(lines[line].includes('\t')){
-                    tab = lines[line].split('\t');
-                }else if(lines[line].includes(',')){
-                    tab = lines[line].split(',');
-                }else{
-                    break 
-                }
-
-                let source = parseInt(tab[0]);
-                let target = parseInt(tab[1]);     
-                let xSource = (isNaN(parseFloat(tab[2]))) ? 0.0 : parseFloat(tab[2]);
-                let ySource = (isNaN(parseFloat(tab[3]))) ? 0.0 : parseFloat(tab[3]);
-                let xTarget = (isNaN(parseFloat(tab[4]))) ? 0.0 : parseFloat(tab[4]);
-                let yTarget = (isNaN(parseFloat(tab[5]))) ? 0.0 : parseFloat(tab[5]);
-
-              
-                let sou = {
-                    "id": source
-                }
-                let tar = {
-                    "id"  : target
-                }
-
-                if (!tempSet.has(source)) {
-                    NODESDEGREE.set(source,1);
-
-                    nodeTemp[source] = sou;
-                    tempSet.add(source);
-                    GRAPH.nodes.push(nodeTemp[source]);
-                    //create list of nightbour
-                    MAPVERTEXEDGES.set(source,[target]);
-
-                     //if the layout was precalculated
-                    if(!layoutComputCheck){
-
-                        let circle = new Graphics();
-
-                        circle.x = xSource;
-                        circle.y = ySource;
-                        
-
-                        VIEWPORT.addChild(circle);
-                        let nodeIns = new NodeClass(source,circle,circle.x,circle.y,1,1);
-
-                        nodeIns.setPixel(xSource,ySource,0);
-                        pixiGraph.insertNodes(nodeIns);
-
-                    }   
-                }else{
-                    NODESDEGREE.set(source,(NODESDEGREE.get(source)+1));
-                    MAPVERTEXEDGES.set(source,[...MAPVERTEXEDGES.get(source),target])
-
-                    if(!layoutComputCheck){
-                        pixiGraph.pixiNodes[source].addOneDegree();
-                    }
-                }
-                if (!tempSet.has(target)) {
-                    NODESDEGREE.set(target,1);
-
-                    nodeTemp[target] = tar;
-                    tempSet.add(target);
-                    GRAPH.nodes.push(nodeTemp[target]);
-
-                    MAPVERTEXEDGES.set(target,[source])
-
-                     //if the layout was precalculated
-                    if(!layoutComputCheck){
-
-                        let circle = new Graphics();
-
-                        circle.x = xTarget;
-                        circle.y = yTarget;
-                        
-                   
-                        VIEWPORT.addChild(circle);
-                        let nodeIns = new NodeClass(target,circle,circle.x,circle.y,1,1);
-
-                        nodeIns.setPixel(xTarget,yTarget,0);
-                        pixiGraph.insertNodes(nodeIns);
-
-                    }   
-                }else{
-                    NODESDEGREE.set(target,(NODESDEGREE.get(target)+1));
-                    MAPVERTEXEDGES.set(target,[...MAPVERTEXEDGES.get(target),source])
-
-                    if(!layoutComputCheck){
-                        pixiGraph.pixiNodes[target].addOneDegree();
-                    }
-                }
-
-                GRAPH.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
-            }
-        } else if(file.name.match(/.gml/i)){
-            let lines = this.result.split('\n');
-            let directed = lines[1][10];
-            let weighted = lines[2][10];
-
-            for (let line = 3; line < (linesLength - 1); line++) {
-                if(lines[line].match(/\snode\s\[/)){    
-                    MAPLABELS.set(parseInt(lines[line+1].split(' ')[1]),lines[line+2].split('"')[1]);//1835
-                }
-                if(lines[line].match(/\sedge\s\[/)){
-                    let source = parseInt(lines[line+1].split(' ')[1]);
-                    let target = parseInt(lines[line+2].split(' ')[1]);     
-                    
-                    let sou = {
-                        "id": source
-                    }
-                    let tar = {
-                        "id"  : target
-                    }
-
-                    if (!tempSet.has(source)) {
-                        NODESDEGREE.set(source,1);
-                        nodeTemp[source] = sou;
-                        tempSet.add(source);
-                        GRAPH.nodes.push(nodeTemp[source]);
-                         //create list of nightbour
-                        MAPVERTEXEDGES.set(source,[target]);
-
-                        
-                    }else{
-                        NODESDEGREE.set(source,(NODESDEGREE.get(source)+1));
-                        //create list of nightbour
-                        MAPVERTEXEDGES.set(source,[...MAPVERTEXEDGES.get(source),target])
-
-                        
-                    }
-                    if (!tempSet.has(target)) {
-                        NODESDEGREE.set(target,1);
-                        nodeTemp[target] = tar;
-                        tempSet.add(target);
-                        GRAPH.nodes.push(nodeTemp[target]);  
-                         //create list of nightbour
-                        MAPVERTEXEDGES.set(target,[source]);
-                  
-                    }else{
-                        NODESDEGREE.set(target,(NODESDEGREE.get(target)+1));
-                        //create list of nightbour
-                        MAPVERTEXEDGES.set(target,[...MAPVERTEXEDGES.get(target),source])
-
-                    }
-    
-                    GRAPH.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
-    
-                }
-                 
-            }
+    for (let line = 3; line < (linesLength - 1); line++) {
+        if(lines[line].match(/\snode\s\[/)){    
+            MAPLABELS.set(parseInt(lines[line+1].split(' ')[1]),lines[line+2].split('"')[1]);//1835
         }
+        if(lines[line].match(/\sedge\s\[/)){
+            let source = parseInt(lines[line+1].split(' ')[1]);
+            let target = parseInt(lines[line+2].split(' ')[1]);     
+            
+            let sou = {
+                "id": source
+            }
+            let tar = {
+                "id"  : target
+            }
+
+            if (!tempSet.has(source)) {
+                NODESDEGREE.set(source,1);
+                nodeTemp[source] = sou;
+                tempSet.add(source);
+                GRAPH.nodes.push(nodeTemp[source]);
+                    //create list of nightbour
+                MAPVERTEXEDGES.set(source,[target]);
+
+                
+            }else{
+                NODESDEGREE.set(source,(NODESDEGREE.get(source)+1));
+                //create list of nightbour
+                MAPVERTEXEDGES.set(source,[...MAPVERTEXEDGES.get(source),target])
+
+                
+            }
+            if (!tempSet.has(target)) {
+                NODESDEGREE.set(target,1);
+                nodeTemp[target] = tar;
+                tempSet.add(target);
+                GRAPH.nodes.push(nodeTemp[target]);  
+                    //create list of nightbour
+                MAPVERTEXEDGES.set(target,[source]);
+            
+            }else{
+                NODESDEGREE.set(target,(NODESDEGREE.get(target)+1));
+                //create list of nightbour
+                MAPVERTEXEDGES.set(target,[...MAPVERTEXEDGES.get(target),source])
+
+            }
+
+            GRAPH.edges.push({ "source": nodeTemp[source], "target": nodeTemp[target] });
+        }
+    }
         
-        
-        edgeSet.clear();
-        tempSet.clear();
+    edgeSet.clear();
+    tempSet.clear();
 
-        nodeTemp = null;
+    nodeTemp = null;
 
-        let loadingDataEnd = performance.now()
-        console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
-        console.log("dati letti");
-        averageDegree = 2*Math.round(GRAPH.edges.length/GRAPH.nodes.length);
-        
-        drawGraph(GRAPH,pixiGraph,VIEWPORT,document,buttonReference,sliderReference);
+    let loadingDataEnd = performance.now()
+    console.log("caricamento dati tempo : "+(loadingDataEnd-loadingDataStart));
+    console.log("dati letti");
+    averageDegree = 2*Math.round(GRAPH.edges.length/GRAPH.nodes.length);
 
+    drawGraph(GRAPH,pixiGraph,VIEWPORT,document,buttonReference,sliderReference);
+}
+client.open('GET',"./graph/gdvisgraph.gml")
+client.send()
 
-    };
-    reader.readAsText(file,'ISO-8859-1');
-    reader = null;
-};
 //function that is executed after file loading 
 function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderReference) {
 
@@ -648,7 +467,7 @@ function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderRefer
     let t0 = performance.now()            
 
     //to modify the if else adding a variable to check if the user want to compute or not the network's layout
-
+/* 
     if(execPageRank && layoutComputCheck){
         startWorkerLayoutAndPageRank(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
         document.getElementById('pageRankYesOrNo').innerHTML = "on"
@@ -657,10 +476,10 @@ function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderRefer
         startWorkerPageRank(firstLayoutCompute,graph,pixiGraph,t0,buttonReference,sliderReference);
         document.getElementById('pageRankYesOrNo').innerHTML = "on"
 
-    }else if(!execPageRank && layoutComputCheck){
+    }else if(!execPageRank && layoutComputCheck){ */
         startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
         //document.getElementById('pageRankYesOrNo').innerHTML = "off"
-
+/* 
     }else if(!execPageRank && !layoutComputCheck){
         for(let k = 0;k<graph.nodes;k++){
             if(pixiGraph.pixiNodes[graph.nodes[k]]!=undefined){
@@ -670,7 +489,7 @@ function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderRefer
         firstLayoutCompute(t0,t0,t0,buttonReference,sliderReference)
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
-    }
+    } */
 
 }
 //function that call layout function + render function
@@ -696,9 +515,9 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
     console.log(`Time needed to compute Layout: ${t1fmmm - t0fmmm}  milliseconds.`);
 
     console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
-    document.getElementById('layoutTimePrintSpace').innerHTML = " "+(t1fmmm - t0fmmm).toFixed();
+   /*  document.getElementById('layoutTimePrintSpace').innerHTML = " "+(t1fmmm - t0fmmm).toFixed();
     document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
-            
+   */          
     console.log("finish");
 
 }
@@ -937,28 +756,28 @@ function resetParameters(){
     edgeThickness = 5;
 
     document.getElementById("sigmaDisplay").innerHTML = 0.5;
-    document.getElementById("thresholdAlphaDisplay").innerHTML=0.2;
+    document.getElementById("thresholdAlphaDisplay").innerHTML=0.2;/* 
     document.getElementById("rangeFieldDisplay").innerHTML=1;
-    document.getElementById("maxEdgeThicknessDisplay").innerHTML=5;
+    document.getElementById("maxEdgeThicknessDisplay").innerHTML=5; */
     document.getElementById("zoomIntensityDisplay").innerHTML=4;
 
     document.getElementById('nodePrintSpace').innerHTML = "";
-    document.getElementById('edgesPrintSpace').innerHTML = "";
+    document.getElementById('edgesPrintSpace').innerHTML = "";/* 
     document.getElementById('layoutTimePrintSpace').innerHTML = "";
     document.getElementById('totalTimePrintSpace').innerHTML = "";
-
+ */
     document.getElementById("sigmaSlider").value = 50;
-    document.getElementById("thresholdAlphaSlider").value = 20;
+    document.getElementById("thresholdAlphaSlider").value = 20;/* 
     document.getElementById("rangeFieldSlider").value = 1;
-    document.getElementById("maxEdgeThicknessSlider").value = 50;
+    document.getElementById("maxEdgeThicknessSlider").value = 50; */
     document.getElementById("zoomIntensitySlider").value = 4;
 
     //greadability parameters
-    document.getElementById('infoGreadZone').innerHTML = "";
+    /* document.getElementById('infoGreadZone').innerHTML = "";
     document.getElementById('ARDRis').innerHTML ="";
     document.getElementById('ARMRis').innerHTML = "";
     document.getElementById('CRis').innerHTML = "";
-    document.getElementById('CARis').innerHTML = "";
+    document.getElementById('CARis').innerHTML = ""; */
 
 }
 //Fps monitorining system 
@@ -985,3 +804,4 @@ function enableDisableButton(buttonReference){
         buttonReference[i].disabled=!buttonReference[i].disabled
     }
 }
+ 
