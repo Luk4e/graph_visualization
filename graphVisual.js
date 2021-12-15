@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = false;
+const DISABLECONSOLELOG = true;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -9,14 +9,22 @@ let labelsList = new Map();
 const MAPLABELS = new Map();
 let labelsDisplayedText;
 const MAPVERTEXEDGES = new Map();
+const buttonReference = document.querySelectorAll('button')
+const sliderReference = document.querySelectorAll(`.sliderBarr`)
 
+enableDisableButton(sliderReference)
+enableDisableButton(buttonReference)
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
 if (DISABLECONSOLELOG) {
     console.log = () => {};
 }
 //dimension of main rendering windows 
-const WID = 1400;
-const HIGH = 800;
+//const WID = 1250;
+//const HIGH = 800;
+
+//dimension of main rendering windows 
+const WID = window.screen.width-400;
+const HIGH = window.screen.height-200;
 
 //dimension of zoom windows
 const WIDZOOM = 300;
@@ -90,6 +98,7 @@ outputSliderTextLablesSize.innerHTML = baseTextSize;
 let position ={};
 let buttonActivation = {"zoomActivation":false,"labelsActivation":false}
 
+ 
 
 //let mousedowncontroll = false;
 
@@ -107,38 +116,12 @@ let containerClickedPoint = new PIXI.Container();
 let containerRootZoom = new PIXI.Container();
 let edgesContainerZoom = new PIXI.Container();
 let containerLabelsZoom = new PIXI.Container();
-
-//FAA for view of node and edges
-//const ANTIALIASFILTER = new PIXI.filters.FXAAFilter();
-//containerRoot.filters = [ANTIALIASFILTER];
-//edgesContainer.filters = [ANTIALIASFILTER];
-//zoom
-//containerRootZoom.filters = [ANTIALIASFILTER];
-//edgesContainerZoom.filters = [ANTIALIASFILTER];
-
+ 
 
 //for zoom in and out without scrolling page
 document.getElementById('graph').onwheel = () => false ;
 
-fpsInitialize();
-
-let inputs = document.querySelectorAll('.inputfile');
-Array.prototype.forEach.call(inputs, function showName(input) {
-
-    let labelVal = document.getElementById('labelInsert').innerHTML;
-
-    input.addEventListener('change', function (e) {
-
-        let fileName = ' ';
-
-        fileName = e.target.value.split('\\')[2];
-
-        fileName = fileName.split('\.')[0];
-
-        (fileName)?document.getElementById('fileNameSpace').innerHTML = fileName:document.getElementById('fileNameSpace').innerHTML = labelVal ;
-        
-    });
-});
+fpsInitialize(); 
  
 
 //app pixi for main view space 
@@ -287,7 +270,8 @@ VIEWPORT
         
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
-     
+
+VIEWPORT.pause = true
 //button label actions
 function searchLabel(){
    
@@ -353,15 +337,15 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
     if(buttonActivation.zoomActivation){  
         computeTextureZoom(baseTextSize,position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
         containerClickedPoint.removeChildren();
-        let ring = new PIXI.Graphics();
-        ring.lineStyle(2,0x000000);
-        ring.drawCircle(0,0,50);
-        ring.x = position.xRing;
-        ring.y = position.yRing;
-        ring.endFill();
+        //let ring = new PIXI.Graphics();
+        //ring.lineStyle(2,0x000000);
+        //ring.drawCircle(0,0,50);
+        //ring.x = position.xRing;
+        //ring.y = position.yRing;
+        //ring.endFill();
 
         let rect = new PIXI.Graphics();
-        rect.lineStyle(2,0x000000);
+        rect.lineStyle(1,0x000000);
         rect.drawRect(position.xRing-40,position.yRing-40,80,80)
         rect.endFill();
         containerClickedPoint.addChild(rect)
@@ -385,13 +369,22 @@ document.getElementById("graph").addEventListener("contextmenu", function(e) {
 
 //extrapolation of data from file
 document.getElementById('file').onchange = function () {
-    
+    //let inputs = document.querySelectorAll('.inputfile');
+ 
+    //document.getElementById('fileNameSpace').innerHTML = inputs[0].value.split('\\')[2].split('\.')[0];
     execPageRank = document.getElementById('computePageRankCheckbox').checked;
     layoutComputCheck = document.getElementById('computeLayoutCheckbox').checked;
     let loadingDataStart = performance.now()
 
+    
     if (GRAPH.nodes.length != 0) {
         resetParameters();
+        if(!sliderReference[0].disable){
+            enableDisableButton(sliderReference)
+        }
+        if(!buttonReference[0].disabled){
+            enableDisableButton(buttonReference)
+        }
     }
     MAPVERTEXEDGES.clear();
 
@@ -550,12 +543,7 @@ document.getElementById('file').onchange = function () {
                         circle.x = xTarget;
                         circle.y = yTarget;
                         
-                        /* circle.lineStyle(0)
-                        circle.beginFill(0xDE3249, 1);
-                        circle.drawCircle(1, 1, 1);
-                        circle.endFill();
-                        circle.visible = false;
- */
+                   
                         VIEWPORT.addChild(circle);
                         let nodeIns = new NodeClass(target,circle,circle.x,circle.y,1,1);
 
@@ -643,7 +631,7 @@ document.getElementById('file').onchange = function () {
         console.log("dati letti");
         averageDegree = 2*Math.round(GRAPH.edges.length/GRAPH.nodes.length);
         
-        drawGraph(GRAPH,pixiGraph,VIEWPORT,document);
+        drawGraph(GRAPH,pixiGraph,VIEWPORT,document,buttonReference,sliderReference);
 
 
     };
@@ -651,25 +639,25 @@ document.getElementById('file').onchange = function () {
     reader = null;
 };
 //function that is executed after file loading 
-function drawGraph(graph,pixiGraph,viewport,document) {
+function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderReference) {
 
     
-    document.getElementById('nodePrintSpace').innerHTML = graph.nodes.length;
-    document.getElementById('edgesPrintSpace').innerHTML = graph.edges.length;          
+    document.getElementById('nodePrintSpace').innerHTML = " "+graph.nodes.length;
+    document.getElementById('edgesPrintSpace').innerHTML = " "+graph.edges.length;          
     let t0 = performance.now()            
 
     //to modify the if else adding a variable to check if the user want to compute or not the network's layout
 
     if(execPageRank && layoutComputCheck){
-        startWorkerLayoutAndPageRank(firstLayoutCompute,graph,viewport,pixiGraph,t0);
+        startWorkerLayoutAndPageRank(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
         document.getElementById('pageRankYesOrNo').innerHTML = "on"
 
     }else if(execPageRank  && !layoutComputCheck){
-        startWorkerPageRank(firstLayoutCompute,graph,pixiGraph,t0);
+        startWorkerPageRank(firstLayoutCompute,graph,pixiGraph,t0,buttonReference,sliderReference);
         document.getElementById('pageRankYesOrNo').innerHTML = "on"
 
     }else if(!execPageRank && layoutComputCheck){
-        startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0);
+        startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
         //document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }else if(!execPageRank && !layoutComputCheck){
@@ -678,14 +666,14 @@ function drawGraph(graph,pixiGraph,viewport,document) {
                 pixiGraph.pixiNodes[graph.nodes[k]].setArchList(MAPVERTEXEDGES.get(graph.nodes[k]));
             }
         }
-        firstLayoutCompute(t0,t0,t0)
+        firstLayoutCompute(t0,t0,t0,buttonReference,sliderReference)
         document.getElementById('pageRankYesOrNo').innerHTML = "off"
 
     }
 
 }
 //function that call layout function + render function
-function firstLayoutCompute(t0fmmm,t1fmmm,t0){
+function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
 
     computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 
@@ -701,12 +689,14 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0){
     app2.stage.addChild(containerLabelsZoom);
 
     let t1 = performance.now();
-
+    enableDisableButton(sliderReference)
+    enableDisableButton(buttonReference)
+    VIEWPORT.pause = false;
     console.log(`Time needed to compute Layout: ${t1fmmm - t0fmmm}  milliseconds.`);
 
     console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
-    document.getElementById('layoutTimePrintSpace').innerHTML = (t1fmmm - t0fmmm).toFixed();
-    document.getElementById('totalTimePrintSpace').innerHTML = (t1 - t0).toFixed();
+    document.getElementById('layoutTimePrintSpace').innerHTML = " "+(t1fmmm - t0fmmm).toFixed();
+    document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
             
     console.log("finish");
 
@@ -729,13 +719,9 @@ function startWorkerGreadability() {
             } else {
                 document.getElementById('infoGreadZone').innerHTML = " ";
 
-                document.getElementById('ARDDesc').innerHTML = '<div class="tooltip">ARD:<span class="tooltiptext">Angular resoluction (deviation) measures the average deviation of angles between incident edges on each vertex.</span></div>';
                 document.getElementById('ARDRis').innerHTML = e.data.angularResolutionDev.toFixed(4);
-                document.getElementById('ARMDesc').innerHTML =  '<div class="tooltip">ARM:<span class="tooltiptext">Angular resolution (minimum) measures the mean deviation of adjacent incident edge angles from the ideal minimum angles (360 degrees divided by the degree of that node).</span></div>';
                 document.getElementById('ARMRis').innerHTML = e.data.angularResolutionMin.toFixed(4)
-                document.getElementById('CDesc').innerHTML =  '<div class="tooltip">C:<span class="tooltiptext"> Edge crossings measures the fraction of edges that cross (intersect) out of an approximate maximum number that can cross.</span></div>';
                 document.getElementById('CRis').innerHTML = e.data.crossing.toFixed(4);
-                document.getElementById('CADesc').innerHTML = '<div class="tooltip">CA:<span class="tooltiptext"> Edge crossing angle measures the mean deviation of edge crossing angles from the ideal edge crossing angle (70 degrees).</span></div>';
                 document.getElementById('CARis').innerHTML = e.data.crossingAngle.toFixed(4);
                 ww.terminate();
 
@@ -747,7 +733,7 @@ function startWorkerGreadability() {
 
 }
 //layout worker function 
-async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
+async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0,buttonReference,sliderReference) {
     let t0fmmm = performance.now();
 
     let promise =  new Promise(function(resolve,reject){
@@ -808,11 +794,11 @@ async function startWorkerLayout(callback,graphWork,viewport,pixiGraph,t0) {
     let result = await promise;
     let t1fmmm = performance.now();
 
-    callback(t0fmmm,t1fmmm,t0)
+    callback(t0fmmm,t1fmmm,t0,buttonReference,sliderReference)
 
 }
 //layout worker function with page rank 
-async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGraph,t0) {
+async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGraph,t0,buttonReference,sliderReference) {
     let t0fmmm = performance.now();
 
     let promise =  new Promise(function(resolve,reject){
@@ -888,7 +874,7 @@ async function startWorkerLayoutAndPageRank(callback,graphWork,viewport,pixiGrap
 
 }
 //pagerank worker 
-async function startWorkerPageRank(callback,graphWork,pixiGraph,t0) {
+async function startWorkerPageRank(callback,graphWork,pixiGraph,t0,buttonReference,sliderReference) {
     let t0fmmm = performance.now();
 
     let promise =  new Promise(function(resolve,reject){
@@ -929,7 +915,8 @@ function resetParameters(){
     //viewport reset
     VIEWPORT.removeChildren();
     VIEWPORT.scaled = 1;
-    VIEWPORT.center = {x: 600, y: 400};
+    VIEWPORT.center = {x: WID/2, y: HIGH/2};
+    VIEWPORT.pause = true;
     //container reset
     containerRoot.cacheAsBitmap = false;
     containerRootZoom.cacheAsBitmap = false;
@@ -954,7 +941,6 @@ function resetParameters(){
     document.getElementById("maxEdgeThicknessDisplay").innerHTML=5;
     document.getElementById("zoomIntensityDisplay").innerHTML=4;
 
-    document.getElementById('pageRankYesOrNo').innerHTML = "";
     document.getElementById('nodePrintSpace').innerHTML = "";
     document.getElementById('edgesPrintSpace').innerHTML = "";
     document.getElementById('layoutTimePrintSpace').innerHTML = "";
@@ -968,16 +954,11 @@ function resetParameters(){
 
     //greadability parameters
     document.getElementById('infoGreadZone').innerHTML = "";
-    document.getElementById('ARDDesc').innerHTML = "";
     document.getElementById('ARDRis').innerHTML ="";
-    document.getElementById('ARMDesc').innerHTML =  "";
     document.getElementById('ARMRis').innerHTML = "";
-    document.getElementById('CDesc').innerHTML =  "";
     document.getElementById('CRis').innerHTML = "";
-    document.getElementById('CADesc').innerHTML ="";
     document.getElementById('CARis').innerHTML = "";
-    
-   
+
 }
 //Fps monitorining system 
 function fpsInitialize(){
@@ -996,4 +977,10 @@ function fpsInitialize(){
 
     animate();
 
+}
+
+function enableDisableButton(buttonReference){
+    for(let i = 0;i<buttonReference.length;i++){
+        buttonReference[i].disabled=!buttonReference[i].disabled
+    }
 }
