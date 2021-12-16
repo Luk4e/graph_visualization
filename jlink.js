@@ -12,11 +12,12 @@ const buttonReference = document.querySelectorAll('button')
 const sliderReference = document.querySelectorAll(`.sliderBarr`)
 
 //dimension of main rendering windows 
-const WID = window.screen.width-400;
-const HIGH = window.screen.height-200;
+const WID = window.innerWidth-500;
+const HIGH = window.innerHeight;
+
 //dimension of zoom windows
-const WIDZOOM = 300;
-const HIGHZOOM = 300;
+const WIDZOOM = 350;
+const HIGHZOOM = 350;
 
 enableDisableButton(sliderReference)
 enableDisableButton(buttonReference)
@@ -300,6 +301,10 @@ function changestatuszoom(){
     }
 }
 //mouse event listener for discover mouse position to compute zoom in a specific area
+
+window.addEventListener('resize',function(event){
+    window.location.reload();
+});
 
 
 document.getElementById("graph").addEventListener("mousedown", function(e) {
