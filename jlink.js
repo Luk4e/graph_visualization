@@ -20,7 +20,7 @@ if (DISABLECONSOLELOG) {
 } 
 //dimension of main rendering windows 
 const WID = window.innerWidth-500;
-const HIGH = window.innerHeight-200;
+const HIGH = window.innerHeight;
 
 //dimension of zoom windows
 const WIDZOOM = 350;
