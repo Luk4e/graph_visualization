@@ -180,6 +180,7 @@ sliderSigma.oninput = function() {
 }
 sliderThresholdAlpha.onchange  = function() {
     //computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    edgesContainer.removeChildren();
     edgeCompute(Math.round(Math.max(HIGH,WID)/2),WID,HIGH,pixiGraph,GRAPH.edges.length,GRAPH,edgesContainer,thresholdComp,edgeThickness);
 
 }
@@ -197,6 +198,7 @@ sliderRangeField.oninput  = function() {
 
 sliderMaxEdgeThickness.onchange  = function() {
     //computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    edgesContainer.removeChildren();
     edgeCompute(Math.round(Math.max(HIGH,WID)/2),WID,HIGH,pixiGraph,GRAPH.edges.length,GRAPH,edgesContainer,thresholdComp,edgeThickness);
 
 }
@@ -978,7 +980,6 @@ function fpsInitialize(){
     animate();
 
 }
-
 function enableDisableButton(buttonReference){
     for(let i = 0;i<buttonReference.length;i++){
         buttonReference[i].disabled=!buttonReference[i].disabled
