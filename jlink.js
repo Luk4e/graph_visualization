@@ -17,11 +17,7 @@ enableDisableButton(buttonReference)
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
 if (DISABLECONSOLELOG) {
     console.log = () => {};
-}
-//dimension of main rendering windows 
-//const WID = 1250;
-//const HIGH = 800;
-
+} 
 //dimension of main rendering windows 
 const WID = window.screen.width-400;
 const HIGH = window.screen.height-200;
@@ -55,13 +51,12 @@ let layoutComputCheck = true;
 
 let raggioScalato = SCALEFACTOR*sigma*RADIUS;
 //palette of colours
-let normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
-let scalaRedRGBRigirata = [[249,235,234],[242,215,213],[230,176,170],[217,136,128],[205,97,85],[192,57,43],[169,50,38],[146,43,33],[123,36,28],[100,30,22],[255,255,255]];
-let scalaBluRGBRigirata = [[235,245,251],[214,234,248],[174,214,241],[133,193,233],[93,173,226],[52,152,219],[46,134,193],[40,116,166],[33,97,140],[27,79,114],[255,255,255]];
-let scaleBlueAltRGBR2  = [[235,245,251],[202,240,248],[173,232,244],[144,224,239],[72,202,228],[0,180,216],[0,150,199],[0,119,182],[2,6,138],[3,4,94],[255,255,255]];
-let scaleBlueAltRGBR3  = [[177,236,242],[147,228,239],[107,216,233],[71,214,236],[37,212,239],[37,202,239],[0,184,234],[0,178,227],[0,163,208],[0,145,189],[255,255,255]];
-//scalaBluRGBRigirata = scaleBlueAltRGBR3;
-//scalaBluRGBRigirata = scaleBlueAltRGBRigirata;
+//let normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
+//let scalaRedRGBRigirata = [[249,235,234],[242,215,213],[230,176,170],[217,136,128],[205,97,85],[192,57,43],[169,50,38],[146,43,33],[123,36,28],[100,30,22],[255,255,255]];
+const scalaBluRGBRigirata = [[235,245,251],[214,234,248],[174,214,241],[133,193,233],[93,173,226],[52,152,219],[46,134,193],[40,116,166],[33,97,140],[27,79,114],[255,255,255]];
+//let scaleBlueAltRGBR2  = [[235,245,251],[202,240,248],[173,232,244],[144,224,239],[72,202,228],[0,180,216],[0,150,199],[0,119,182],[2,6,138],[3,4,94],[255,255,255]];
+//let scaleBlueAltRGBR3  = [[177,236,242],[147,228,239],[107,216,233],[71,214,236],[37,212,239],[37,202,239],[0,184,234],[0,178,227],[0,163,208],[0,145,189],[255,255,255]];
+ 
 //declaration of sprite and texture for texture node computation
 let sprite;
 let texture;
