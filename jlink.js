@@ -717,8 +717,8 @@ function resetParameters(){
     containerLabels.removeChildren();
     containerLabelsZoom.removeChildren();
     //slider parameters
-
-    sigma = 0.5;
+ 
+    sigma = 1.0;
     thresholdComp= 0.2;
     rangeFiledComp = 1;
     edgeThickness = 5;
