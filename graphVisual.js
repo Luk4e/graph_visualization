@@ -370,7 +370,10 @@ document.getElementById("graph").addEventListener("contextmenu", function(e) {
 //preload one file
 let client = new XMLHttpRequest();
 let loadingDataStart = performance.now()
-client.onload=function(){
+
+client.open('GET',"./graph/gdvisgraph.gml")
+client.overrideMimeType('text/xml; charset=iso-8859-1') 
+client.onload = function(){
     
 
     if (GRAPH.nodes.length != 0) {
@@ -388,7 +391,7 @@ client.onload=function(){
     let nodeTemp = new Array();
     let tempSet  = new Set();
     let edgeSet  = new Set();
-    let lines = client.responseText.split('\n')
+    let lines = client.response.split('\n')
     let linesLength = lines.length;
     //let directed = lines[1][10];
     //let weighted = lines[2][10];
@@ -455,7 +458,6 @@ client.onload=function(){
 
     drawGraph(GRAPH,pixiGraph,VIEWPORT,document,buttonReference,sliderReference);
 }
-client.open('GET',"./graph/gdvisgraph.gml")
 client.send()
 
 //function that is executed after file loading 
