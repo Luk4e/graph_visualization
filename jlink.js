@@ -1,6 +1,5 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -12,29 +11,38 @@ const MAPVERTEXEDGES = new Map();
 const buttonReference = document.querySelectorAll('button')
 const sliderReference = document.querySelectorAll(`.sliderBarr`)
 
-enableDisableButton(sliderReference)
-enableDisableButton(buttonReference)
-//re-inizialize console.log function,if testPerformace is true, to turn off log during tests
-if (DISABLECONSOLELOG) {
-    console.log = () => {};
-}
-//dimension of main rendering windows 
-//const WID = 1250;
-//const HIGH = 800;
-
 //dimension of main rendering windows 
 const WID = window.screen.width-400;
 const HIGH = window.screen.height-200;
-
 //dimension of zoom windows
 const WIDZOOM = 300;
 const HIGHZOOM = 300;
+
+enableDisableButton(sliderReference)
+enableDisableButton(buttonReference)
+//re-inizialize console.log function,if testPerformace is true, to turn off log during tests
+const DISABLECONSOLELOG = true;
+if (DISABLECONSOLELOG) {
+    console.log = () => {};
+} 
 
 //Aliases for pixi 
 let Application = PIXI.Application,
     Graphics = PIXI.Graphics,
     Text = PIXI.Text;
 
+//pixi container for node and edges
+let edgesContainer = new PIXI.Container();
+let containerRoot = new PIXI.Container();
+let containerLabels = new PIXI.Container();
+let containerAdiacentLabels = new PIXI.Container();
+let containerLabelsOnClick = new PIXI.Container();
+let containerClickedPoint = new PIXI.Container();
+//zoom
+let containerRootZoom = new PIXI.Container();
+let edgesContainerZoom = new PIXI.Container();
+let containerLabelsZoom = new PIXI.Container();
+ 
 
 //global constant value
 const SCALEFACTOR = 10;
@@ -54,14 +62,8 @@ let layoutComputCheck = true;
 
 
 let raggioScalato = SCALEFACTOR*sigma*RADIUS;
-//palette of colours
-let normalScaleRedRGB = [[100,30,22],[123,36,28],[146,43,33],[169,50,38],[192,57,43],[205,97,85],[217,136,128],[230,176,170],[242,215,213],[249,235,234],[255,255,255]];
-let scalaRedRGBRigirata = [[249,235,234],[242,215,213],[230,176,170],[217,136,128],[205,97,85],[192,57,43],[169,50,38],[146,43,33],[123,36,28],[100,30,22],[255,255,255]];
+//palette of colours 
 let scalaBluRGBRigirata = [[235,245,251],[214,234,248],[174,214,241],[133,193,233],[93,173,226],[52,152,219],[46,134,193],[40,116,166],[33,97,140],[27,79,114],[255,255,255]];
-let scaleBlueAltRGBR2  = [[235,245,251],[202,240,248],[173,232,244],[144,224,239],[72,202,228],[0,180,216],[0,150,199],[0,119,182],[2,6,138],[3,4,94],[255,255,255]];
-let scaleBlueAltRGBR3  = [[177,236,242],[147,228,239],[107,216,233],[71,214,236],[37,212,239],[37,202,239],[0,184,234],[0,178,227],[0,163,208],[0,145,189],[255,255,255]];
-//scalaBluRGBRigirata = scaleBlueAltRGBR3;
-//scalaBluRGBRigirata = scaleBlueAltRGBRigirata;
 //declaration of sprite and texture for texture node computation
 let sprite;
 let texture;
@@ -90,8 +92,6 @@ let outputSliderTextLablesSize = document.getElementById("labelsFontSizeDisplay"
 thresholdComp = 0.20;
 sliderThresholdAlpha.value = thresholdComp*100;
 outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
-
-
 sliderTextLabels.value = baseTextSize*10;
 outputSliderTextLablesSize.innerHTML = baseTextSize;
 //variable for zoom and labels button 
@@ -100,30 +100,12 @@ let buttonActivation = {"zoomActivation":false,"labelsActivation":false}
 
  
 
-//let mousedowncontroll = false;
-
 document.getElementById("magnifying").style.visibility = 'hidden';
-
-
-//pixi container for node and edges
-let edgesContainer = new PIXI.Container();
-let containerRoot = new PIXI.Container();
-let containerLabels = new PIXI.Container();
-let containerAdiacentLabels = new PIXI.Container();
-let containerLabelsOnClick = new PIXI.Container();
-let containerClickedPoint = new PIXI.Container();
-//zoom
-let containerRootZoom = new PIXI.Container();
-let edgesContainerZoom = new PIXI.Container();
-let containerLabelsZoom = new PIXI.Container();
- 
-
 //for zoom in and out without scrolling page
 document.getElementById('graph').onwheel = () => false ;
 
 fpsInitialize(); 
  
-
 //app pixi for main view space 
 let app = new Application({
     width: WID,
@@ -371,9 +353,9 @@ document.getElementById("graph").addEventListener("contextmenu", function(e) {
 let client = new XMLHttpRequest();
 let loadingDataStart = performance.now()
 
-client.open('GET',"./graph/gdvisgraph.gml")
+client.open('GET',"/test_graph/gdvisgraph.gml")
 client.overrideMimeType('text/xml; charset=iso-8859-1') 
-client.onload = function(){
+client.onload = ()=>{
     
 
     if (GRAPH.nodes.length != 0) {
@@ -467,31 +449,8 @@ function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderRefer
     document.getElementById('nodePrintSpace').innerHTML = " "+graph.nodes.length;
     document.getElementById('edgesPrintSpace').innerHTML = " "+graph.edges.length;          
     let t0 = performance.now()            
-
-    //to modify the if else adding a variable to check if the user want to compute or not the network's layout
-/* 
-    if(execPageRank && layoutComputCheck){
-        startWorkerLayoutAndPageRank(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
-        document.getElementById('pageRankYesOrNo').innerHTML = "on"
-
-    }else if(execPageRank  && !layoutComputCheck){
-        startWorkerPageRank(firstLayoutCompute,graph,pixiGraph,t0,buttonReference,sliderReference);
-        document.getElementById('pageRankYesOrNo').innerHTML = "on"
-
-    }else if(!execPageRank && layoutComputCheck){ */
-        startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
-        //document.getElementById('pageRankYesOrNo').innerHTML = "off"
-/* 
-    }else if(!execPageRank && !layoutComputCheck){
-        for(let k = 0;k<graph.nodes;k++){
-            if(pixiGraph.pixiNodes[graph.nodes[k]]!=undefined){
-                pixiGraph.pixiNodes[graph.nodes[k]].setArchList(MAPVERTEXEDGES.get(graph.nodes[k]));
-            }
-        }
-        firstLayoutCompute(t0,t0,t0,buttonReference,sliderReference)
-        document.getElementById('pageRankYesOrNo').innerHTML = "off"
-
-    } */
+    startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
+   
 
 }
 //function that call layout function + render function
@@ -800,10 +759,3 @@ function fpsInitialize(){
     animate();
 
 }
-
-function enableDisableButton(buttonReference){
-    for(let i = 0;i<buttonReference.length;i++){
-        buttonReference[i].disabled=!buttonReference[i].disabled
-    }
-}
- 

@@ -1267,3 +1267,10 @@
     
         return labelsDisplayedText;
     }
+
+    function enableDisableButton(buttonReference){
+        for(let i = 0;i<buttonReference.length;i++){
+            buttonReference[i].disabled=!buttonReference[i].disabled
+        }
+    }
+ 
