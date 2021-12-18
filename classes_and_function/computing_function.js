@@ -645,6 +645,7 @@
         edgesContainerZoom.removeChildren();
         containerLabelsZoom.removeChildren();
 
+
         let t1Draw = performance.now();
         let links = graph.edges.length;
         let pointZero = new PIXI.Point(0,0);
@@ -753,7 +754,7 @@
 
     }
 
-    function labelsView(buttonActivationZoom,labelsOnClick,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
+    function labelsView(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){   
     
         let nodeOrderByCluster = new Map()
         let maxDegree = 0;
@@ -812,13 +813,7 @@
         //sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree || b[1].clusterValue - a[1].clusterValue));
         sortedByDegree = new Map([...nodeOrderByCluster.entries()].sort((a, b) => b[1].degree - a[1].degree ));
 
-        //console.log((viewport.lastViewport.scaleX/(60/100))/100);
-        //console.log(viewport.lastViewport.scaleX/(60/100));
-        //maxDegree = 0;//Math.floor(maxDegree*(1-(viewport.lastViewport.scaleX/(60/100))/100));
-
-        //varianceDegree = Math.ceil((varianceDegree/count)); 
-        //console.log("Mean: " + averageDegree + "Variance: "+varianceDegree+" max degree "+maxDegree)
-
+  
         if(!seeAllLabels){
 
             count = Math.ceil(count*(viewport.lastViewport.scaleX/(60/100))/100);
@@ -860,7 +855,7 @@
 
                 circleText.refToId = nodeToDraw[1].id;
                 containerLabels.addChild(circleText);
-                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,labelsOnClick,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
+                circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
                 circle.on('mouseup',()=>{circleText.visible = !circleText.visible})
                 labelsDisplayedText.push(circleText)
 
@@ -1040,7 +1035,7 @@
     
     }
 
-    function showAdiacentLabels(buttonActivationZoom,labelsOnClick,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circleRefToText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot,containerLabels){
+    function showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circleRefToText,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegTot,containerLabels){
         
         if(controlLabelAdiacent.value && !buttonActivationZoom.zoomActivation){
  
@@ -1142,7 +1137,7 @@
 
     }
     
-    function labelsViewPoint(buttonActivationZoom,labelsOnClick,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){
+    function labelsViewPoint(buttonActivationZoom,baseTextSize,containerAdiacentLabels,pixiGraphStruct,high,wid,labelsMap,averageDegree,seeAllLabels,viewport,containerLabels,labelsList,xstart,ystart,graph,maxDistance = 150,numOfLabelsToShowUp=5){
 
         //TODO: aggiungere i labels al container principale solo sui punti dove non esistona gia labels visualizzati
 
@@ -1250,7 +1245,7 @@
 
                     circleText.refToId = nodeToDraw[1].id;
                     containerLabels.addChild(circleText);
-                    circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,labelsOnClick,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
+                    circleText.on('mouseup',() => {showAdiacentLabels(buttonActivationZoom,baseTextSize,controlLabelAdiacent,containerAdiacentLabels,pixiGraphStruct,high,wid,circleText,circle,pointZero,labelsMap,labelsAlreadyDisplayed,maxDegree,containerLabels)});
                     circle.on('mouseup',()=>{ circleText.visible = !circleText.visible})
                     labelsDisplayedText.push(circleText)
 

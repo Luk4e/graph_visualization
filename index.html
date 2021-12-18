@@ -19,9 +19,8 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <title>JLink</title>
+    <title>BrowVis</title>
 
- 
     <link rel="stylesheet" href="bootstrap-5.1.3/css/bootstrap.css"/>
 
 </head>
@@ -35,106 +34,59 @@
         
          
         <div class="row p-3">
-            <div class="col-lg-1 m-2 me-3"align="center">
-                <h1>
-                    <a href="?">JLink</a>
-                </h1>
-            </div>
-            <div class="col-lg-2 mt-4" align="center">
-                <label class="specTab" >Nodes </label>
-                <label  id="nodePrintSpace" class="leftAlign"/>
-            </div>
-
-            <div class="col-lg-2 mt-4" align="center">
-                <label class="specTab">Edges </label>
-                <label  id="edgesPrintSpace" class="leftAlign"/>
-            </div>
-            <!-- 
-            <div class="inputFileBSpace col-lg-2 mt-3" align="center">
-                <input type="file" name="file" id="file" class="inputfile form-control">
-                <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label> 
-            </div>   
-             
-            <div class="col">
-                <p class="specTab" >File </p>
-                <p clas="resTab" id="fileNameSpace"></p>
-            </div>
             
-
-
-            <div class="col-lg mt-4" align="center">
-                <input type="checkbox" id="computePageRankCheckbox" class="form-check-input"/>
-                <label class="specTab form-check-label" for="computePageRankCheckbox">PageRank</label>
-            </div>
-
-            <div class="col-lg-1 mt-4" align="center">
-                <input type="checkbox" id="computeLayoutCheckbox" class="form-check-input" checked>
-                <label class="specTab form-check-label" for="computeLayoutCheckbox">FM3</label>
-            </div>
-        -->
+            <div class="col-lg-2 mt-2 p-1" align="center">
+                <h6>
+                    <strong>Collaboration Network in Graph Drawing, Information Visualization, and Computer Graphics powered by</strong>
+                </h6>
+            </div>  
+            <div class="col-lg-1 mt-3  p-1" align="center">
+                <h2>
+                    <a href="?" class="text-decoration-none">BrowVis</a>
+                </h2>
+            </div>        
            
-            <!-- 
-             <td><p class="specTab">PageRank: </p></td>
-            <td><p clas="resTab" id="pageRankYesOrNo"></p></td>
-
-            <div class="col-lg mt-4" align="center">
-                <label class="specTab">Layout [ms]  </label>
-                <label  id="layoutTimePrintSpace" class="leftAlign"/>
-            </div >
-
-            <div class="col-lg mt-4" align="center">
-                <label class="specTab">Total [ms] </label> 
-                <label  id="totalTimePrintSpace" class="leftAlign"/>
-            </div >-->
-        </div>
-
-
-        <div class="row p-3">
-            
-           
-            <div class="col-lg-2 mt-2 " align="center">
-                <label class="modParameterBar">Vertex Aggr :</label> 
-                <label id="sigmaDisplay" class="valoriMod"> </label> 
+            <div class="col-lg mt-2 " align="center">
+                <label class="modParameterBar"><strong>Vertex Aggr</strong></label> 
                 <input class="sliderBarr form-range" type="range" min="1" max="250" value="100" id="sigmaSlider"/> 
             </div>
     
 
-            <div class="col-lg-2 mt-2" align="center"> 
-                <label class="modParameterBar">Edges Aggr :</label>
-                <label id="thresholdAlphaDisplay" class="valoriMod"></label>
+            <div class="col-lg mt-2" align="center"> 
+                <label class="modParameterBar"><strong>Edges Aggr</strong></label>
                 <input class="sliderBarr form-range" type="range" min="1" max="100" value="20" id="thresholdAlphaSlider"/> 
             </div>
     
-
-            <!--<div class="col-lg-2" align="center">
-                <label class="modParameterBar"> Cluster Aggr: </label>  
-                <label id="rangeFieldDisplay" class="valoriMod"></label>  
-                <input class="sliderBarr form-range" type="range" min="10" max="100" value="10" id="rangeFieldSlider"/>  
-            </div>
-        
-
-            <div class="col-lg-2" align="center"> 
-                <label class="modParameterBar"> Edge Thickness :</label> 
-                <label id="maxEdgeThicknessDisplay" class="valoriMod"></label>
-                <input class="sliderBarr form-range" type="range" min="10" max="150" value="50" id="maxEdgeThicknessSlider"/>
-            </div>-->
             
-            <div class="col-lg-2 mt-2" align="center"> 
-                <label class="modParameterBar"> Labels size :</label>  
-                <label id="labelsFontSizeDisplay" class="valoriMod"></label> 
+            <div class="col-lg mt-2" align="center"> 
+                <label class="modParameterBar"> <strong>Labels size </strong></label>  
                 <input class="sliderBarr form-range" type="range" min="20" max="250" value="100" id="labelsFontSizeSlider"/>
             </div>
             
             
-            <div class="col-lg-2 mt-2" align="center">
-                <button type="button" class="btn btn-primary mb-2" id="labelButton" onclick="searchLabel()">Labels</button> </br>
-                <input type="checkbox" id="seeAllLabels" class="form-check-input mt-2 ms-2"/><label class="form-check-label mt-1 ms-2" for="seeAllLabels">All</label>
-                <input type="checkbox" id="labelsOnClick" class="form-check-input mt-2 ms-2"/><label class="form-check-label mt-1 ms-2" for="labelsOnClick">Area Labels</label>
+            <div class="col-lg mt-1" align="center">
+                <label><strong>Labels</strong></label>
+                <div class="o-switch btn-group" data-toggle="buttons" role="group">
+                    <label class="btn btn-primary active">
+                      <input type="radio" name="options" id="offLabels" autocomplete="off" onclick="searchLabelOff()" > Off
+                    </label>
+                    <label class="btn btn-primary">
+                      <input type="radio" name="options" id="autoLabels" autocomplete="off" onclick="searchLabelAuto()" checked> Auto
+                    </label>
+                    <label class="btn btn-primary">
+                      <input type="radio" name="options" id="seeAllLabels" autocomplete="off" onclick="searchLabelAll()">All
+                    </label>
+                </div>
             </div>
+
+            <div class="col-lg-3 mt-4" align="center">
+                <label  id="computationTime"/>
+            </div >
  
         </div>
+   
 
-        <div class="row mt-4 p-3" >
+        <div class="row mt-1 p-3" >
             
             <div class="col position-relative  " id="graph" >
                 <div id="fpsmeterstat" class="position-absolute"></div>
@@ -145,67 +97,9 @@
                 </div >
                 <div class="row zoomZone">
                     <div class="col mt-3" align="center"> 
-                        <button type="button"  id="zoomOnPointButton" class="btn btn-primary" onclick="changestatuszoom()">Zoom</button> 
+                        <button type="button"  id="zoomOnPointButton" class="btn btn-primary" onclick="changestatuszoom()">Magnifying Glass</button> 
                     </div>          
-                </div >
-                <div class="row mt-3" align="center">
-                    <div class="col-4 mt-2"> 
-                        <label id="zoomIntensityDisplay" class="valoriMod" for="zoomIntensitySlider"></label>    
-                    </div>
-                    <div class="col-6 ms-2">
-                        <input type="range" min="4" max="10" value="4" step="1" id="zoomIntensitySlider" class="form-range mt-2 sliderBarr"/> 
-                    </div>                     
-                </div>
-                <!-- 
-                <div class="row-1 mt-3">  
-                    <button type="button" class="btn btn-primary mt-2" id="greadButton" onclick="startWorkerGreadability()">Greadability </button>
-                </div>
-                
-                <div class="row mt-3">
-                    <label class="specTab mt-3" id="infoGreadZone"></label>
-                </div>
-                <div class="row mt-4">
-                    <div class="col"> 
-                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Angular resoluction (deviation) measures the average deviation of angles between incident edges on each vertex.">
-                            <p>ARD</p>
-                        </span>
-                    </div>
-                    <div class="col" >
-                        <label id="ARDRis"></label>
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col"> 
-                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Angular resolution (minimum) measures the mean deviation of adjacent incident edge angles from the ideal minimum angles (360 degrees divided by the degree of that node).">
-                            <p>ARM</p>
-                        </span>
-                    </div>
-                    <div class="col" >
-                        <label id="ARMRis"></label>
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col"> 
-                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Edge crossings measures the fraction of edges that cross (intersect) out of an approximate maximum number that can cross.">
-                            <p>CD</p>
-                        </span>
-                    </div>
-                    <div class="col" >
-                        <label id="CRis"></label>
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col"> 
-                        <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Edge crossing angle measures the mean deviation of edge crossing angles from the ideal edge crossing angle (70 degrees).">
-                            <p>CA</p>
-                        </span>
-                    </div>
-                    <div class="col" >
-                        <label id="CARis"></label>
-                    </div>
-                </div>
-            -->
-                     
+                </div > 
             </div>
 
         </div>   
@@ -214,7 +108,7 @@
 
     <script type="text/javascript" src="classes_and_function/computing_function.js"></script>
     <script type="text/javascript" src="classes_and_function/graph_classes.js"></script>
-    <script type="text/javascript" src="jlink.js"></script>
+    <script type="text/javascript" src="BrowVis.js"></script>
 </body>
 
 </html>

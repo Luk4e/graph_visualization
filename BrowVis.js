@@ -13,7 +13,7 @@ const sliderReference = document.querySelectorAll(`.sliderBarr`)
 
 //dimension of main rendering windows 
 const WID = window.innerWidth-500;
-const HIGH = window.innerHeight;
+const HIGH = window.innerHeight-150;
 
 //dimension of zoom windows
 const WIDZOOM = 350;
@@ -22,7 +22,7 @@ const HIGHZOOM = 350;
 enableDisableButton(sliderReference)
 enableDisableButton(buttonReference)
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 if (DISABLECONSOLELOG) {
     console.log = () => {};
 } 
@@ -44,6 +44,7 @@ let containerRootZoom = new PIXI.Container();
 let edgesContainerZoom = new PIXI.Container();
 let containerLabelsZoom = new PIXI.Container();
  
+//mouse event listener for discover mouse position to compute zoom in a specific area
 
 //global constant value
 const SCALEFACTOR = 10;
@@ -82,19 +83,12 @@ let sliderRangeField = document.getElementById("rangeFieldSlider");
 let sliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessSlider");
 let sliderZoomIntensity = document.getElementById("zoomIntensitySlider");
 let sliderTextLabels = document.getElementById("labelsFontSizeSlider");
-
-let outputSigma = document.getElementById("sigmaDisplay");
-let outputThresholdAlpha = document.getElementById("thresholdAlphaDisplay");
-let outputSliderRangeField = document.getElementById("rangeFieldDisplay");
-let outputSliderMaxEdgeThickness = document.getElementById("maxEdgeThicknessDisplay");
-let outputSliderZoomIntensity = document.getElementById("zoomIntensityDisplay");
-let outputSliderTextLablesSize = document.getElementById("labelsFontSizeDisplay")
-
+ 
 thresholdComp = 0.20;
 sliderThresholdAlpha.value = thresholdComp*100;
-outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
+//outputThresholdAlpha.innerHTML = thresholdComp.toFixed(2);
 sliderTextLabels.value = baseTextSize*10;
-outputSliderTextLablesSize.innerHTML = baseTextSize;
+//outputSliderTextLablesSize.innerHTML = baseTextSize;
 //variable for zoom and labels button 
 let position ={};
 let buttonActivation = {"zoomActivation":false,"labelsActivation":false}
@@ -135,16 +129,6 @@ const VIEWPORT = new pixi_viewport.Viewport({
     worldHeight: HIGH,
     interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 })
-
-//slider
-//write on screen slider value
-outputSigma.innerHTML = sliderSigma.value/100;
-outputThresholdAlpha.innerHTML = sliderThresholdAlpha.value/100;/* 
-outputSliderRangeField.innerHTML = Math.round(sliderRangeField.value/10);
-outputSliderMaxEdgeThickness.innerHTML = Math.round(sliderMaxEdgeThickness.value/10); */
-outputSliderZoomIntensity.innerHTML = sliderZoomIntensity.value;
-outputSliderTextLablesSize.innerHTML = sliderTextLabels.value/10;
-
 //re compute of texture after interaction with slider 
 
 sliderSigma.onchange = function() {
@@ -153,12 +137,12 @@ sliderSigma.onchange = function() {
         containerLabels.removeChildren();
         containerLabelsOnClick.removeChildren()
         containerAdiacentLabels.removeChildren();
-        labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
 
     }
 }
 sliderSigma.oninput = function() {
-    outputSigma.innerHTML = this.value/100;
+    //outputSigma.innerHTML = this.value/100;
     sigma = this.value/100;
 }
 sliderThresholdAlpha.onchange  = function() {
@@ -169,44 +153,18 @@ sliderThresholdAlpha.onchange  = function() {
 }
 sliderThresholdAlpha.oninput  = function() {
     thresholdComp = this.value/100;
-    outputThresholdAlpha.innerHTML = thresholdComp;
-}/* 
-sliderRangeField.onchange  = function() {
-    computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
-}
-sliderRangeField.oninput  = function() {
-    rangeFiledComp = Math.round(this.value/10);
-    outputSliderRangeField.innerHTML = rangeFiledComp;
-}
-
-sliderMaxEdgeThickness.onchange  = function() {
-    //computeTexture(graph,pixiGraph,viewport.scaled,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
-    edgesContainer.removeChildren();
-    edgeCompute(Math.round(Math.max(HIGH,WID)/2),WID,HIGH,pixiGraph,GRAPH.edges.length,GRAPH,edgesContainer,thresholdComp,edgeThickness);
-
-}
-sliderMaxEdgeThickness.oninput  = function() {
-    edgeThickness = Math.round(this.value/10);
-    outputSliderMaxEdgeThickness.innerHTML = Math.round(this.value/10);
-} */
-
-sliderZoomIntensity.oninput = function() {
-    zoomIntens = this.value;
-    outputSliderZoomIntensity.innerHTML = this.value;
-
-}
-
+    //outputThresholdAlpha.innerHTML = thresholdComp;
+} 
 sliderTextLabels.onchange = function() {
     if(buttonActivation.labelsActivation){
         containerLabels.removeChildren();
         containerAdiacentLabels.removeChildren();
         containerLabelsOnClick.removeChildren();
-        labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+        labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
     }
 }
-
 sliderTextLabels.oninput = function() {
-    outputSliderTextLablesSize.innerHTML =  Math.round(this.value/10);
+   // outputSliderTextLablesSize.innerHTML =  Math.round(this.value/10);
     baseTextSize = Math.round(this.value/10);
 }
 
@@ -219,11 +177,11 @@ VIEWPORT
     .on('wheel', function(){ 
         sigma = 1.0+(1.0/60)*VIEWPORT.lastViewport.scaleX;
         sliderSigma.value = sigma*100;
-        outputSigma.innerHTML = sigma.toFixed(3);
+        //outputSigma.innerHTML = sigma.toFixed(3);
 
         thresholdComp = (1-(0.8+(0.20/60)*VIEWPORT.lastViewport.scaleX));
         sliderThresholdAlpha.value = thresholdComp*100;
-        outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
+        //outputThresholdAlpha.innerHTML = thresholdComp.toFixed(3);
         
 
         //document.getElementById
@@ -233,7 +191,7 @@ VIEWPORT
             containerLabels.removeChildren();
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren();
-            labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
         if(buttonActivation.zoomActivation){  
             containerClickedPoint.removeChildren();
@@ -247,7 +205,7 @@ VIEWPORT
             containerLabels.removeChildren();
             containerLabelsOnClick.removeChildren();
             containerAdiacentLabels.removeChildren()
-            labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+            labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
         }
         if(buttonActivation.zoomActivation){  
             containerClickedPoint.removeChildren();
@@ -255,53 +213,7 @@ VIEWPORT
         
     })
     .clampZoom({ minWidth: WID/60, minHeight: HIGH/60 })//max zoom
-
-VIEWPORT.pause = true
-//button label actions
-function searchLabel(){
-   
-    if(!buttonActivation.labelsActivation && !buttonActivation.zoomActivation){
-        buttonActivation.labelsActivation = true;
-        labelsList=labelsView(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
-        //viewport.pause = true;
-    }else{
-        buttonActivation.labelsActivation = false;
-        containerLabels.visible = true;
-        //VIEWPORT.pause = false;
-        containerLabels.removeChildren();
-        containerLabelsOnClick.removeChildren();
-        containerAdiacentLabels.removeChildren();
-        containerLabelsZoom.removeChildren();
-
-    }
-}
-//button zoom actions
-function changestatuszoom(){
-
-    if(!buttonActivation.zoomActivation){
-        document.getElementById("magnifying").style.visibility = 'visible';
-        buttonActivation.zoomActivation = true;
-        //VIEWPORT.pause = true;
-        document.body.style.cursor = "crosshair"
-        
-    }else{
-        document.getElementById("magnifying").style.visibility = 'hidden';
-        //VIEWPORT.pause = false;
-        buttonActivation.zoomActivation = false;
-        document.body.style.cursor = "default"
-        containerRootZoom.removeChildren();
-        edgesContainerZoom.removeChildren();
-        containerLabelsZoom.removeChildren();
-        containerLabelsOnClick.removeChildren();
-        containerRootZoom.cacheAsBitmap = false;
-        containerClickedPoint.removeChildren();
-
-        computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
-        
-    }
-}
-//mouse event listener for discover mouse position to compute zoom in a specific area
-
+  
 window.addEventListener('resize',function(event){
     window.location.reload();
 });
@@ -326,13 +238,7 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
     if(buttonActivation.zoomActivation){  
         computeTextureZoom(baseTextSize,position.xstart,position.ystart,position.xend,position.yend,GRAPH,pixiGraph,VIEWPORT.scaled,containerRootZoom,edgesContainerZoom,containerLabelsZoom,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness,buttonActivation,VIEWPORT);
         containerClickedPoint.removeChildren();
-        //let ring = new PIXI.Graphics();
-        //ring.lineStyle(2,0x000000);
-        //ring.drawCircle(0,0,50);
-        //ring.x = position.xRing;
-        //ring.y = position.yRing;
-        //ring.endFill();
-
+    
         let rect = new PIXI.Graphics();
         rect.lineStyle(1,0x000000);
         rect.drawRect(position.xRing-40,position.yRing-40,80,80)
@@ -341,20 +247,7 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
     }
  
 });
- 
-document.getElementById("graph").addEventListener("contextmenu", function(e) {
-    //mousedowncontroll = false;
-    e.preventDefault()
-
-    if(buttonActivation.labelsActivation && document.getElementById("labelsOnClick").checked && !buttonActivation.zoomActivation){
-        //VIEWPORT.pause = true;
-        labelsViewPoint(buttonActivation,document.getElementById("labelsOnClick").checked,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
-    }else{
-        //VIEWPORT.pause = false;
-    }
-
- 
-});
+  
 
 //preload one file
 let client = new XMLHttpRequest();
@@ -382,8 +275,8 @@ client.onload = ()=>{
     let edgeSet  = new Set();
     let lines = client.response.split('\n')
     let linesLength = lines.length;
-    //let directed = lines[1][10];
-    //let weighted = lines[2][10];
+    let directed = lines[1][10];
+    let weighted = lines[2][10];
 
     for (let line = 3; line < (linesLength - 1); line++) {
         if(lines[line].match(/\snode\s\[/)){    
@@ -453,8 +346,8 @@ client.send()
 function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderReference) {
 
     
-    document.getElementById('nodePrintSpace').innerHTML = " "+graph.nodes.length;
-    document.getElementById('edgesPrintSpace').innerHTML = " "+graph.edges.length;          
+    //document.getElementById('nodePrintSpace').innerHTML = " "+graph.nodes.length;
+    //document.getElementById('edgesPrintSpace').innerHTML = " "+graph.edges.length;          
     let t0 = performance.now()            
     startWorkerLayout(firstLayoutCompute,graph,viewport,pixiGraph,t0,buttonReference,sliderReference);
    
@@ -479,15 +372,19 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
     let t1 = performance.now();
     enableDisableButton(sliderReference)
     enableDisableButton(buttonReference)
-    VIEWPORT.pause = false;
+    //VIEWPORT.pause = false;
     console.log(`Time needed to compute Layout: ${t1fmmm - t0fmmm}  milliseconds.`);
 
     console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
-   /*  document.getElementById('layoutTimePrintSpace').innerHTML = " "+(t1fmmm - t0fmmm).toFixed();
-    document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
-   */          
-    console.log("finish");
+        
+    document.getElementById('computationTime').innerHTML = `Layout ${(t1fmmm - t0fmmm).toFixed()} ms Rendering ${(((t1 - t0)-(t1fmmm - t0fmmm)).toFixed())} ms. All computed in your browser!`;
+    //document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
+    
 
+    console.log("finish");
+    buttonActivation.labelsActivation = true;
+    labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+    
 }
 //start of worker for gradability
 function startWorkerGreadability() {
@@ -704,7 +601,7 @@ function resetParameters(){
     VIEWPORT.removeChildren();
     VIEWPORT.scaled = 1;
     VIEWPORT.center = {x: WID/2, y: HIGH/2};
-    VIEWPORT.pause = true;
+    //VIEWPORT.pause = true;
     //container reset
     containerRoot.cacheAsBitmap = false;
     containerRootZoom.cacheAsBitmap = false;
@@ -729,11 +626,11 @@ function resetParameters(){
     document.getElementById("maxEdgeThicknessDisplay").innerHTML=5; */
     document.getElementById("zoomIntensityDisplay").innerHTML=4;
 
-    document.getElementById('nodePrintSpace').innerHTML = "";
-    document.getElementById('edgesPrintSpace').innerHTML = "";/* 
+    //document.getElementById('nodePrintSpace').innerHTML = "";
+    //document.getElementById('edgesPrintSpace').innerHTML = "";
     document.getElementById('layoutTimePrintSpace').innerHTML = "";
     document.getElementById('totalTimePrintSpace').innerHTML = "";
- */
+
     document.getElementById("sigmaSlider").value = 50;
     document.getElementById("thresholdAlphaSlider").value = 20;/* 
     document.getElementById("rangeFieldSlider").value = 1;
@@ -764,5 +661,62 @@ function fpsInitialize(){
     }
 
     animate();
+
+}
+//button label actions off
+function searchLabelOff(){
+   
+    buttonActivation.labelsActivation = false;
+    containerLabels.visible = true;
+    containerLabels.removeChildren();
+    containerLabelsOnClick.removeChildren();
+    containerAdiacentLabels.removeChildren();
+    containerLabelsZoom.removeChildren();
+
+}
+//button label actions auto
+function searchLabelAuto(){
+    if(buttonActivation.zoomActivation){
+        disableZoom();
+    }
+    buttonActivation.labelsActivation = true;
+    labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+
+}
+//button label actions all
+function searchLabelAll(){
+    if(buttonActivation.zoomActivation){
+        disableZoom();
+    }
+    
+    buttonActivation.labelsActivation = true;
+    labelsList=labelsView(buttonActivation,baseTextSize,containerAdiacentLabels,pixiGraph,HIGH,WID,MAPLABELS,averageDegree,document.getElementById("seeAllLabels").checked,VIEWPORT,containerLabels,labelsList,position.xstart,position.ystart,GRAPH);
+
+}
+//button zoom actions
+function changestatuszoom(){
+
+    if(!buttonActivation.zoomActivation){
+        document.getElementById("magnifying").style.visibility = 'visible';
+        buttonActivation.zoomActivation = true;
+        //VIEWPORT.pause = true;
+        document.body.style.cursor = "crosshair"
+        
+    }else{
+        disableZoom();
+    }
+}
+
+function disableZoom(){
+    document.getElementById("magnifying").style.visibility = 'hidden';
+    buttonActivation.zoomActivation = false;
+    document.body.style.cursor = "default"
+    containerRootZoom.removeChildren();
+    edgesContainerZoom.removeChildren();
+    containerLabelsZoom.removeChildren();
+    containerLabelsOnClick.removeChildren();
+    containerRootZoom.cacheAsBitmap = false;
+    containerClickedPoint.removeChildren();
+    computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness)
 
 }
