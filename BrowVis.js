@@ -117,9 +117,11 @@ let app2 = new Application({
     antialias: true
 });
 
+
 //Bind PIXI App canvas to element on page 
 document.getElementById('magnifying').appendChild(app2.view);
 document.getElementById('graph').appendChild(app.view);
+
 
 //inizialization viewport for pan and zoom 
 const VIEWPORT = new pixi_viewport.Viewport({
@@ -247,8 +249,19 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
     }
  
 });
-  
 
+
+const loadingIcon = new PIXI.Sprite.from('/loadingIcon.png');
+loadingIcon.anchor.set(0.5)
+loadingIcon.x = app.screen.width / 2;
+loadingIcon.y = app.screen.height / 2;
+loadingIcon.width = 150;
+loadingIcon.height = 150;
+app.stage.addChild(loadingIcon);
+app.ticker.add((delta)=>{
+    loadingIcon.rotation += 0.1*delta;
+})
+//line.beginFill(0xFFFFFF,1); 
 //preload one file
 let client = new XMLHttpRequest();
 let loadingDataStart = performance.now()
@@ -379,7 +392,8 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
         
     document.getElementById('computationTime').innerHTML = `Layout ${(t1fmmm - t0fmmm).toFixed()} ms Rendering ${(((t1 - t0)-(t1fmmm - t0fmmm)).toFixed())} ms. All computed in your browser!`;
     //document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
-    
+    app.stage.removeChild(loadingIcon)
+
 
     console.log("finish");
     buttonActivation.labelsActivation = true;
