@@ -390,7 +390,9 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
 
     console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
         
-    document.getElementById('computationTime').innerHTML = `Layout ${(t1fmmm - t0fmmm).toFixed()} ms Rendering ${(((t1 - t0)-(t1fmmm - t0fmmm)).toFixed())} ms. All computed in your browser!`;
+    document.getElementById('layoutTime').innerHTML = `Layout ${((t1fmmm - t0fmmm)/1000).toFixed(2)} s` 
+    document.getElementById('renderingTIme').innerHTML = `Rendering ${((((t1 - t0)-(t1fmmm - t0fmmm))/1000).toFixed(2))} s`;
+    document.getElementById('inYourB').innerHTML = `All computed in your browser!`
     //document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
     app.stage.removeChild(loadingIcon)
 

@@ -35,16 +35,16 @@
          
         <div class="row p-3">
             
-            <div class="col-lg-2 mt-2 p-1" align="center">
+            <div class="col-lg-3 mt-2 p-1" align="center">
                 <h6>
-                    <strong>Collaboration Network in Graph Drawing, Information Visualization, and Computer Graphics powered by</strong>
+                    Collaboration Network in Graph Drawing, Information Visualization, and Computer Graphics powered by <a href="?"><h4>BrowVis</h4></a>    
                 </h6>
             </div>  
-            <div class="col-lg-1 mt-3  p-1" align="center">
+            <!--<div class="col-lg-1 mt-3  p-1" align="center">
                 <h2>
                     <a href="?" class="text-decoration-none">BrowVis</a>
                 </h2>
-            </div>        
+            </div>     -->   
            
             <div class="col-lg mt-2 " align="center">
                 <label class="modParameterBar"><strong>Vertex Aggr</strong></label> 
@@ -79,14 +79,24 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 mt-4" align="center">
-                <label  id="computationTime"/>
+            <div class="col-lg-3 mt-3" align="center">
+                <div class="row">
+                    <div class="col">
+                        <p  id="layoutTime"/>
+                    </div>
+                    <div class="col">
+                        <p id="renderingTIme"/> 
+                    </div>
+                </div>
+                <div class="row">
+                    <p id="inYourB"/> 
+                </div>                
             </div >
  
         </div>
    
 
-        <div class="row mt-1 p-3" >
+        <div class="row p-3" >
             
             <div class="col position-relative  " id="graph" >
                 <div id="fpsmeterstat" class="position-absolute"></div>
