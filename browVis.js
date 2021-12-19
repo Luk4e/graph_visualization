@@ -26,6 +26,8 @@ const HIGH = window.innerHeight;
 const WIDZOOM = 350;
 const HIGHZOOM = 350;
 
+let loadingIcon;
+
 //Aliases for pixi 
 let Application = PIXI.Application,
     Graphics = PIXI.Graphics,
@@ -375,6 +377,17 @@ document.getElementById('file').onchange = function () {
     layoutComputCheck = document.getElementById('computeLayoutCheckbox').checked;
     let loadingDataStart = performance.now()
 
+
+    loadingIcon = new PIXI.Sprite.from('/loadingIcon.png');
+    loadingIcon.anchor.set(0.5)
+    loadingIcon.x = app.screen.width / 2;
+    loadingIcon.y = app.screen.height / 2;
+    loadingIcon.width = 150;
+    loadingIcon.height = 150;
+    app.stage.addChild(loadingIcon);
+    app.ticker.add((delta)=>{
+        loadingIcon.rotation += 0.1*delta;
+    })
     
     if (GRAPH.nodes.length != 0) {
         resetParameters();
@@ -696,7 +709,8 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
     console.log(`Time needed to compute Layout + Render : ${(t1 - t0)}  milliseconds.`);
     document.getElementById('layoutTimePrintSpace').innerHTML = " "+(t1fmmm - t0fmmm).toFixed();
     document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
-            
+
+    app.stage.removeChild(loadingIcon);
     console.log("finish");
 
 }
