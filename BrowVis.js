@@ -22,7 +22,7 @@ const HIGHZOOM = 350;
 enableDisableButton(sliderReference)
 enableDisableButton(buttonReference)
 //re-inizialize console.log function,if testPerformace is true, to turn off log during tests
-const DISABLECONSOLELOG = false;
+const DISABLECONSOLELOG = true;
 if (DISABLECONSOLELOG) {
     console.log = () => {};
 } 
