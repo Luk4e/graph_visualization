@@ -278,7 +278,7 @@ app.ticker.add((delta)=>{
 let client = new XMLHttpRequest();
 let loadingDataStart = performance.now()
 
-client.open('GET',"http://mozart.diei.unipg.it/montecchiani/jlink/test_graph/gdvisgraph.gml")
+client.open('GET',"http://mozart.diei.unipg.it/montecchiani/browvis/test_graph/gdvisgraph.gml")
 client.overrideMimeType('text/xml; charset=iso-8859-1') 
 client.onload = ()=>{
     
