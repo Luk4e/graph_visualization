@@ -250,6 +250,18 @@ document.getElementById("graph").addEventListener("mousedown", function(e) {
  
 });
 
+//loading text and icon 
+let textStyle = new PIXI.TextStyle({
+    fill: '#000000',
+    fontFamily: 'monospace',
+    fontWeight: 500,
+    fontSize: 35
+  });
+const loadingText = new PIXI.Text("Loading Network",textStyle);
+loadingText.anchor.set(0.5)
+loadingText.x = app.screen.width / 2 + 5;
+loadingText.y = app.screen.height / 2 - 150;
+app.stage.addChild(loadingText)
 
 const loadingIcon = new PIXI.Sprite.from('/loadingIcon.png');
 loadingIcon.anchor.set(0.5)
@@ -395,7 +407,7 @@ function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
     document.getElementById('inYourB').innerHTML = `All computed in your browser!`
     //document.getElementById('totalTimePrintSpace').innerHTML = " "+(t1 - t0).toFixed();
     app.stage.removeChild(loadingIcon)
-
+    app.stage.removeChild(loadingText)
 
     console.log("finish");
     buttonActivation.labelsActivation = true;
