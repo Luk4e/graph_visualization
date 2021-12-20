@@ -263,7 +263,7 @@ loadingText.x = app.screen.width / 2 + 5;
 loadingText.y = app.screen.height / 2 - 150;
 app.stage.addChild(loadingText)
 
-const loadingIcon = new PIXI.Sprite.from('/loadingIcon.png');
+const loadingIcon = new PIXI.Sprite.from('http://mozart.diei.unipg.it/montecchiani/browvis/loadingIcon.png');
 loadingIcon.anchor.set(0.5)
 loadingIcon.x = app.screen.width / 2;
 loadingIcon.y = app.screen.height / 2;
