@@ -10,4 +10,5 @@ We developed this system to visualize big network in a browser perfroming all th
 
 
 System example:
-![alt text] (https://github.com/Luk4e/graph_visualization/blob/main/system_screen.png)
+
+![alt text](https://github.com/Luk4e/graph_visualization/blob/main/system_screen.png)
