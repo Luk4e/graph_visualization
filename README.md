@@ -7,3 +7,7 @@ We developed this system to visualize big network in a browser perfroming all th
 1) Upload the graph
 2) Waiting that the system compute the layout
 3) Explore the graph zooming, panning and playing with some parameter.
+
+
+System example:
+![alt text] (https://github.com/Luk4e/graph_visualization/blob/main/system_screen.png)
