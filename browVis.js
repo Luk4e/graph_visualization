@@ -1,6 +1,6 @@
 'use strict';
 // VARIABLES INITIALIZATION
-const DISABLECONSOLELOG = true;
+const DISABLECONSOLELOG = false;
 //declaration of graph struct and pixiGraph struct
 const GRAPH = { "nodes": new Array(), "edges": new Array() };
 let pixiGraph = new graphClass("");
@@ -120,8 +120,7 @@ document.getElementById('graph').onwheel = () => false ;
 
 fpsInitialize(); 
  
-console.log(window)
-//app pixi for main view space 
+ //app pixi for main view space 
 let app = new Application({
     width: WID,
     height: HIGH,
@@ -687,7 +686,7 @@ function drawGraph(graph,pixiGraph,viewport,document,buttonReference,sliderRefer
 //function that call layout function + render function
 function firstLayoutCompute(t0fmmm,t1fmmm,t0,buttonReference,sliderReference){
 
-    computeTexture(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
+    computeTextureGPU(GRAPH,pixiGraph,VIEWPORT.scaled,containerRoot,edgesContainer,SCALEFACTOR,RADIUS,sigma,HIGH,WID,maxVal,scalaBluRGBRigirata,thresholdComp,rangeFiledComp,edgeThickness);
 
     app.stage.addChild(containerRoot);
     app.stage.addChild(VIEWPORT);

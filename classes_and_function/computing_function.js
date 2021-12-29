@@ -258,33 +258,6 @@
         }
         let scaling = maxEdgeAgg/maxEdgeThickness;
 
-        //TODO:
-        //aumentare valore della soglia di alpha avvicinandomi e diminuirlo allontanandomi
-        //oppure diminuire valore di alpha di tutti gli archi di un certo tot e aumentarlo fino ad arrivare a uno indietreggiando
-        //oppure
-        //aumentare valore di sigma avvicinandomi 
-        //diminuirlo allontandomi 
-
-/* 
-        for(let key in edgeIdx){            
-            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
-            //let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
-
-            if(edgeIdx[key][4]>maxEdgeThickness){
-                edgeIdx[key][4]=maxEdgeThickness
-            }
-            if(alphaEdge>=thresholdAlpha ){
-                let line = new PIXI.Graphics();
-                //line.beginFill(0xFFFFFF,1);
-                //line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
-                line.lineStyle(Math.ceil((edgeIdx[key][4]/scaling)) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
-                line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
-                line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
-                edgesContainer.addChild(line);
-            }
-        } */
-
-
 
         for(let key in edgeIdx){            
             let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2 ? (edgeIdx[key][4]/maxEdgeAgg)-0.1 : (edgeIdx[key][4]/maxEdgeAgg)+0.05;
@@ -1267,3 +1240,171 @@
     
         return labelsDisplayedText;
     }
+
+    function computeTextureGPU(graph,pixiGraph,scalare = 1,containerRoot,edgesContainer,fattoreDiScala,raggio,sigma,high,wid,maxVal,colorScalePalette,threshold,rangeFiledComp,edgeThickness){   
+    
+        containerRoot.cacheAsBitmap = false;
+        edgesContainer.removeChildren();
+
+        let t1Draw = performance.now();
+        let links = graph.edges.length;
+        let pointZero = new PIXI.Point(0,0);
+        let sigmaMod = sigma;
+        let levelsNumber = 11;
+        let raggioScalato = fattoreDiScala*sigmaMod*raggio;
+        let area = Math.round(Math.max(high,wid)/2);
+        let indici = [];
+        const gpu = new GPU({mode: 'webgl'});
+
+
+        const getArrayMax = array => array.reduce((a,b)=>Math.max(a,b));
+        const getArrayMax2d = array2d => getArrayMax(array2d.map(getArrayMax));
+        
+        nodes = graph.nodes.length;
+
+        //selection of nodes inside de view to render
+        for(let i = 0; i<nodes;i++){
+            
+            let temp = pixiGraph.pixiNodes[graph.nodes[i]['id']].pixiNode.toGlobal(pointZero);
+            let id = pixiGraph.pixiNodes[graph.nodes[i]['id']].id;
+            
+            let xx = Math.round(temp.x);
+            let yy = Math.round(temp.y);
+            //setto inizialmente tutti i cluster dei vari nodi su loro stessi 
+            //per poi modificarli se sono presenti nella schermata 
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setPixel(xx,yy);  
+
+            pixiGraph.pixiNodes[graph.nodes[i]['id']].setXY(xx,yy);
+            //prendo in considerazione solo i nodi che sono dentro la finestra e quelli al di fuori al massimo di 100 px 
+            if(( xx>(-(area)) && xx<(high+Math.abs(high - wid)+area))){
+                if(( yy>(-(area)) && yy<(wid+Math.abs(high - wid)+area))){
+                    indici.push(graph.nodes[i]['id']);
+                }
+            }
+            
+        } 
+         //compute of density field
+        //  let emptyMatrix = Array(high).fill().map(()=>Array(wid).fill(0));
+        let verticesArray = Array(indici.length).fill().map(() =>  [2,2,1]);//Array(3).fill(0));
+        /* for(vertex in indici){
+            verticesArray[vertex][0]=pixiGraph.pixiNodes[indici[vertex]].x;
+            verticesArray[vertex][1]=pixiGraph.pixiNodes[indici[vertex]].y;
+            verticesArray[vertex][2]=pixiGraph.pixiNodes[indici[vertex]].weight;
+        } */
+        let ccc = [[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]
+        console.log(ccc)
+        const gpuFieldCompute = gpu.createKernel(function(varray){
+  
+ 
+            //let weightOfNode;
+            let result = 0;
+            for(let i = 0; i<10000/* this.constants.size */;i++){
+                //weightOfNode = pixiGraph.pixiNodes[vecXY[i]].weight;
+    
+                let xNum     = (varray[i][0] - this.thread.x)/10;
+                let yNum     = (varray[i][1] - this.thread.y)/10;
+                let first    = 1/(2*Math.PI*Math.pow(1,2)*Math.pow(10,2));
+                let num      = Math.pow(xNum,2)+Math.pow(yNum,2);
+                let den      = Math.pow(1,2);
+                let third    = Math.exp(-0.5*(num/den));
+            
+                result +=  varray[i][0]//first*third//*varray[i][2];
+               
+            }
+    
+            return result;
+            
+        },{contains:verticesArray.length}).setOutput([wid,high]);
+
+        let mat = gpuFieldCompute(verticesArray);
+        console.log(mat)
+        //maxValueObj.value = getArrayMax2d(mat);
+        let t2DensityFiel = performance.now();
+
+        console.log(`Time needed to compute Density Field: ${(t2DensityFiel - t1Draw)} +  milliseconds.`);
+
+        let t3ClusterStart = performance.now();
+        //compute of cluster 
+        clusterCompute(pixiGraph,wid,high,indici,rangeFiledComp,mat);
+        let t3ClusterEnd = performance.now();
+
+        console.log(`Time needed to compute Cluster: ${(t3ClusterEnd - t3ClusterStart)} milliseconds.`);
+
+        let t4EdgeAggStart = performance.now();
+        //compute of aggregate edges
+        edgeCompute2(indici,area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
+        //edgeCompute(area,wid,high,pixiGraph,links,graph,edgesContainer,threshold,edgeThickness);
+
+        let t4EdgeAggEnd = performance.now();
+
+        console.log(`Time needed to compute Edge Agg all: ${(t4EdgeAggEnd - t4EdgeAggStart)} milliseconds.`);
+
+
+        console.log(`Time needed to compute All : ${(t4EdgeAggEnd - t1Draw)} milliseconds.`);
+        
+
+        
+        if(maxVal.value>0){
+            let scale = generateColorScale(maxVal,levelsNumber,sigmaMod,raggio);
+            //compute of colored texture
+            let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
+            //display texture by pixi sprite
+            texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
+            sprite = PIXI.Sprite.from(texture);
+            containerRoot.addChild(sprite);
+        }else{
+            maxVal.value = 1;
+            let scale = generateColorScale(maxVal,11,sigmaMod,raggio);
+            //compute of colored texture
+            let buff = colorScreen((app.view.height),(app.view.width),mat,scale,colorScalePalette);
+            //display texture by pixi sprite
+            texture = PIXI.Texture.fromBuffer(buff, (app.view.width), (app.view.height));
+            sprite = PIXI.Sprite.from(texture);
+            containerRoot.addChild(sprite);
+        }
+        
+        let t2Draw = performance.now();
+        
+        console.log(`Time needed to draw: ${(t2Draw - t4EdgeAggEnd)} milliseconds.`);
+
+        
+
+        mat = {};   
+        scale = {};
+        buff =  {};
+        texture = {};
+
+        containerRoot.cacheAsBitmap = true; 
+    }
+
+
+    function createMatOutGPU(pixiGraph,vecXY){
+  
+        let xOfNode;
+        let yOfNode;
+        let weightOfNode;
+        let result = 0;
+        let lengthVec = vecXY.length;
+
+        for(let i = 0; i<lengthVec;i++){
+
+            xOfNode = pixiGraph.pixiNodes[vecXY[i]].x;
+            yOfNode = pixiGraph.pixiNodes[vecXY[i]].y;
+
+            weightOfNode = pixiGraph.pixiNodes[vecXY[i]].weight;
+
+            let xNum     = (xOfNode - this.thread.x)/10;
+            let yNum     = (yOfNode - this.thread.y)/10;
+            let first    = 1/(2*Math.PI*Math.pow(1,2)*Math.pow(10,2));
+            let num      = Math.pow(xNum,2)+Math.pow(yNum,2);
+            let den      = Math.pow(1,2);
+            let third    = Math.exp(-0.5*(num/den));
+        
+            result += first*third*weightOfNode;
+           
+        }
+
+        return result;
+        
+    }
+
