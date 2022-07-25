@@ -258,32 +258,6 @@
         }
         let scaling = maxEdgeAgg/maxEdgeThickness;
 
-        //TODO:
-        //aumentare valore della soglia di alpha avvicinandomi e diminuirlo allontanandomi
-        //oppure diminuire valore di alpha di tutti gli archi di un certo tot e aumentarlo fino ad arrivare a uno indietreggiando
-        //oppure
-        //aumentare valore di sigma avvicinandomi 
-        //diminuirlo allontandomi 
-
-/* 
-        for(let key in edgeIdx){            
-            let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg)>0.2? (edgeIdx[key][4]/maxEdgeAgg)-0.1:(edgeIdx[key][4]/maxEdgeAgg)+0.05;
-            //let alphaEdge = (edgeIdx[key][4]/maxEdgeAgg);
-
-            if(edgeIdx[key][4]>maxEdgeThickness){
-                edgeIdx[key][4]=maxEdgeThickness
-            }
-            if(alphaEdge>=thresholdAlpha ){
-                let line = new PIXI.Graphics();
-                //line.beginFill(0xFFFFFF,1);
-                //line.lineStyle(Math.ceil((edgeIdx[key][4])) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
-                line.lineStyle(Math.ceil((edgeIdx[key][4]/scaling)) , 0xFFA500, alphaEdge);//other colors:0xFFA500,
-                line.moveTo(edgeIdx[key][0], edgeIdx[key][1]);
-                line.lineTo(edgeIdx[key][2], edgeIdx[key][3]);
-                edgesContainer.addChild(line);
-            }
-        } */
-
 
 
         for(let key in edgeIdx){            
